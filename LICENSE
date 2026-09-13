@@ -1,0 +1,55 @@
+Business Source License 1.1
+
+Parameters
+
+Licensor:             VLTHR Trading System Contributors
+Licensed Work:        VLTHR Trading System — algorithmic crypto trading pipeline
+                     (all source code, configuration, documentation, and
+                     backtest engine in this repository)
+Additional Use Grant: See ADDITIONAL_USE_GRANT.txt in this repository
+Change Date:          2030-09-13
+Change License:       Apache License 2.0
+
+Terms
+
+The Licensor hereby grants you the right to copy, modify, create derivative
+works, redistribute, and use the Licensed Work for the following purposes,
+free of charge and without payment of any royalty or license fee:
+
+1. Research, academic study, and educational use.
+2. Personal, non-commercial projects and experimentation.
+3. Development and testing of modifications intended to be contributed back
+   to the Licensed Work.
+4. Code review, audit, and security analysis.
+5. Use as a reference implementation for learning and teaching.
+
+For any use of the Licensed Work that is not expressly granted above,
+including but not limited to production trading, commercial deployment,
+offering the Licensed Work as a paid service or SaaS product, or integrating
+the Licensed Work into a commercial product, you must obtain a commercial
+license from the Licensor.
+
+To obtain a commercial license, contact: vlthr@298althr.github
+
+The Licensed Work is provided "AS IS", without warranty of any kind,
+express or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose, and non-infringement.
+In no event shall the Licensor be liable for any claim, damages, or other
+liability arising from the use of the Licensed Work.
+
+You must retain all copyright, attribution, and license notices in the
+Licensed Work and in any derivative works you create. When distributing
+the Licensed Work or derivative works, you must include a prominent
+attribution notice crediting the VLTHR Trading System and its contributors,
+and a link to the original repository at https://github.com/298althr/vlthr-trading-system
+
+On the Change Date, this license will automatically convert to the
+Change License (Apache License 2.0), at which point the Licensed Work
+will become freely available for all purposes, including commercial use,
+subject to the terms of the Apache License 2.0.
+
+For the full text of the Business Source License 1.1, see:
+https://mariadb.com/bsl11/
+
+For the full text of the Change License (Apache License 2.0), see:
+https://www.apache.org/licenses/LICENSE-2.0

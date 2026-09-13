@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+WORKDIR /app
+
+# Install deps
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy data fetcher code
+COPY data/bybit/workers ./data/bybit/workers
+COPY departments/strategy_research/BACKTESTER/scripts/common ./departments/strategy_research/BACKTESTER/scripts/common
+COPY .env ./.env
+
+# Entrypoint: fetch all data then exit
+CMD ["python", "data/bybit/workers/fetch_bybit_data.py"]

@@ -1,0 +1,24 @@
+| Column                      | Description                                                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Strategy_ID                 | Unique identifier                                                                                                     |
+| Strategy_Name               | Name of strategy                                                                                                      |
+| Strategy_Category           | Trend Following, Mean Reversion, Breakout, Scalping, Momentum, Volatility, Statistical Arbitrage, Grid, ICT, SMC, etc |
+| Market_Class                | Crypto, Forex, Metals                                                                                                 |
+| Instruments                 | BTCUSD, ETHUSD, XAUUSD, XAGUSD, EURUSD, GBPUSD, USDJPY, etc                                                           |
+| Preferred_Session           | London, New York, Asian, London-NY Overlap                                                                            |
+| Market_Regime               | Trending, Ranging, Volatile, Low Volatility, Expansion, Contraction                                                   |
+| Direction                   | Long, Short, Both                                                                                                     |
+| Timeframe                   | M1, M5, M15, H1, H4, D1                                                                                               |
+| Indicators                  | EMA, SMA, RSI, MACD, Bollinger Bands, ATR, VWAP, etc                                                                  |
+| Parameters                  | Actual indicator settings                                                                                             |
+| Entry_Conditions            | Structured rules                                                                                                      |
+| Exit_Conditions             | TP/SL logic                                                                                                           |
+| Risk_Model                  | Fixed %, ATR, Kelly, Volatility                                                                                       |
+| Stop_Loss_Type              | ATR, Swing High/Low, Fixed Pips                                                                                       |
+| Take_Profit_Type            | RR Ratio, ATR Multiple, Structure                                                                                     |
+| Typical_RR                  | 1:1, 1:2, 1:3, etc                                                                                                    |
+| Trade_Frequency             | High, Medium, Low                                                                                                     |
+| Complexity                  | Beginner, Intermediate, Advanced                                                                                      |
+| Automation_Friendly         | Yes/No                                                                                                                |
+| Asset_Correlation_Sensitive | Yes/No                                                                                                                |
+| Notes                       | Additional information                                                                                                |

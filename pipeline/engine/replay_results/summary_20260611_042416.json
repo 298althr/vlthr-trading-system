@@ -1,0 +1,10 @@
+{
+  "signals_scanned": 17112,
+  "signals_confirmed": 11,
+  "final_equity": 10000.0,
+  "total_return_pct": 0.0,
+  "max_drawdown_pct": 0.0,
+  "win_rate_pct": 0,
+  "tp_hits": 0,
+  "sl_hits": 0
+}

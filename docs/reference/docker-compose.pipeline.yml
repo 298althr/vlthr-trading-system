@@ -1,0 +1,60 @@
+# VLTHR Pipeline Service — Phase 1 Heartbeat
+# Run standalone or merge into main docker-compose.yml:
+#   docker compose -f docker-compose.pipeline.yml up -d --build
+#
+# Prefect UI (optional): docker run -p 4200:4200 prefectio/prefect:3-latest
+
+version: "3.8"
+
+services:
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.pipeline
+    container_name: vlthr-pipeline
+    restart: unless-stopped
+    environment:
+      - DB_URL=${DB_URL}
+      - REDIS_URL=${REDIS_URL}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID_TRADING=${TELEGRAM_CHAT_ID_TRADING}
+      - ENABLE_TELEGRAM_ALERTS=${ENABLE_TELEGRAM_ALERTS:-true}
+      - PYTHONUNBUFFERED=1
+      - PIPELINE_HEALTH_PORT=8200
+      # Prefect config (lightweight local mode; UI via separate prefect-server if desired)
+      - PREFECT_API_URL=${PREFECT_API_URL:-}
+      - PREFECT_HOME=/app/.prefect
+    ports:
+      - "8200:8200"            # health / metrics / last-run
+    volumes:
+      - ../data:/app/data:ro   # read-only access to parquet data
+      - ../.env:/app/.env:ro
+      - ../logs:/app/logs
+      - ../backups:/app/backups
+    command: ["python", "-m", "engine.run_pipeline", "--loop", "--interval", "900"]
+    networks:
+      - vlthr-net
+    depends_on:
+      - redis
+      - backend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8200/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Reference existing services (they run in the same compose context)
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+
+  backend:
+    extends:
+      file: docker-compose.yml
+      service: backend
+
+networks:
+  vlthr-net:
+    driver: bridge

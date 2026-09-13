@@ -1,0 +1,17 @@
+# Ngrok configuration for VLTHR Dashboard PWA exposure
+# The tunnel will expose the frontend (nginx on port 80) to a public HTTPS URL
+# so you can access it from your phone and install as PWA.
+#
+# Required env vars:
+#   NGROK_AUTHTOKEN=your_token_from_dashboard.ngrok.com
+#   NGROK_DOMAIN=your-static-domain.ngrok.app (optional, for fixed URL)
+#
+# The frontend auto-detects production mode via import.meta.env.PROD
+# and uses relative API paths so it works behind any ngrok domain.
+#
+# To run:
+#   docker compose -f docker-compose.ngrok.yml up --build
+#
+# Then visit the ngrok HTTPS URL on your phone and:
+#   iOS: Safari → Share → "Add to Home Screen"
+#   Android: Chrome → Menu → "Add to Home Screen"

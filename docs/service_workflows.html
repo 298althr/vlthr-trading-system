@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service Workflows and Relationships · VLTHR</title>
+<style>
+:root{--bg:#000;--surface:#0a0a0a;--surface-2:#141414;--surface-3:#1a1a1a;--border:#222;--border-light:#2a2a2a;--text:#e8e8e8;--text-2:#a0a0a0;--text-muted:#666;--accent:#e82127;--accent-dim:rgba(232,33,39,.15);--accent-glow:rgba(232,33,39,.4);--blue:#2d7ff9;--green:#00e676;--yellow:#ffd600;--orange:#ff9100;--purple:#b388ff;--red:#ff5252;--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1);--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 32px}
+.hero{position:relative;padding:80px 0 60px;text-align:center;background:radial-gradient(ellipse at center,var(--surface-2) 0%,var(--bg) 70%);border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 50%);animation:pulse-glow 6s ease-in-out infinite;pointer-events:none}
+@keyframes pulse-glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:3em;font-weight:700;letter-spacing:-1px;margin-bottom:12px;position:relative;animation:fade-up .8s ease-out}
+.hero h1 .accent{color:var(--accent)}
+.hero .subtitle{font-size:1.2em;color:var(--text-2);margin-bottom:24px;position:relative;animation:fade-up .8s ease-out .1s both}
+.hero .meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;animation:fade-up .8s ease-out .2s both}
+.hero .meta-item{text-align:center}
+.hero .meta-item .label{font-size:.75em;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero .meta-item .value{font-size:1.3em;font-weight:600;color:var(--text)}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 24px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:.9em;font-weight:500;cursor:pointer;white-space:nowrap;transition:var(--transition);border-bottom:2px solid transparent;position:relative}
+.tab-btn:hover{color:var(--text);background:var(--surface-2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-num{font-size:.75em;opacity:.5;margin-right:4px}
+.tab-content{display:none;padding:48px 0;animation:fade-in .4s ease-out}
+.tab-content.active{display:block}
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h2{font-size:2em;font-weight:700;letter-spacing:-.5px;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:1.4em;font-weight:600;margin-top:40px;margin-bottom:16px;color:var(--text)}
+h4{font-size:1.15em;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--text-2)}
+p{margin-bottom:14px;color:var(--text)}
+ul,ol{margin-bottom:16px;padding-left:24px}
+li{margin-bottom:6px;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);background:var(--surface-3);padding:2px 8px;border-radius:4px;font-size:.88em;color:var(--accent);border:1px solid var(--border)}
+pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin-bottom:20px;font-size:.85em}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.9em;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-size:.8em;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;transition:var(--transition)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.card-title{font-size:1.1em;font-weight:600;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78em;font-weight:600;letter-spacing:.3px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.3)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.3)}
+.badge-purple{background:rgba(179,136,255,.12);color:var(--purple);border:1px solid rgba(179,136,255,.3)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.3)}
+.badge-orange{background:rgba(255,145,0,.12);color:var(--orange);border:1px solid rgba(255,145,0,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:20px}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:600;margin-bottom:8px;color:var(--text)}
+.metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;transition:var(--transition)}
+.metric-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-tile .metric-value{font-size:2em;font-weight:700;margin-bottom:4px}
+.metric-tile .metric-label{font-size:.8em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85em}
+.svc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;transition:var(--transition);border-left:4px solid var(--accent)}
+.svc-card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.svc-card h3{margin-top:0;color:var(--text)}
+.svc-card .svc-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.svc-card .svc-meta .badge{font-size:.72em}
+.flow-diagram{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;overflow-x:auto}
+.flow-diagram pre{background:none;border:none;padding:0;margin:0;font-size:.82em;line-height:1.8}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>Service <span class="accent">Workflows</span></h1>
+  <p class="subtitle">How all 8 Docker services interact. Data flow, dependencies, and relationships across the VLTHR stack.</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Services</div><div class="value">8</div></div>
+    <div class="meta-item"><div class="label">Network</div><div class="value">vlthr-dashboard-net</div></div>
+    <div class="meta-item"><div class="label">Volume</div><div class="value">vlthr_pgdata</div></div>
+    <div class="meta-item"><div class="label">Compose File</div><div class="value">docker-compose.yml</div></div>
+  </div>
+</section>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)"><span class="tab-num">01</span>Architecture</button>
+  <button class="tab-btn" onclick="switchTab(1)"><span class="tab-num">02</span>Data Flow</button>
+  <button class="tab-btn" onclick="switchTab(2)"><span class="tab-num">03</span>Service: PostgreSQL</button>
+  <button class="tab-btn" onclick="switchTab(3)"><span class="tab-num">04</span>Service: Redis</button>
+  <button class="tab-btn" onclick="switchTab(4)"><span class="tab-num">05</span>Service: Data Ingestion</button>
+  <button class="tab-btn" onclick="switchTab(5)"><span class="tab-num">06</span>Service: Pipeline</button>
+  <button class="tab-btn" onclick="switchTab(6)"><span class="tab-num">07</span>Service: Backend</button>
+  <button class="tab-btn" onclick="switchTab(7)"><span class="tab-num">08</span>Service: Frontend</button>
+  <button class="tab-btn" onclick="switchTab(8)"><span class="tab-num">09</span>Service: AI Trader Engine</button>
+  <button class="tab-btn" onclick="switchTab(9)"><span class="tab-num">10</span>Service: Telegram</button>
+</div>
+
+<div class="container">
+
+<!-- TAB 0: ARCHITECTURE -->
+<div class="tab-content active" id="tab-0">
+  <h2>System Architecture</h2>
+  <p>VLTHR runs 8 Docker services on a single bridge network. All services communicate over internal Docker DNS. Three services are infrastructure (PostgreSQL, Redis, Telegram), three are data and decision (data-ingestion, pipeline, ai-trader-engine), and two are user-facing (backend, frontend).</p>
+
+  <div class="grid-4">
+    <div class="metric-tile"><div class="metric-value" style="color:var(--accent)">8</div><div class="metric-label">Docker Services</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--blue)">1</div><div class="metric-label">Bridge Network</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--green)">1</div><div class="metric-label">Named Volume</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--orange)">5</div><div class="metric-label">Host Ports</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Service Inventory</div>
+    <table>
+      <thead><tr><th>Service</th><th>Container</th><th>Image</th><th>Host Port</th><th>Docker</th></tr></thead>
+      <tbody>
+        <tr><td>postgres</td><td>vlthr-postgres</td><td>timescale/timescaledb:latest-pg15</td><td>none</td><td><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td>redis</td><td>vlthr-dashboard-redis</td><td>redis:7-alpine</td><td>none</td><td><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td>data-ingestion</td><td>vlthr-data-ingestion</td><td>python:3.11-slim (build)</td><td>none</td><td><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td>pipeline</td><td>vlthr-pipeline</td><td>python:3.11-slim (build)</td><td>8201:8200</td><td><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td>backend</td><td>vlthr-dashboard-backend</td><td>node:22-slim (build)</td><td>3003:3001</td><td><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td>frontend</td><td>vlthr-dashboard-frontend</td><td>node:22-slim + nginx:alpine</td><td>5175:80</td><td><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td>ai-trader-engine</td><td>ai_trader_engine</td><td>python:3.11-slim (build)</td><td>8002:8000</td><td><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td>telegram</td><td>vlthr-telegram</td><td>python (build)</td><td>none</td><td><span class="badge badge-green">Yes</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dependency Graph</div>
+    <div class="flow-diagram">
+      <pre><code>                    ┌─────────────┐
+                    │  PostgreSQL  │
+                    │  (Timescale) │
+                    └──────┬───────┘
+                           │
+              ┌────────────┼────────────┐──────────────┐
+              │            │            │              │
+     ┌────────┴───┐  ┌─────┴────┐  ┌────┴─────┐  ┌─────┴──────┐
+     │   Redis    │  │ Pipeline │  │ Backend  │  │  Telegram  │
+     │  (Cache)   │  │ (Engine) │  │ (Express)│  │   (Bots)   │
+     └────────────┘  └─────┬────┘  └────┬─────┘  └────────────┘
+                          │            │
+                          │     ┌──────┴──────┐
+                          │     │  Frontend   │
+                          │     │  (nginx)    │
+                          │     └─────────────┘
+                          │
+                    ┌─────┴──────────┐
+                    │ AI Trader Eng  │
+                    │   (FastAPI)    │
+                    └────────────────┘
+
+     ┌─────────────────┐
+     │ Data Ingestion  │──── writes Parquet ────→ ./data/ (shared volume)
+     │  (3 processes)  │──── writes to PG ──────→ PostgreSQL
+     └─────────────────┘
+                           ↑ reads Parquet
+                    ┌──────┴───────┐
+                    │   Pipeline   │──── reads data ────→ ./data/ (read-only)
+                    └──────────────┘</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Shared Resources</div>
+    <table>
+      <thead><tr><th>Resource</th><th>Type</th><th>Shared By</th></tr></thead>
+      <tbody>
+        <tr><td>./data</td><td>Bind mount (Parquet files)</td><td>data-ingestion (rw), pipeline (ro), backend (ro), ai-trader-engine (rw)</td></tr>
+        <tr><td>vlthr_pgdata</td><td>Docker named volume</td><td>postgres only (internal)</td></tr>
+        <tr><td>./.env</td><td>Bind mount (read-only)</td><td>All services except frontend and redis</td></tr>
+        <tr><td>vlthr-dashboard-net</td><td>Docker bridge network</td><td>All 8 services</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">All Services Run on Docker</div>
+    Every service in the VLTHR stack runs as a Docker container. There are no bare-metal processes. The entire stack is orchestrated by <code>docker-compose.yml</code>. All services use <code>restart: unless-stopped</code> policy.
+  </div>
+</div>
+
+<!-- TAB 1: DATA FLOW -->
+<div class="tab-content" id="tab-1">
+  <h2>End-to-End Data Flow</h2>
+  <p>From Bybit API to user screen, data passes through 6 stages.</p>
+
+  <div class="flow-diagram">
+    <pre><code>STAGE 1: COLLECTION
+  Bybit V5 API
+    │
+    ▼
+  data-ingestion container
+    ├── data_scheduler.py    → OHLCV 5m-4h, funding, OI, orderbook, enrich
+    ├── minute_scheduler.py  → OHLCV 1m
+    └── scheduler_monitor.py → Telegram alerts on failures
+    │
+    ├──→ writes Parquet files to ./data/bybit/{SYMBOL}/{TF}/{YYYY}/{MM}.parquet
+    └──→ writes ingestion metadata to PostgreSQL
+
+STAGE 2: SIGNAL GENERATION
+  pipeline container (every 5 minutes)
+    │
+    ├── reads enriched Parquet from ./data/ (read-only)
+    ├── reads calibration.json for adaptive scoring weights
+    ├── connects to PostgreSQL for signal state, risk ledger, snapshots
+    ├── connects to Redis for ephemeral state coordination
+    │
+    ├── Step 1: Pre-flight checks (safety_layer.py)
+    ├── Step 2: Scan 5 symbols, apply V2 filters
+    ├── Step 3: Score with adaptive DQS (0-100)
+    ├── Step 4: ML prediction in shadow mode (pipeline_brain.py)
+    ├── Step 5: State tracking and trajectory (signal_state_manager.py)
+    ├── Step 6: Rank and filter (signal_ranker.py)
+    ├── Step 7: Crowding detection (Treatment B)
+    ├── Step 8: 12-gate portfolio sequence
+    ├── Step 9: Upsert approved signals to PostgreSQL
+    ├── Step 10: Portfolio snapshot
+    ├── Step 11: Telegram alert for EXCELLENT signals
+    └── Step 12: Post-flight invariants and trace
+    │
+    └──→ writes to PostgreSQL: signal_state, signal_state_log, risk_ledger,
+         portfolio_snapshot, pipeline_heartbeat, pipeline_trace, predictions,
+         model_state, error_log
+
+STAGE 3: API SERVING
+  backend container (Express, port 3001)
+    │
+    ├── reads PostgreSQL for signals, trades, treasury, VTC
+    ├── reads Parquet files for candle data, market intel
+    ├── connects to Redis for API response caching
+    ├── proxies /api/engine/* to ai-trader-engine:8000
+    │
+    ├── SSE endpoint: /api/signals/stream
+    │   └── pushes full state snapshot on every pipeline run
+    ├── REST endpoints: /api/paper/trade, /api/vtc/*, /api/overview/*
+    └── Engine proxy: /api/engine/pipeline/*, /api/engine/backtest/*, /api/engine/ai/chat
+
+STAGE 4: USER INTERFACE
+  frontend container (nginx, port 80)
+    │
+    ├── serves React SPA static files
+    ├── proxies /api/* to backend:3001 (with SSE support)
+    │
+    ├── useSSE hook: connects to /api/signals/stream
+    │   ├── initial event: full state hydration
+    │   ├── update event: every 5 min (triggered by pipeline run)
+    │   ├── prices event: every 15 seconds
+    │   └── intel event: market intel refresh
+    ├── Dashboard: signal cards, account summary, live prices
+    ├── Signals: watchlist with gate status
+    ├── VTC: token price, treasury, audit
+    ├── Backtest: D1-D7 pipeline runner, AI chat
+    └── Paper: trade management (open, close, history)
+
+STAGE 5: BACKTEST AND AI
+  ai-trader-engine container (FastAPI, port 8000)
+    │
+    ├── reads Parquet from ./data/ (shared volume)
+    ├── connects to PostgreSQL for predictions, model state
+    │
+    ├── /candles, /funding, /open-interest  → market data from Parquet
+    ├── /features                           → technical indicator computation
+    ├── /pipeline/d1 to /pipeline/full      → D1-D7 backtest stages
+    ├── /backtest/start                     → queue backtest
+    ├── /probe/symbol                       → regime detection, pattern analysis
+    ├── /validate/walkforward               → IS/OOS validation
+    ├── /decision/create                    → store AI decisions
+    └── /chat                               → NVIDIA AI chat proxy
+
+STAGE 6: NOTIFICATIONS
+  telegram container
+    │
+    ├── reads PostgreSQL for trade state
+    ├── sends alerts to Telegram channels:
+    │   ├── Trading channel: EXCELLENT signals, trade opens/closes
+    │   ├── Status channel: pipeline health, errors
+    │   └── Monitor channel: ingestion failures
+    └── 3-bot polling architecture</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Data Flow Summary</div>
+    <table>
+      <thead><tr><th>From</th><th>To</th><th>Medium</th><th>Frequency</th></tr></thead>
+      <tbody>
+        <tr><td>Bybit API</td><td>data-ingestion</td><td>HTTPS</td><td>Every 1-5 min per data type</td></tr>
+        <tr><td>data-ingestion</td><td>Parquet store</td><td>File I/O (shared volume)</td><td>Every 1-5 min</td></tr>
+        <tr><td>data-ingestion</td><td>PostgreSQL</td><td>TCP (psycopg2)</td><td>On ingestion events</td></tr>
+        <tr><td>Parquet store</td><td>pipeline</td><td>File I/O (read-only mount)</td><td>Every 5 min</td></tr>
+        <tr><td>pipeline</td><td>PostgreSQL</td><td>TCP (psycopg2)</td><td>Every 5 min</td></tr>
+        <tr><td>pipeline</td><td>Redis</td><td>TCP</td><td>Every 5 min</td></tr>
+        <tr><td>PostgreSQL</td><td>backend</td><td>TCP (pg pool)</td><td>On API requests + SSE push</td></tr>
+        <tr><td>Parquet store</td><td>backend</td><td>File I/O (read-only mount)</td><td>On API requests</td></tr>
+        <tr><td>backend</td><td>frontend</td><td>HTTP/SSE (nginx proxy)</td><td>SSE: 5 min + 15s prices</td></tr>
+        <tr><td>backend</td><td>ai-trader-engine</td><td>HTTP (internal)</td><td>On /api/engine/* requests</td></tr>
+        <tr><td>Parquet store</td><td>ai-trader-engine</td><td>File I/O (shared volume)</td><td>On API requests</td></tr>
+        <tr><td>PostgreSQL</td><td>telegram</td><td>TCP (psycopg2)</td><td>Polling</td></tr>
+        <tr><td>pipeline</td><td>Telegram API</td><td>HTTPS</td><td>On EXCELLENT signals</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 2: POSTGRESQL -->
+<div class="tab-content" id="tab-2">
+  <h3>PostgreSQL (TimescaleDB)</h3>
+  <div class="svc-card" style="border-left-color:var(--blue)">
+    <div class="svc-meta">
+      <span class="badge badge-blue">Infrastructure</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: vlthr-postgres</span>
+      <span class="badge">Image: timescale/timescaledb:latest-pg15</span>
+      <span class="badge">No host port</span>
+    </div>
+
+    <h4>Role</h3>
+    <p>Primary relational database. Stores all pipeline state, signal tracking, risk ledger, portfolio snapshots, predictions, model state, pipeline traces, and error logs.</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Starts first. Migration script <code>db_migration.py</code> runs on first init via <code>docker-entrypoint-initdb.d</code></li>
+      <li>Health check: <code>pg_isready -U postgres</code> every 10s. Other services wait for this before starting.</li>
+      <li>Receives writes from: pipeline (every 5 min), data-ingestion (on events), ai-trader-engine (predictions)</li>
+      <li>Receives reads from: backend (API requests), telegram (polling), ai-trader-engine (model state)</li>
+      <li>Data persisted in named volume <code>vlthr_pgdata</code>. Survives container rebuilds.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>data-ingestion</td><td>Write</td><td>Ingestion metadata</td></tr>
+        <tr><td>pipeline</td><td>Read/Write</td><td>Signal state, risk, snapshots, traces (every 5 min)</td></tr>
+        <tr><td>backend</td><td>Read</td><td>Signals, trades, treasury, VTC for API</td></tr>
+        <tr><td>ai-trader-engine</td><td>Read/Write</td><td>Predictions, model state</td></tr>
+        <tr><td>telegram</td><td>Read</td><td>Trade state for notifications</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>vlthr-postgres</code> container. No external port exposed. Accessible at <code>vlthr-postgres:5432</code> within the Docker network.</p>
+  </div>
+</div>
+
+<!-- TAB 3: REDIS -->
+<div class="tab-content" id="tab-3">
+  <h3>Redis Cache</h3>
+  <div class="svc-card" style="border-left-color:var(--purple)">
+    <div class="svc-meta">
+      <span class="badge badge-purple">Infrastructure</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: vlthr-dashboard-redis</span>
+      <span class="badge">Image: redis:7-alpine</span>
+      <span class="badge">No host port</span>
+    </div>
+
+    <h4>Role</h4>
+    <p>In-memory cache. 256 MB, LRU eviction, no persistence. Used by backend for API response caching and by pipeline for ephemeral state coordination.</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Starts independently. No dependencies.</li>
+      <li>No health check (Redis Alpine is reliable, restart policy handles failures).</li>
+      <li>Backend caches API responses to reduce PostgreSQL load on repeated dashboard requests.</li>
+      <li>Pipeline stores transient cross-run state (dedup keys, rate counters).</li>
+      <li>Container restart clears all keys. No data loss risk because nothing in Redis is authoritative.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>backend</td><td>Read/Write</td><td>API response caching</td></tr>
+        <tr><td>pipeline</td><td>Read/Write</td><td>Ephemeral state, dedup keys</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>vlthr-dashboard-redis</code> container. No external port. Accessible at <code>vlthr-dashboard-redis:6379</code> within the Docker network.</p>
+  </div>
+</div>
+
+<!-- TAB 4: DATA INGESTION -->
+<div class="tab-content" id="tab-4">
+  <h3>Data Ingestion</h3>
+  <div class="svc-card" style="border-left-color:var(--green)">
+    <div class="svc-meta">
+      <span class="badge badge-green">Data Layer</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: vlthr-data-ingestion</span>
+      <span class="badge">Image: python:3.11-slim (build)</span>
+      <span class="badge">No host port</span>
+    </div>
+
+    <h4>Role</h4>
+    <p>Collects market data from Bybit V5 API. 6 symbols, 7 timeframes. Three concurrent processes: data_scheduler (5m-4h OHLCV, funding, OI, orderbook, enrichment), minute_scheduler (1m OHLCV), scheduler_monitor (Telegram alerts).</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Depends on PostgreSQL being healthy (writes ingestion metadata).</li>
+      <li>Fetches OHLCV, funding rates, open interest, orderbook L2 from Bybit V5 API.</li>
+      <li>Enriches OHLCV by merging with OI and funding via <code>merge_asof</code> (no future leakage).</li>
+      <li>Writes Parquet files to <code>./data/bybit/{SYMBOL}/{TF}/{YYYY}/{MM}.parquet</code>.</li>
+      <li>2-second global throttle between API calls. 6 retries with exponential backoff.</li>
+      <li>Health check: <code>pgrep -f data_scheduler.py</code> every 60s.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Medium</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Bybit API</td><td>Read</td><td>HTTPS</td><td>Market data source</td></tr>
+        <tr><td>PostgreSQL</td><td>Write</td><td>TCP</td><td>Ingestion metadata</td></tr>
+        <tr><td>Parquet store (./data)</td><td>Write</td><td>File I/O</td><td>OHLCV, funding, OI, orderbook, enriched</td></tr>
+        <tr><td>pipeline</td><td>Indirect (via ./data)</td><td>File I/O</td><td>Pipeline reads the Parquet files ingestion produces</td></tr>
+        <tr><td>backend</td><td>Indirect (via ./data)</td><td>File I/O</td><td>Backend reads Parquet for candle data</td></tr>
+        <tr><td>ai-trader-engine</td><td>Indirect (via ./data)</td><td>File I/O</td><td>Engine reads Parquet for backtests</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>vlthr-data-ingestion</code> container. Built from <code>./data-ingestion/Dockerfile</code>. No external port. Entrypoint: <code>run_ingestion.sh</code>.</p>
+  </div>
+</div>
+
+<!-- TAB 5: PIPELINE -->
+<div class="tab-content" id="tab-5">
+  <h3>Pipeline Engine</h3>
+  <div class="svc-card" style="border-left-color:var(--accent)">
+    <div class="svc-meta">
+      <span class="badge badge-accent">Decision Layer</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: vlthr-pipeline</span>
+      <span class="badge">Image: python:3.11-slim (build)</span>
+      <span class="badge">Port: 8201:8200</span>
+    </div>
+
+    <h4>Role</h4>
+    <p>Core decision-making service. Runs a 5-minute loop that scans 5 symbols, scores signals with adaptive DQS, tracks trajectory, ranks, applies 12 portfolio gates, and upserts approved signals to PostgreSQL.</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Depends on PostgreSQL (healthy) and Redis (started).</li>
+      <li>Reads enriched Parquet data from <code>./data/</code> (read-only mount).</li>
+      <li>Reads <code>calibration.json</code> for adaptive scoring weights.</li>
+      <li>Runs 12-step iteration: pre-flight, scan, score, predict, state, rank, crowding, gates, upsert, snapshot, alert, trace.</li>
+      <li>Writes to PostgreSQL: signal_state, signal_state_log, risk_ledger, portfolio_snapshot, pipeline_heartbeat, pipeline_trace, predictions, model_state, error_log.</li>
+      <li>Embedded FastAPI health server on port 8200: /health, /last-run, /metrics.</li>
+      <li>Sends Telegram alerts for EXCELLENT signals and trade closures.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>PostgreSQL</td><td>Read/Write</td><td>All pipeline state, signals, risk, snapshots</td></tr>
+        <tr><td>Redis</td><td>Read/Write</td><td>Ephemeral state, dedup keys</td></tr>
+        <tr><td>Parquet store (./data)</td><td>Read</td><td>Enriched OHLCV data for signal generation</td></tr>
+        <tr><td>Telegram API</td><td>Write</td><td>Alerts for EXCELLENT signals and trade closures</td></tr>
+        <tr><td>backend</td><td>Indirect</td><td>Backend reads pipeline output from PostgreSQL for SSE feed</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>vlthr-pipeline</code> container. Built from <code>./pipeline/Dockerfile</code>. Health port 8200 mapped to host 8201. Command: <code>python -m engine.run_pipeline --loop --interval 300</code>.</p>
+  </div>
+</div>
+
+<!-- TAB 6: BACKEND -->
+<div class="tab-content" id="tab-6">
+  <h3>Backend (Express API)</h3>
+  <div class="svc-card" style="border-left-color:var(--orange)">
+    <div class="svc-meta">
+      <span class="badge badge-orange">API Layer</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: vlthr-dashboard-backend</span>
+      <span class="badge">Image: node:22-slim (build)</span>
+      <span class="badge">Port: 3003:3001</span>
+    </div>
+
+    <h4>Role</h4>
+    <p>Express.js API server. Serves SSE signal feed, REST API for paper trading, VTC token management, and proxies requests to the AI Trader Engine. Reads PostgreSQL and Parquet files directly.</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Depends on Redis and PostgreSQL.</li>
+      <li>SSE endpoint <code>/api/signals/stream</code> pushes full state on every pipeline run (5 min) and price updates every 15 seconds.</li>
+      <li>REST endpoints for paper trade management: open, close, list pending/active/closed.</li>
+      <li>VTC engine: token price, score vector, treasury, mint/burn operations.</li>
+      <li>Reads Parquet files directly via <code>parquet-reader.cjs</code> for candle data and market intel.</li>
+      <li>Proxies all <code>/api/engine/*</code> requests to <code>ai-trader-engine:8000</code>.</li>
+      <li>Telegram alert integration for trade events.</li>
+      <li>Health check: <code>GET /api/vtc/treasury</code> every 30s.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>PostgreSQL</td><td>Read/Write</td><td>Signals, trades, treasury, VTC, audit logs</td></tr>
+        <tr><td>Redis</td><td>Read/Write</td><td>API response caching</td></tr>
+        <tr><td>Parquet store (./data)</td><td>Read</td><td>Candle data, market intel</td></tr>
+        <tr><td>ai-trader-engine</td><td>Proxy</td><td>Forwards /api/engine/* to FastAPI on port 8000</td></tr>
+        <tr><td>frontend</td><td>Serve</td><td>SSE + REST API for the React SPA</td></tr>
+        <tr><td>Telegram API</td><td>Write</td><td>Trade event alerts</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>vlthr-dashboard-backend</code> container. Built from <code>./backend/Dockerfile</code>. Port 3001 mapped to host 3003. Includes Python3 + pandas + pyarrow for Parquet reading.</p>
+  </div>
+</div>
+
+<!-- TAB 7: FRONTEND -->
+<div class="tab-content" id="tab-7">
+  <h3>Frontend (React SPA)</h3>
+  <div class="svc-card" style="border-left-color:var(--yellow)">
+    <div class="svc-meta">
+      <span class="badge badge-yellow">Presentation</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: vlthr-dashboard-frontend</span>
+      <span class="badge">Image: node:22-slim + nginx:alpine</span>
+      <span class="badge">Port: 5175:80</span>
+    </div>
+
+    <h4>Role</h4>
+    <p>React 19 single-page application. User-facing dashboard with real-time SSE signal feed, paper trading, VTC token dashboard, and backtest UI. Served by nginx which proxies API calls to the backend.</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Depends on backend service.</li>
+      <li>Multi-stage build: node:22-slim compiles SPA, nginx:alpine serves static files.</li>
+      <li>nginx proxies <code>/api/*</code> to <code>backend:3001</code> with SSE support (buffering off, 24h timeout).</li>
+      <li>SPA fallback: all routes serve <code>index.html</code> for client-side routing.</li>
+      <li>useSSE hook manages EventSource connection with auto-reconnect (exponential backoff).</li>
+      <li>5 pages: Dashboard, Signals, VTC, Backtest, Paper.</li>
+      <li>Auto-execute toggle: auto-opens paper trades for EXCELLENT signals.</li>
+      <li>PWA: service worker for offline shell, push notifications on iOS and Android.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>backend</td><td>Read (HTTP/SSE)</td><td>All API calls via nginx proxy</td></tr>
+        <tr><td>ai-trader-engine</td><td>Indirect</td><td>Via backend proxy for backtest and AI chat</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>vlthr-dashboard-frontend</code> container. Built from <code>./frontend/Dockerfile</code>. Port 80 mapped to host 5175. No direct database or Redis access. All data flows through the backend.</p>
+  </div>
+</div>
+
+<!-- TAB 8: AI TRADER ENGINE -->
+<div class="tab-content" id="tab-8">
+  <h3>AI Trader Engine (FastAPI)</h3>
+  <div class="svc-card" style="border-left-color:var(--blue)">
+    <div class="svc-meta">
+      <span class="badge badge-blue">Analysis Layer</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: ai_trader_engine</span>
+      <span class="badge">Image: python:3.11-slim (build)</span>
+      <span class="badge">Port: 8002:8000</span>
+    </div>
+
+    <h4>Role</h4>
+    <p>FastAPI backtest and analysis service. Exposes D1-D7 pipeline stages, strategy management, data exploration, probe endpoints, validation, and NVIDIA AI chat proxy. Reads Parquet data and connects to PostgreSQL for predictions.</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Depends on PostgreSQL being healthy.</li>
+      <li>Reads OHLCV, funding, OI from Parquet store (shared volume).</li>
+      <li>Computes technical indicators on demand via <code>/features</code>.</li>
+      <li>Runs D1-D7 backtest pipeline stages individually or as full pipeline.</li>
+      <li>Manages strategies: create, mutate, list, retrieve.</li>
+      <li>Probe endpoints: regime detection, pattern analysis, parameter suggestions.</li>
+      <li>Validation: walk-forward, Monte Carlo, out-of-sample.</li>
+      <li>NVIDIA AI chat proxy at <code>/chat</code> using <code>NVIDIA_API_KEY</code>.</li>
+      <li>Resource limits: 2 CPUs, 1 GB memory.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>PostgreSQL</td><td>Read/Write</td><td>Predictions, model state, decisions</td></tr>
+        <tr><td>Parquet store (./data)</td><td>Read</td><td>OHLCV, funding, OI for backtests</td></tr>
+        <tr><td>backend</td><td>Receive</td><td>Backend proxies /api/engine/* requests to this service</td></tr>
+        <tr><td>frontend</td><td>Indirect</td><td>Frontend uses backtest UI via backend proxy</td></tr>
+        <tr><td>NVIDIA AI API</td><td>Write</td><td>Chat completions proxy</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>ai_trader_engine</code> container. Built from <code>./ai-trader-engine/Dockerfile</code>. Port 8000 mapped to host 8002. CORS configured for frontend, backend, and ngrok domains.</p>
+  </div>
+</div>
+
+<!-- TAB 9: TELEGRAM -->
+<div class="tab-content" id="tab-9">
+  <h3>Telegram Bot Service</h3>
+  <div class="svc-card" style="border-left-color:var(--green)">
+    <div class="svc-meta">
+      <span class="badge badge-green">Notification</span>
+      <span class="badge badge-green">Docker</span>
+      <span class="badge">Container: vlthr-telegram</span>
+      <span class="badge">Image: python (build)</span>
+      <span class="badge">No host port</span>
+    </div>
+
+    <h4>Role</h4>
+    <p>Telegram bot polling service. Reads trade state from PostgreSQL and sends alerts to Telegram channels. Three bots for different alert channels.</p>
+
+    <h4>Workflow</h4>
+    <ul>
+      <li>Depends on PostgreSQL being healthy.</li>
+      <li>Polls PostgreSQL for new trades, trade closures, and pipeline status changes.</li>
+      <li>Sends alerts to three Telegram channels:
+        <ul>
+          <li><strong>Trading:</strong> EXCELLENT signals, trade opens, trade closures with PnL</li>
+          <li><strong>Status:</strong> Pipeline health, errors, circuit breaker triggers</li>
+          <li><strong>Monitor:</strong> Data ingestion failures, scheduler issues</li>
+        </ul>
+      </li>
+      <li>Health check: <code>os.kill(1, 0)</code> (process alive check) every 60s.</li>
+    </ul>
+
+    <h4>Relationships</h4>
+    <table>
+      <thead><tr><th>Service</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>PostgreSQL</td><td>Read</td><td>Trade state, pipeline status, signal data</td></tr>
+        <tr><td>Telegram API</td><td>Write</td><td>Send alerts to channels</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Docker:</strong> Yes. Runs as <code>vlthr-telegram</code> container. Built from <code>./telegram/Dockerfile</code>. No external port. Only talks to PostgreSQL and Telegram API.</p>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  VLTHR Service Workflows Documentation · Generated Jul 2026 · <a href="../docker-compose.yml" style="color:var(--accent)">docker-compose.yml</a>
+</div>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.tab-content').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

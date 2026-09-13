@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLTHR System Handoff — July 2026</title>
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --surface: #131316;
+    --surface-2: #1a1a1f;
+    --border: #2a2a30;
+    --text: #e4e4e7;
+    --text-dim: #8b8b93;
+    --text-faint: #5a5a62;
+    --accent: #6366f1;
+    --accent-dim: #4f46e5;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab004;
+    --orange: #f97316;
+    --radius: 10px;
+    --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    padding: 16px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.02em; }
+  h2 {
+    font-size: 1.15rem; font-weight: 600; margin-top: 32px; margin-bottom: 12px;
+    color: var(--text); letter-spacing: -0.01em;
+    border-bottom: 1px solid var(--border); padding-bottom: 8px;
+  }
+  h3 { font-size: 0.95rem; font-weight: 600; margin-top: 20px; margin-bottom: 8px; color: var(--text-dim); }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  strong { color: var(--text); font-weight: 600; }
+  a { color: var(--accent); text-decoration: none; }
+  code {
+    font-family: var(--mono); font-size: 0.85em;
+    background: var(--surface-2); padding: 2px 6px; border-radius: 4px;
+    color: var(--accent);
+  }
+  .header { margin-bottom: 28px; }
+  .header .meta { color: var(--text-faint); font-size: 0.8rem; margin-top: 4px; }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.03em;
+  }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-yellow { background: rgba(234,176,4,0.15); color: var(--yellow); }
+  .badge-blue { background: rgba(99,102,241,0.15); color: var(--accent); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+  }
+  .card-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: var(--text); }
+  .card-body { font-size: 0.85rem; color: var(--text-dim); }
+
+  .grid { display: grid; gap: 10px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-value { font-size: 1.3rem; font-weight: 700; margin-top: 4px; }
+  .stat-sub { font-size: 0.75rem; color: var(--text-faint); margin-top: 2px; }
+  .stat-green { color: var(--green); }
+  .stat-red { color: var(--red); }
+
+  .service {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 14px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 8px;
+  }
+  .service-dot {
+    width: 8px; height: 8px; border-radius: 50%; margin-top: 6px;
+    flex-shrink: 0; background: var(--green);
+  }
+  .service-dot.warn { background: var(--yellow); }
+  .service-dot.err { background: var(--red); }
+  .service-name { font-weight: 600; font-size: 0.88rem; color: var(--text); }
+  .service-desc { font-size: 0.78rem; color: var(--text-faint); margin-top: 2px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 12px; }
+  th { text-align: left; color: var(--text-faint); font-weight: 600; padding: 8px 6px; border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  td { padding: 8px 6px; border-bottom: 1px solid var(--surface-2); color: var(--text-dim); }
+  td.num { font-family: var(--mono); text-align: right; }
+  td.green { color: var(--green); }
+  td.red { color: var(--red); }
+
+  ul { list-style: none; padding: 0; }
+  ul li { padding: 6px 0; font-size: 0.85rem; color: var(--text-dim); padding-left: 18px; position: relative; }
+  ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent); padding: 12px 16px;
+    background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 12px;
+  }
+  .callout-warn { border-color: var(--yellow); }
+  .callout-red { border-color: var(--red); }
+  .callout p { margin-bottom: 0; }
+
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.72rem; font-family: var(--mono); background: var(--surface-2); color: var(--text-faint); margin-right: 4px; }
+
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  .footer { text-align: center; color: var(--text-faint); font-size: 0.75rem; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>VLTHR System Handoff</h1>
+  <div class="meta">July 20, 2026 · Pre-Bybit Live · v3 DEVOPS</div>
+</div>
+
+<!-- ─── CURRENT STATE ─── -->
+<h2>Where We Are Now</h2>
+
+<div class="grid grid-2">
+  <div class="stat">
+    <div class="stat-label">Paper Balance</div>
+    <div class="stat-value stat-red">$9,256</div>
+    <div class="stat-sub">Started $10k · PnL −$744</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Bybit Demo Balance</div>
+    <div class="stat-value stat-green">$50,096</div>
+    <div class="stat-sub">USDT · PnL +$96 (2 trades)</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Paper Win Rate</div>
+    <div class="stat-value stat-red">20.4%</div>
+    <div class="stat-sub">11W / 43L · 54 closed</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Bybit Win Rate</div>
+    <div class="stat-value stat-green">50%</div>
+    <div class="stat-sub">1W / 1L · 2 closed</div>
+  </div>
+</div>
+
+<div class="callout callout-warn">
+  <p><strong>Paper trading is losing money.</strong> 54 closed trades over 2 weeks with a 20% win rate and −$744 PnL. The strategy is hitting SL far more than TP (32 SL hits vs 4 TP hits). Time exits are slightly negative but not catastrophic. The core problem is <strong>SL hit rate is too high</strong> — signals are being approved at DQS 50-65 with Kelly multipliers of 0.3-0.7, meaning very small edge that doesn't survive transaction costs and SL placement.</p>
+</div>
+
+<!-- ─── SERVICES ─── -->
+<h2>Service Architecture</h2>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-pipeline</div>
+    <div class="service-desc">Core Python orchestrator. Scans 5 symbols every 5min, scores via DQS, gates via Kelly/regime/correlation, places paper + Bybit trades. Mounts <code>pipeline/engine</code> read-only.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-dashboard-backend</div>
+    <div class="service-desc">Node.js/Express API on :3003. Serves frontend, monitors open trades (SL/TP/time exit every 15s), proxies Bybit API calls. Uses Postgres + Redis.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-dashboard-frontend</div>
+    <div class="service-desc">React/Vite on :5175. Tabs: Overview, Paper, Demo (Bybit), Signals, Backtest. SSE for live price streaming.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-data-ingestion</div>
+    <div class="service-desc">Fetches OHLCV + funding + OI data from Bybit for 5 symbols. Writes Parquet files to <code>/app/data</code>. Feeds the pipeline.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-bybit-ws</div>
+    <div class="service-desc">WebSocket listener for Bybit real-time tickers. Caches prices for the backend monitor and SSE feed.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-postgres</div>
+    <div class="service-desc">TimescaleDB (PG15). Stores paper_trades, paper_account, high_confidence_signals, signal_audit, risk_ledger. Single source of truth for trade state.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-dashboard-redis</div>
+    <div class="service-desc">Cache layer for backend. Stores live prices, SSE state, session data.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">ai_trader_engine</div>
+    <div class="service-desc">FastAPI on :8002. ML/brain layer for signal enrichment. Provides DQS breakdown components and strategy classification.</div>
+  </div>
+</div>
+
+<div class="service">
+  <div class="service-dot"></div>
+  <div>
+    <div class="service-name">vlthr-telegram</div>
+    <div class="service-desc">Telegram bot for trade notifications. Sends alerts on new trades, SL/TP hits, and pipeline status.</div>
+  </div>
+</div>
+
+<!-- ─── BUSINESS LOGIC ─── -->
+<h2>Business Logic — How We Make Money</h2>
+
+<p>The system trades crypto perpetual futures on Bybit. The thesis is simple: <strong>use a multi-factor signal scoring system (DQS) to identify high-probability entries, size positions using Kelly criterion bands, and let the edge compound over many trades.</strong></p>
+
+<h3>Signal Pipeline</h3>
+<ul>
+  <li><strong>Data ingestion</strong> fetches 15m OHLCV + funding + OI for 5 symbols: BTC, ETH, SOL, XRP, BNB</li>
+  <li><strong>Adaptive scorer</strong> computes a DQS (Data Quality Score) 0-100 per symbol per bar, weighted across technical (40%), structure (30%), context (30%)</li>
+  <li><strong>DQS tiers</strong>: Fair (50-64), Good (65-74), Excellent (75-84). DQS 85+ is vetoed (Kelly=0, negative edge detected in calibration)</li>
+  <li><strong>Kelly bands</strong> scale risk: DQS 80 → 2.5x, 75 → 1.5x, 70 → 1.0x, 65 → 0.7x, &lt;65 → 0.3x. Mean-reversion strategies get 3x boost</li>
+  <li><strong>Risk per trade</strong>: base risk_pct from tier (fair=2%, good=3%, excellent=5%) × Kelly multiplier. So a DQS 70 trend-following signal = 2% × 1.0 = 2% risk</li>
+  <li><strong>Position sizing</strong>: dollar_risk = balance × (risk_pct/100), qty = dollar_risk / SL_distance. Capped at balance × 4x leverage</li>
+  <li><strong>Portfolio gates</strong>: Risk Budget Ledger (12% max portfolio risk), Trade Count Guard (max concurrent trades), Correlation Guard (no correlated positions)</li>
+</ul>
+
+<h3>Revenue Model</h3>
+<p>With a $50k Bybit account and 2-5% risk per trade, each trade risks $1,000-$2,500. If the strategy achieves a 35%+ win rate with R:R ≥ 1.5 (the backtest target), expected value per trade is positive. At 4-8 trades per week, the system targets 2-4% monthly returns. The edge comes from <strong>DQS filtering</strong> — only trading when the multi-factor score says probability is favorable — and <strong>Kelly sizing</strong> — betting bigger when edge is stronger.</p>
+
+<h3>Dual Execution</h3>
+<p>Every approved signal fires on both paper (Postgres simulation, $10k virtual) and Bybit demo ($50k real USDT). Paper trades validate the strategy logic. Bybit trades validate execution, slippage, and fees. The only intended difference is account balance — risk_pct is the same. This lets us compare simulated vs real-world performance.</p>
+
+<!-- ─── BYBIT LIVE EXPECTATIONS ─── -->
+<h2>Bybit Live — What to Expect</h2>
+
+<div class="card">
+  <div class="card-title">Current Configuration</div>
+  <div class="card-body">
+    <span class="tag">EXECUTION_MODE=demo</span>
+    <span class="tag">5 symbols</span>
+    <span class="tag">15m timeframe</span>
+    <span class="tag">4x max leverage</span>
+    <span class="tag">5min scan interval</span>
+    <br><br>
+    <strong>Account:</strong> $50,096 USDT (demo) · also holds 50,000 USDC + 1 BTC + 1 ETH as collateral<br>
+    <strong>Mode:</strong> Demo trading (Bybit's simulated environment, not mainnet)<br>
+    <strong>Order type:</strong> Market orders with attached TP/SL<br>
+    <strong>Fees:</strong> 0.055% taker per side (0.11% round trip)
+  </div>
+</div>
+
+<h3>What Happens When a Signal Fires</h3>
+<ul>
+  <li>Pipeline scores symbol → DQS computed → passes all gates → signal approved</li>
+  <li>Paper trade created in Postgres with PENDING status</li>
+  <li>Bybit wallet balance fetched → position sized using same risk_pct × Kelly</li>
+  <li>Market order placed on Bybit with TP/SL attached</li>
+  <li><code>bybit_order_id</code> stored in paper_trades row to link them</li>
+  <li>Backend monitor (15s interval) watches both paper and Bybit for SL/TP/time exit</li>
+  <li>On close: PnL recorded, risk ledger updated, Telegram notification sent</li>
+</ul>
+
+<h3>Known Constraints</h3>
+<ul>
+  <li><strong>Min notional:</strong> $5 per trade (Bybit requirement)</li>
+  <li><strong>Qty step:</strong> Symbol-specific (BTC=0.001, SOL=0.1, XRP=1)</li>
+  <li><strong>Max leverage:</strong> 4x (self-imposed, Bybit allows 10x+)</li>
+  <li><strong>Session filter:</strong> Only trades during London, NY open, NY late sessions</li>
+  <li><strong>DQS veto:</strong> DQS ≥ 85 = no trade (negative Kelly edge)</li>
+</ul>
+
+<!-- ─── PERFORMANCE ANALYSIS ─── -->
+<h2>Performance Analysis</h2>
+
+<h3>Paper Trades by Symbol</h3>
+<table>
+  <thead>
+    <tr><th>Symbol</th><th class="num">Trades</th><th class="num">Win%</th><th class="num">Total PnL</th><th class="num">Avg PnL%</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>XRPUSDT</td><td class="num">7</td><td class="num">42.9%</td><td class="num red">−$27</td><td class="num">−0.77%</td></tr>
+    <tr><td>BNBUSDT</td><td class="num">6</td><td class="num">16.7%</td><td class="num red">−$70</td><td class="num">−2.35%</td></tr>
+    <tr><td>BTCUSDT</td><td class="num">11</td><td class="num">9.1%</td><td class="num red">−$156</td><td class="num">−2.89%</td></tr>
+    <tr><td>ETHUSDT</td><td class="num">13</td><td class="num">23.1%</td><td class="num red">−$229</td><td class="num">−3.51%</td></tr>
+    <tr><td>SOLUSDT</td><td class="num">17</td><td class="num">17.6%</td><td class="num red">−$262</td><td class="num">−3.08%</td></tr>
+  </tbody>
+</table>
+
+<h3>Exit Reason Breakdown</h3>
+<table>
+  <thead>
+    <tr><th>Exit</th><th class="num">Count</th><th class="num">Total PnL</th><th class="num">Avg PnL</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>SL Hit</td><td class="num">32</td><td class="num red">−$837</td><td class="num red">−$26.16</td></tr>
+    <tr><td>Time Exit</td><td class="num">18</td><td class="num red">−$26</td><td class="num red">−$1.47</td></tr>
+    <tr><td>TP Hit</td><td class="num">4</td><td class="num green">+$120</td><td class="num green">+$29.89</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-red">
+  <p><strong>The strategy is not profitable yet.</strong> SL is hit 8x more often than TP. Average SL loss ($26) is close to average TP gain ($30), so the R:R is roughly 1:1 — but with a 20% win rate, that's deeply negative EV. The 4 TP hits averaging +$30 cannot offset 32 SL hits averaging −$26. The core issue is <strong>signal quality</strong> — too many low-DQS signals (50-65 range) are being approved with tiny Kelly multipliers (0.3-0.7x), and these have negative edge after fees.</p>
+</div>
+
+<!-- ─── BUGS FIXED TODAY ─── -->
+<h2>Bugs Fixed This Session</h2>
+
+<div class="card">
+  <div class="card-title">1. Bybit <code>get_positions()</code> API Error</div>
+  <div class="card-body">
+    <span class="badge badge-red">FIXED</span>
+    Called <code>/v5/position/list</code> with only <code>category=linear</code> — Bybit V5 requires <code>settleCoin</code> or <code>symbol</code>. Added <code>settleCoin=USDT</code> in both Python (<code>bybit_executor.py</code>) and Node.js (<code>bybit-client.cjs</code>).
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">2. Risk Sizing Inconsistency</div>
+  <div class="card-body">
+    <span class="badge badge-red">FIXED</span>
+    Paper trades used <code>cap_position_size()</code> (4x leverage cap). Bybit trades used <code>SYMBOL_ALLOC_CAP</code> (25% of balance). Now both use <code>cap_position_size()</code> for consistent sizing.
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">3. Timestamp / Clock Skew Rejection</div>
+  <div class="card-body">
+    <span class="badge badge-red">FIXED</span>
+    <code>RECV_WINDOW=5000</code> was too tight for Docker container clock drift vs Bybit servers. Increased to <code>20000</code> in both Python and Node.js clients.
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">4. Dual Execution Desync</div>
+  <div class="card-body">
+    <span class="badge badge-yellow">PARTIAL</span>
+    The XRP trade that fired on Bybit without a paper trade was caused by extended network timeouts to the Bybit API from inside the pipeline container. The order was placed during a brief connectivity window but the DB update to link <code>bybit_order_id</code> failed. Network has since been restored. The reconciliation code is now fixed to detect orphaned positions. <strong>Root cause was infrastructure (Docker networking), not logic.</strong>
+  </div>
+</div>
+
+<!-- ─── WHAT WE HAVEN'T LOOKED INTO ─── -->
+<h2>What We Haven't Looked Into</h2>
+
+<div class="callout callout-red">
+  <p><strong>This is the most important section.</strong> The system has significant gaps before going live on Bybit mainnet.</p>
+</div>
+
+<h3>Strategy & Performance</h3>
+<ul>
+  <li><strong>Win rate is 20%</strong> — backtest target was 35%+. The DQS scoring or SL/TP placement may be miscalibrated for current market conditions. No investigation has been done into why live performance diverges from backtest.</li>
+  <li><strong>SL placement too tight</strong> — 32 SL hits vs 4 TP hits suggests SL is too close to entry. The ATR-based SL multiplier (2.0-2.5x) may need widening, or the entry timing is poor.</li>
+  <li><strong>Kelly bands unvalidated</strong> — The V7 Kelly bands (0.3x to 2.5x) were calibrated on historical data. No forward-testing has confirmed they produce positive EV in live conditions.</li>
+  <li><strong>DQS 85+ veto</strong> — The system vetoes trades at DQS 85+ (Kelly=0, "negative edge"). This means the highest-quality signals are never traded. The rationale and calibration behind this needs validation.</li>
+  <li><strong>No regime adaptation</strong> — The system classifies regimes (TREND/MIXED/MR) but the regime gate rejects MIXED signals below DQS 60. In choppy markets, most signals are MIXED, so the system sits idle for long periods.</li>
+</ul>
+
+<h3>Execution & Infrastructure</h3>
+<ul>
+  <li><strong>Slippage not measured</strong> — Market orders on Bybit will have slippage. The paper trade simulation uses the 15m close price, which may be significantly different from actual fill price. No slippage modeling exists.</li>
+  <li><strong>Fee impact not analyzed</strong> — At 0.055% taker per side (0.11% round trip), fees on small moves eat most of the profit. The XRP trade made +$95 gross but only +$95 net after $28 in fees — on a $25k notional, that's 0.38% net on a 5% price move.</li>
+  <li><strong>No position-level TP/SL on Bybit</strong> — TP/SL are attached as order parameters at placement. If the Bybit WS disconnects, the backend monitor can't trigger exits. Bybit's server-side TP/SL should handle this, but it hasn't been stress-tested.</li>
+  <li><strong>No reconnection logic</strong> — If the pipeline container loses Bybit connectivity (as happened), it silently fails to place orders or reconcile. No alerting on missed trades.</li>
+  <li><strong>Bybit leverage not set</strong> — The system assumes 4x leverage for sizing, but Bybit account leverage is set to 10x (visible in closed PnL data). Margin requirements may be lower than expected, but liquidation risk is higher.</li>
+</ul>
+
+<h3>Risk Management</h3>
+<ul>
+  <li><strong>No daily loss limit</strong> — If the system hits 5 SLs in a day, it keeps trading. No circuit breaker exists.</li>
+  <li><strong>No drawdown protection</strong> — Paper account is down 7.4% with no automatic stop. A max drawdown threshold should halt trading.</li>
+  <li><strong>Concentration risk</strong> — SOLUSDT has 17 of 54 closed trades (31%). The 25% SYMBOL_ALLOC_CAP was on notional, not trade count. No per-symbol trade frequency limit.</li>
+  <li><strong>Funding rate not in PnL</strong> — Paper trade PnL doesn't account for funding payments/receipts. On Bybit, funding can be significant for positions held >8h.</li>
+</ul>
+
+<h3>Operations</h3>
+<ul>
+  <li><strong>No monitoring dashboard for pipeline health</strong> — If the pipeline stops running, there's no alert. The health endpoint on :8201 exists but isn't monitored.</li>
+  <li><strong>Container zombie issue</strong> — Docker containers frequently can't be stopped due to zombie processes. Requires manual <code>sudo kill -9</code> + <code>docker rm -f</code>. This is an infrastructure issue that will block smooth deployments.</li>
+  <li><strong>No CI/CD pipeline</strong> — All changes are deployed manually via <code>docker compose up -d --build</code>. No automated testing before deploy.</li>
+  <li><strong>Telegram bot untested for Bybit alerts</strong> — Notifications may only cover paper trades. Bybit-specific alerts (order placed, order failed, reconciliation discrepancy) may not be wired.</li>
+</ul>
+
+<!-- ─── RECOMMENDATIONS ─── -->
+<h2>Recommendations Before Going Live</h2>
+
+<div class="callout">
+  <p><strong>Do not go live on Bybit mainnet yet.</strong> The paper trading strategy is losing money. Fix the strategy first, then validate on demo, then go live.</p>
+</div>
+
+<ol style="padding-left: 20px; color: var(--text-dim); font-size: 0.85rem; line-height: 1.8;">
+  <li><strong>Audit SL placement</strong> — Analyze why 59% of trades hit SL. Compare SL distance to typical ATR range. Consider widening SL multiplier from 2-2.5x to 3-4x.</li>
+  <li><strong>Raise DQS minimum</strong> — Consider raising the execution threshold from DQS 50 to DQS 65+. The 50-64 band (Kelly 0.3x) is producing negative EV trades.</li>
+  <li><strong>Backtest vs live divergence</strong> — Run the backtester on the same period as live trading and compare signal-by-signal. Identify where the backtest was optimistic.</li>
+  <li><strong>Add daily loss limit</strong> — Halt trading if daily PnL < −2% of balance. Reset at UTC midnight.</li>
+  <li><strong>Measure slippage</strong> — Compare Bybit fill prices to the 15m close used by paper trades. If slippage > 0.1%, adjust strategy parameters.</li>
+  <li><strong>Set Bybit leverage to 4x</strong> — Currently 10x on the account. Mismatch with the system's 4x assumption could cause liquidation on larger positions.</li>
+  <li><strong>Fix container zombie issue</strong> — Investigate why Docker can't stop containers. Likely a kernel/apparmor issue with the snap Docker installation.</li>
+</ol>
+
+<div class="divider"></div>
+
+<h2>Key Files</h2>
+<ul>
+  <li><code>pipeline/engine/portfolio_orchestrator.py</code> — Main pipeline logic (1929 lines)</li>
+  <li><code>pipeline/engine/portfolio_config.py</code> — All constants, risk tiers, Kelly bands</li>
+  <li><code>pipeline/engine/bybit_executor.py</code> — Bybit V5 REST API wrapper (Python)</li>
+  <li><code>backend/src/server.cjs</code> — Dashboard backend + trade monitor</li>
+  <li><code>backend/src/bybit-client.cjs</code> — Bybit API client (Node.js)</li>
+  <li><code>frontend/src/pages/DemoPage.tsx</code> — Bybit demo trades UI</li>
+  <li><code>docker-compose.yml</code> — All 9 services defined</li>
+</ul>
+
+<div class="footer">
+  VLTHR v3 DEVOPS · Generated July 20, 2026 · Handoff Document
+</div>
+
+</body>
+</html>

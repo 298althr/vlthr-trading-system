@@ -1,0 +1,16 @@
+stage,stage_label,mode,latency_bars,data_gap_prob,downtime_count,total_signals,approved,rejected,promoted,closed_trades,expired,wins,losses,win_rate_pct,profit_factor,expectancy_usd,max_drawdown_pct,tp_hit_rate_pct,sl_hit_rate_pct,time_exits,tp_hits,sl_hits,avg_hold_hours,final_balance,expired_rate_pct,all_gates_pass
+stage0_baseline,Baseline (clean conditions),control,0,0.0,0,21391,1797,19594,1500,1500,297,541,959,36.1,3.1,7.02,2.34,33.5,63.5,44,503,953,4.0,20532.17,1.4,False
+stage0_baseline,Baseline (clean conditions),treatment_a_phase1,0,0.0,0,21391,1797,19594,1500,1500,297,541,959,36.1,3.1,7.02,2.34,33.5,63.5,44,503,953,4.0,20532.17,1.4,False
+stage0_baseline,Baseline (clean conditions),treatment_b_phase2,0,0.0,0,21391,1797,19594,1500,1500,297,541,959,36.1,3.09,6.99,2.33,33.5,63.5,44,503,953,4.0,20480.9,1.4,False
+stage1_latency,Latency (1 bar = 15min delay),control,1,0.0,0,21389,2100,19289,1444,1444,656,460,984,31.9,2.46,5.45,2.23,29.7,67.9,35,429,980,3.9,17869.12,3.1,False
+stage1_latency,Latency (1 bar = 15min delay),treatment_a_phase1,1,0.0,0,21389,2100,19289,1444,1444,656,460,984,31.9,2.46,5.45,2.23,29.7,67.9,35,429,980,3.9,17869.12,3.1,False
+stage1_latency,Latency (1 bar = 15min delay),treatment_b_phase2,1,0.0,0,21389,2100,19289,1444,1444,656,460,984,31.9,2.44,5.37,2.21,29.7,67.9,35,429,980,3.9,17747.09,3.1,False
+stage2_data_gaps,Data Gaps (5% missing bars),control,0,0.05,0,20317,1781,18536,1487,1487,294,548,939,36.9,3.23,7.34,2.28,34.3,62.7,44,510,933,4.0,20917.05,1.4,False
+stage2_data_gaps,Data Gaps (5% missing bars),treatment_a_phase1,0,0.05,0,20317,1781,18536,1487,1487,294,548,939,36.9,3.23,7.34,2.28,34.3,62.7,44,510,933,4.0,20917.05,1.4,False
+stage2_data_gaps,Data Gaps (5% missing bars),treatment_b_phase2,0,0.05,0,20317,1781,18536,1487,1487,294,548,939,36.9,3.23,7.32,2.28,34.3,62.7,44,510,933,4.0,20880.53,1.4,False
+stage3_downtime,Downtime (2h outage every ~7 days),control,0,0.0,26,21040,1783,19257,1488,1488,295,532,956,35.8,2.96,6.83,2.33,33.1,63.8,45,493,950,4.0,20161.63,1.4,False
+stage3_downtime,Downtime (2h outage every ~7 days),treatment_a_phase1,0,0.0,26,21040,1783,19257,1488,1488,295,532,956,35.8,2.96,6.83,2.33,33.1,63.8,45,493,950,4.0,20161.63,1.4,False
+stage3_downtime,Downtime (2h outage every ~7 days),treatment_b_phase2,0,0.0,26,21040,1783,19257,1488,1488,295,532,956,35.8,2.95,6.79,2.32,33.1,63.8,45,493,950,4.0,20109.71,1.4,False
+stage4_combined,Combined (latency + gaps + downtime),control,2,0.1,26,18897,2227,16670,1370,1370,857,431,939,31.5,2.46,5.54,2.03,29.1,68.3,35,398,936,3.8,17590.64,4.5,False
+stage4_combined,Combined (latency + gaps + downtime),treatment_a_phase1,2,0.1,26,18897,2227,16670,1370,1370,857,431,939,31.5,2.46,5.54,2.03,29.1,68.3,35,398,936,3.8,17590.64,4.5,False
+stage4_combined,Combined (latency + gaps + downtime),treatment_b_phase2,2,0.1,26,18897,2227,16670,1370,1370,857,431,939,31.5,2.46,5.52,2.03,29.1,68.3,35,398,936,3.8,17559.59,4.5,False

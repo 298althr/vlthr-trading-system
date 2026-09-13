@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontend Dashboard · VLTHR</title>
+<style>
+:root{--bg:#000;--surface:#0a0a0a;--surface-2:#141414;--surface-3:#1a1a1a;--border:#222;--border-light:#2a2a2a;--text:#e8e8e8;--text-2:#a0a0a0;--text-muted:#666;--accent:#e82127;--accent-dim:rgba(232,33,39,.15);--accent-glow:rgba(232,33,39,.4);--blue:#2d7ff9;--green:#00e676;--yellow:#ffd600;--orange:#ff9100;--purple:#b388ff;--red:#ff5252;--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1);--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 32px}
+.hero{position:relative;padding:80px 0 60px;text-align:center;background:radial-gradient(ellipse at center,var(--surface-2) 0%,var(--bg) 70%);border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 50%);animation:pulse-glow 6s ease-in-out infinite;pointer-events:none}
+@keyframes pulse-glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:3em;font-weight:700;letter-spacing:-1px;margin-bottom:12px;position:relative;animation:fade-up .8s ease-out}
+.hero h1 .accent{color:var(--accent)}
+.hero .subtitle{font-size:1.2em;color:var(--text-2);margin-bottom:24px;position:relative;animation:fade-up .8s ease-out .1s both}
+.hero .meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;animation:fade-up .8s ease-out .2s both}
+.hero .meta-item{text-align:center}
+.hero .meta-item .label{font-size:.75em;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero .meta-item .value{font-size:1.3em;font-weight:600;color:var(--text)}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 24px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:.9em;font-weight:500;cursor:pointer;white-space:nowrap;transition:var(--transition);border-bottom:2px solid transparent;position:relative}
+.tab-btn:hover{color:var(--text);background:var(--surface-2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-num{font-size:.75em;opacity:.5;margin-right:4px}
+.tab-content{display:none;padding:48px 0;animation:fade-in .4s ease-out}
+.tab-content.active{display:block}
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h2{font-size:2em;font-weight:700;letter-spacing:-.5px;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:1.4em;font-weight:600;margin-top:40px;margin-bottom:16px;color:var(--text)}
+h4{font-size:1.15em;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--text-2)}
+p{margin-bottom:14px;color:var(--text)}
+ul,ol{margin-bottom:16px;padding-left:24px}
+li{margin-bottom:6px;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);background:var(--surface-3);padding:2px 8px;border-radius:4px;font-size:.88em;color:var(--accent);border:1px solid var(--border)}
+pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin-bottom:20px;font-size:.85em}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.9em;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-size:.8em;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;transition:var(--transition)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.card-title{font-size:1.1em;font-weight:600;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78em;font-weight:600;letter-spacing:.3px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.3)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.3)}
+.badge-purple{background:rgba(179,136,255,.12);color:var(--purple);border:1px solid rgba(179,136,255,.3)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.3)}
+.badge-orange{background:rgba(255,145,0,.12);color:var(--orange);border:1px solid rgba(255,145,0,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:20px}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:600;margin-bottom:8px;color:var(--text)}
+.metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;transition:var(--transition)}
+.metric-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-tile .metric-value{font-size:2em;font-weight:700;margin-bottom:4px}
+.metric-tile .metric-label{font-size:.8em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85em}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>Frontend <span class="accent">Dashboard</span></h1>
+  <p class="subtitle">React 19 SPA served by nginx. Real-time SSE signal feed, paper trading, backtest UI, VTC token dashboard.</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Service</div><div class="value">frontend</div></div>
+    <div class="meta-item"><div class="label">Framework</div><div class="value">React 19 + Vite 8</div></div>
+    <div class="meta-item"><div class="label">Container</div><div class="value">vlthr-dashboard-frontend</div></div>
+    <div class="meta-item"><div class="label">Port</div><div class="value">5175:80</div></div>
+    <div class="meta-item"><div class="label">Pages</div><div class="value">5</div></div>
+  </div>
+</section>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)"><span class="tab-num">01</span>Overview</button>
+  <button class="tab-btn" onclick="switchTab(1)"><span class="tab-num">02</span>Pages</button>
+  <button class="tab-btn" onclick="switchTab(2)"><span class="tab-num">03</span>Components</button>
+  <button class="tab-btn" onclick="switchTab(3)"><span class="tab-num">04</span>SSE Data Flow</button>
+  <button class="tab-btn" onclick="switchTab(4)"><span class="tab-num">05</span>API Integration</button>
+  <button class="tab-btn" onclick="switchTab(5)"><span class="tab-num">06</span>Docker Config</button>
+</div>
+
+<div class="container">
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content active" id="tab-0">
+  <h2>Overview</h2>
+  <p>The frontend is a React 19 single-page application built with Vite 8 and served by nginx. It connects to the backend Express server via SSE for real-time signal updates and REST API for trade management. The app is a PWA with service worker support for mobile installation.</p>
+
+  <div class="grid-4">
+    <div class="metric-tile"><div class="metric-value" style="color:var(--accent)">5</div><div class="metric-label">Pages</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--blue)">14</div><div class="metric-label">Shared Components</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--green)">SSE</div><div class="metric-label">Real-time Feed</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--orange)">PWA</div><div class="metric-label">Mobile Installable</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Tech Stack</div>
+    <table>
+      <thead><tr><th>Layer</th><th>Technology</th><th>Version</th></tr></thead>
+      <tbody>
+        <tr><td>UI Framework</td><td>React</td><td>19.2</td></tr>
+        <tr><td>Build Tool</td><td>Vite</td><td>8.0</td></tr>
+        <tr><td>State Management</td><td>Zustand</td><td>5.0</td></tr>
+        <tr><td>Icons</td><td>lucide-react</td><td>1.17</td></tr>
+        <tr><td>Language</td><td>TypeScript</td><td>6.0</td></tr>
+        <tr><td>Web Server</td><td>nginx</td><td>alpine</td></tr>
+        <tr><td>Base Image</td><td>node:22-slim (build)</td><td>nginx:alpine (serve)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Key Features</div>
+    <ul>
+      <li><strong>Real-time SSE:</strong> Live signal feed via EventSource at <code>/api/signals/stream</code></li>
+      <li><strong>Auto-execute:</strong> Toggle to auto-open paper trades for EXCELLENT signals (confidence >= 65, age < 120 min)</li>
+      <li><strong>Live price ticker:</strong> Marquee strip with 24h change for all tracked symbols</li>
+      <li><strong>PWA:</strong> Service worker for offline shell, push notifications on iOS and Android</li>
+      <li><strong>Session auth:</strong> 1-hour session with localStorage persistence</li>
+      <li><strong>Backtest UI:</strong> D1-D7 pipeline runner with AI chat panel and results visualization</li>
+    </ul>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Docker Service</div>
+    Runs as <code>vlthr-dashboard-frontend</code> container. Multi-stage build: node:22-slim compiles the SPA, nginx:alpine serves the static files. Port 5175 maps to container port 80. Depends on <code>backend</code> service.
+  </div>
+</div>
+
+<!-- TAB 1: PAGES -->
+<div class="tab-content" id="tab-1">
+  <h2>Pages</h2>
+  <p>The app has 5 main pages accessible via bottom navigation. Each page is a React component in <code>frontend/src/pages/</code>.</p>
+
+  <div class="card">
+    <div class="card-title">Dashboard <span class="badge badge-accent">DASH</span></div>
+    <p><code>DashboardPage.tsx</code> (19 KB). Main landing page. Shows active signal cards, paper trading account summary, live price ticker, VTC token stats, and AI overview generator.</p>
+    <ul>
+      <li><strong>Signal cards:</strong> One per active signal with DQS, confidence, entry/SL/TP, RSI, ADX, funding</li>
+      <li><strong>Account summary:</strong> Balance, equity, open risk, active trades count</li>
+      <li><strong>AI Overview:</strong> Calls <code>/api/overview/generate</code> to produce a natural language market summary</li>
+      <li><strong>Sparkline charts:</strong> Mini price charts per symbol</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Signals <span class="badge badge-blue">SIGNALS</span></div>
+    <p><code>SignalsPage.tsx</code> (4 KB). Lists all active signals with search filter. Shows watchlist items with gate status (session, ADX, direction, RSI, bull). Click a signal to open paper trade modal.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VTC <span class="badge badge-purple">VTC</span></div>
+    <p><code>VTCPage.tsx</code> (21 KB). Performance-weighted token dashboard. Shows VTC price, score vector, history chart, treasury stats, and audit log. Mint and burn operations.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Backtest <span class="badge badge-orange">BACKTEST</span></div>
+    <p><code>BacktestPage.tsx</code> (7 KB). D1-D7 pipeline runner. Three sub-tabs: config, chat, results.</p>
+    <ul>
+      <li><strong>Config:</strong> Select symbol, timeframe, date range, stages to run</li>
+      <li><strong>Chat:</strong> AI chat panel (<code>AiChatPanel.tsx</code>, 37 KB) with NVIDIA LLM integration via backend proxy</li>
+      <li><strong>Results:</strong> Stage-by-stage results with metrics (Sharpe, PF, WR, max DD, Sortino)</li>
+      <li><strong>Session persistence:</strong> Backtest sessions saved to localStorage via Zustand store</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Paper <span class="badge badge-green">PAPER</span></div>
+    <p><code>PaperPage.tsx</code> (42 KB). Paper trading account management. Three sections: pending, active, closed trades.</p>
+    <ul>
+      <li><strong>Account:</strong> Balance, equity, margin, PnL</li>
+      <li><strong>Pending trades:</strong> Signals waiting for entry confirmation</li>
+      <li><strong>Active trades:</strong> Open positions with live PnL, dynamic SL status, time in trade</li>
+      <li><strong>Closed trades:</strong> History with exit reason, PnL, duration</li>
+      <li><strong>Winners:</strong> Best performing closed trades leaderboard</li>
+    </ul>
+  </div>
+</div>
+
+<!-- TAB 2: COMPONENTS -->
+<div class="tab-content" id="tab-2">
+  <h2>Components</h2>
+
+  <div class="card">
+    <div class="card-title">Shared Components (14 files)</div>
+    <table>
+      <thead><tr><th>Component</th><th>File</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>SignalCard</td><td>SignalCard.tsx</td><td>Renders one HCS signal with all metrics and action buttons</td></tr>
+        <tr><td>ConfirmModal</td><td>ConfirmModal.tsx</td><td>Paper trade confirmation with leverage and risk sliders</td></tr>
+        <tr><td>SymbolDetailModal</td><td>SymbolDetailModal.tsx</td><td>Per-symbol deep dive with market intel</td></tr>
+        <tr><td>WatchlistDetailSheet</td><td>WatchlistDetailSheet.tsx</td><td>Bottom sheet showing gate-by-gate watchlist breakdown</td></tr>
+        <tr><td>Charts</td><td>Charts.tsx</td><td>Sparkline mini-charts for price visualization</td></tr>
+        <tr><td>VlthrToast</td><td>VlthrToast.tsx</td><td>Toast notification system (success, error, info)</td></tr>
+        <tr><td>HistoryTable</td><td>HistoryTable.tsx</td><td>Closed trade history with sortable columns</td></tr>
+        <tr><td>GlassDropdown</td><td>GlassDropdown.tsx</td><td>Custom glassmorphism dropdown selector</td></tr>
+        <tr><td>Logo</td><td>Logo.tsx</td><td>VLTHR brand logo component</td></tr>
+        <tr><td>AuthPage</td><td>AuthPage.tsx</td><td>Session authentication with 2FA (speakeasy)</td></tr>
+        <tr><td>ErrorBoundary</td><td>ErrorBoundary.tsx</td><td>React error boundary with fallback UI</td></tr>
+        <tr><td>LoadingScreen</td><td>LoadingScreen.tsx</td><td>Initial app load spinner</td></tr>
+        <tr><td>NotificationModal</td><td>NotificationModal.tsx</td><td>Push notification permission prompt</td></tr>
+        <tr><td>CopyTrigger</td><td>CopyTrigger.tsx</td><td>Copy-to-clipboard button for signal details</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Backtest Components (3 files)</div>
+    <table>
+      <thead><tr><th>Component</th><th>File</th><th>Size</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>AiChatPanel</td><td>AiChatPanel.tsx</td><td>37 KB</td><td>Chat interface with NVIDIA LLM, streaming responses, context injection</td></tr>
+        <tr><td>BacktestConfigForm</td><td>BacktestConfigForm.tsx</td><td>9 KB</td><td>Symbol/timeframe/date range/stage selection form</td></tr>
+        <tr><td>BacktestResults</td><td>BacktestResults.tsx</td><td>15 KB</td><td>Stage results display with metrics table and D7 scenario breakdown</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Hooks</div>
+    <table>
+      <thead><tr><th>Hook</th><th>File</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>useSSE</td><td>useSSE.ts</td><td>EventSource connection manager. Handles initial hydration, updates, price ticks, market intel, refresh progress. Auto-reconnect with exponential backoff (1s to 30s max). Browser push notifications for new signals and trade closures.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Stores</div>
+    <table>
+      <thead><tr><th>Store</th><th>File</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>backtestStore</td><td>backtestStore.ts</td><td>Zustand store for backtest sessions. Persists chat messages, pipeline runs, and decisions to localStorage. Session index for history browsing.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 3: SSE DATA FLOW -->
+<div class="tab-content" id="tab-3">
+  <h2>SSE Data Flow</h2>
+  <p>The frontend receives all real-time data via a single Server-Sent Events connection to <code>/api/signals/stream</code>. The <code>useSSE</code> hook manages the connection lifecycle.</p>
+
+  <div class="card">
+    <div class="card-title">SSE Event Types</div>
+    <table>
+      <thead><tr><th>Event</th><th>Trigger</th><th>Payload</th></tr></thead>
+      <tbody>
+        <tr><td>initial</td><td>On connect</td><td>Full state: signals, watchlist, powerTrades, winners, history, paper, livePrices, marketIntel, vtc</td></tr>
+        <tr><td>update</td><td>Every pipeline run (5 min)</td><td>Same as initial. Replaces all state.</td></tr>
+        <tr><td>prices</td><td>Every 15 seconds</td><td>livePrices: { symbol: { price, change24h } }</td></tr>
+        <tr><td>intel</td><td>On market intel refresh</td><td>marketIntel: { symbol: { rsi, adx, funding, oi, ... } }</td></tr>
+        <tr><td>refreshProgress</td><td>During data refresh</td><td>{ step, total, message }</td></tr>
+        <tr><td>refreshComplete</td><td>Refresh finished</td><td>Triggers full state re-fetch</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Connection Lifecycle</div>
+    <ol>
+      <li>App mounts, <code>useSSE</code> hook fires</li>
+      <li>Connects to <code>{API_BASE}/api/signals/stream</code> via EventSource</li>
+      <li>Receives <code>initial</code> event with full state snapshot</li>
+      <li>Listens for <code>update</code> events (every 5 min from pipeline)</li>
+      <li>Listens for <code>prices</code> events (every 15s from backend)</li>
+      <li>On error: closes connection, waits with exponential backoff (1s, 2s, 4s, ... 30s max), reconnects</li>
+      <li>On successful reconnect: resets backoff to 1s</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Push Notifications</div>
+    <p>The hook sends browser notifications for two events:</p>
+    <ul>
+      <li><strong>New pending trade:</strong> Fires when a new signal enters pending state</li>
+      <li><strong>Trade closed:</strong> Fires when an active trade closes (TP hit, SL hit, or manual)</li>
+    </ul>
+    <p>Uses dual-path notification delivery: legacy <code>Notification</code> constructor for desktop, service worker <code>showNotification</code> for iOS PWA and Android.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Auto-Execute Logic</div>
+    <p>When auto-execute is toggled on, the app monitors SSE signals and auto-opens paper trades for qualifying signals:</p>
+    <ul>
+      <li><strong>Signal strength:</strong> EXCELLENT</li>
+      <li><strong>Confidence:</strong> >= 65</li>
+      <li><strong>Age:</strong> < 120 minutes</li>
+      <li><strong>Lifecycle:</strong> Not CANCELED or ABANDONED</li>
+      <li><strong>Dedup:</strong> Uses a ref Set to prevent duplicate executions</li>
+    </ul>
+    <p>Sends POST to <code>/api/paper/trade</code> with signalId, symbol, side, entryPrice, qty, leverage, riskPercent.</p>
+  </div>
+</div>
+
+<!-- TAB 4: API INTEGRATION -->
+<div class="tab-content" id="tab-4">
+  <h2>API Integration</h2>
+  <p>The frontend talks to two backend services. In production (Docker), nginx proxies <code>/api/</code> to the backend container. The backend then proxies AI engine requests to the ai-trader-engine container.</p>
+
+  <div class="card">
+    <div class="card-title">Configuration</div>
+    <pre><code>// frontend/src/config.ts
+export const API_BASE = import.meta.env.VITE_API_BASE
+  ?? (import.meta.env.PROD ? '' : 'http://localhost:3002');
+
+export const SESSION_KEY = 'vlthr_session_id';
+export const SESSION_DURATION = 1 * 60 * 60 * 1000; // 1 hour</code></pre>
+    <p>In production: <code>API_BASE</code> is empty string, so all requests are relative. nginx proxies <code>/api/</code> to <code>backend:3001</code>.</p>
+    <p>In development: <code>API_BASE</code> points to <code>http://localhost:3002</code> for local backend.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">API Endpoints Used</div>
+    <table>
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Used By</th></tr></thead>
+      <tbody>
+        <tr><td>/api/signals/stream</td><td>SSE</td><td>useSSE hook (all pages)</td></tr>
+        <tr><td>/api/paper/trade</td><td>POST</td><td>App.tsx auto-execute and ConfirmModal</td></tr>
+        <tr><td>/api/paper/trade/:id/close</td><td>POST</td><td>App.tsx handleCloseConfirm</td></tr>
+        <tr><td>/api/vtc/current</td><td>GET</td><td>VTCPage</td></tr>
+        <tr><td>/api/vtc/history</td><td>GET</td><td>VTCPage</td></tr>
+        <tr><td>/api/vtc/treasury</td><td>GET</td><td>DashboardPage, VTCPage</td></tr>
+        <tr><td>/api/vtc/mint</td><td>POST</td><td>VTCPage</td></tr>
+        <tr><td>/api/vtc/burn</td><td>POST</td><td>VTCPage</td></tr>
+        <tr><td>/api/overview/generate</td><td>POST</td><td>DashboardPage AI overview</td></tr>
+        <tr><td>/api/overview/latest</td><td>GET</td><td>DashboardPage cached overview</td></tr>
+        <tr><td>/api/engine/pipeline/:stage</td><td>POST</td><td>BacktestPage (proxied to ai-trader-engine)</td></tr>
+        <tr><td>/api/engine/backtest/start</td><td>POST</td><td>BacktestPage</td></tr>
+        <tr><td>/api/engine/backtest/status</td><td>GET</td><td>BacktestPage</td></tr>
+        <tr><td>/api/engine/backtest/result</td><td>GET</td><td>BacktestPage</td></tr>
+        <tr><td>/api/engine/ai/chat</td><td>POST</td><td>AiChatPanel (proxied to NVIDIA AI)</td></tr>
+        <tr><td>/api/engine/candles</td><td>GET</td><td>BacktestPage chart data</td></tr>
+        <tr><td>/api/engine/features</td><td>GET</td><td>BacktestPage feature computation</td></tr>
+        <tr><td>/api/engine/strategy/create</td><td>POST</td><td>BacktestPage strategy management</td></tr>
+        <tr><td>/api/auth/login</td><td>POST</td><td>AuthPage</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Request Flow</div>
+    <pre><code>Browser (React SPA)
+  |
+  |  GET /api/signals/stream (SSE)
+  |  POST /api/paper/trade
+  |  GET /api/vtc/current
+  |  POST /api/engine/pipeline/d1
+  |
+  v
+nginx (container: frontend, port 80)
+  |
+  |  proxy_pass http://backend:3001
+  |  proxy_buffering off (for SSE)
+  |  proxy_read_timeout 86400s
+  |
+  v
+Express Backend (container: backend, port 3001)
+  |
+  |  PostgreSQL queries (pool)
+  |  Parquet reads (parquet-reader.cjs)
+  |  Redis cache
+  |  Proxy to ai-trader-engine:8000 for /api/engine/*
+  |
+  v
+PostgreSQL / Redis / AI Trader Engine</code></pre>
+  </div>
+</div>
+
+<!-- TAB 5: DOCKER CONFIG -->
+<div class="tab-content" id="tab-5">
+  <h2>Docker Configuration</h2>
+
+  <div class="card">
+    <div class="card-title">Service Definition</div>
+    <pre><code>frontend:
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile
+  container_name: vlthr-dashboard-frontend
+  ports:
+    - "5175:80"
+  depends_on:
+    - backend
+  networks:
+    - vlthr-net
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1/"]
+    interval: 30s
+    timeout: 5s
+    retries: 3
+    start_period: 10s</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dockerfile (Multi-Stage)</div>
+    <pre><code># Build stage
+FROM node:22-slim AS builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Serve stage
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">nginx Configuration</div>
+    <p>The nginx config handles four concerns:</p>
+    <ul>
+      <li><strong>SPA fallback:</strong> All routes serve <code>index.html</code> (React Router handles client-side routing)</li>
+      <li><strong>Asset caching:</strong> Hashed JS/CSS bundles cached for 1 year (immutable). HTML and icons are no-cache.</li>
+      <li><strong>Service worker:</strong> <code>/sw.js</code> is never cached, ensures PWA updates are picked up immediately.</li>
+      <li><strong>API proxy:</strong> <code>/api/</code> requests proxy to <code>backend:3001</code> with buffering disabled for SSE support. Read timeout set to 86400s (24 hours) for long-lived SSE connections.</li>
+    </ul>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Health Check</div>
+    Docker healthcheck runs <code>wget --spider -q http://127.0.0.1/</code> every 30 seconds. Verifies nginx is serving the SPA.
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  VLTHR Frontend Dashboard Documentation · Generated Jul 2026 · <a href="../docker-compose.yml" style="color:var(--accent)">docker-compose.yml</a>
+</div>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.tab-content').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

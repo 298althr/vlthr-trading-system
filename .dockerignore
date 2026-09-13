@@ -1,0 +1,3 @@
+# Excluded from Docker builds — ai-trader-engine decommissioned
+# Source kept for reference but not built or deployed
+ai-trader-engine/

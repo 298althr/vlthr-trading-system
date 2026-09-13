@@ -1,0 +1,49 @@
+# Ignore everything by default
+*
+
+# ── Frontend only ──────────────────────────────────────────────
+!.gitignore
+!package.json
+!package-lock.json
+!vite.config.ts
+!tsconfig.json
+!tsconfig.app.json
+!tsconfig.node.json
+!eslint.config.js
+!index.html
+!favicon.svg
+
+# Source directory
+!src/
+!src/**
+
+# Public assets
+!public/
+!public/**
+
+# ── Still ignore within allowed dirs ───────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.clone
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

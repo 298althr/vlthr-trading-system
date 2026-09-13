@@ -1,0 +1,314 @@
+{
+  "version": 5,
+  "trained_on": 35,
+  "v7_gold_standard": true,
+  "calibration_gates": {
+    "min_calibrated_prob_to_open": 0.40,
+    "min_calibrated_prob_to_pending": 0.35,
+    "per_symbol_overrides": {
+      "BTCUSDT": 0.40,
+      "ETHUSDT": 0.40,
+      "SOLUSDT": 0.40,
+      "XRPUSDT": 0.40,
+      "BNBUSDT": 0.40
+    },
+    "bypass_when_no_matrix_data": false,
+    "min_sample_size_to_enforce_gate": 5
+  },
+  "v7_config": {
+    "dqs_veto_threshold": 85,
+    "entry_filter_threshold": 0.40,
+    "mr_boost": 3.0,
+    "symbol_alloc_cap": 0.25,
+    "symbol_pnl_cap": 0.30,
+    "maker_fee_ratio": 0.4,
+    "slippage_reduction": 0.5,
+    "walk_forward_split": 0.50,
+    "kelly_bands": {
+      "dqs_ge_85": 0.0,
+      "dqs_ge_80": 2.5,
+      "dqs_ge_75": 1.5,
+      "dqs_ge_70": 1.0,
+      "dqs_ge_65": 0.7,
+      "dqs_lt_65": 0.3
+    },
+    "disabled_symbols": ["DOGEUSDT"]
+  },
+  "scorer_fixes": {
+    "mult_cap": 1.20,
+    "mult_cap_downgrade_enabled": true,
+    "mult_cap_downgrade_tech_threshold": 70,
+    "mult_cap_downgrade_dqs_cap": 79,
+    "rsi_overbought_long_enabled": true,
+    "rsi_overbought_trend_threshold": 80,
+    "rsi_overbought_mean_rev_uses_per_symbol": true
+  },
+  "feature_correlations": {
+    "confidence": -0.119,
+    "technical_score": 0.204,
+    "market_structure_score": 0.066,
+    "funding_oi_score": 0.053,
+    "rsi_15m": -0.358,
+    "adx_4h": -0.434,
+    "funding_rate": -0.035,
+    "oi_delta_pct": -0.115,
+    "ob_imbalance_pct": 0.059,
+    "hours_held": 0.003
+  },
+  "session_multipliers": {
+    "london": 1.26,
+    "ny_open": 1.15,
+    "asian": 1.00,
+    "ny_late": 0.85
+  },
+  "symbol_multipliers": {
+    "BTCUSDT": 1.42,
+    "SOLUSDT": 1.45,
+    "ETHUSDT": 0.88,
+    "XRPUSDT": 1.20,
+    "BNBUSDT": 0.55,
+    "DOGEUSDT": 0.0
+  },
+  "trend_mult": {
+    "adx_ge_50": 1.35,
+    "adx_ge_40": 1.2,
+    "adx_ge_30": 1.0,
+    "adx_ge_25": 0.8,
+    "adx_lt_25": 0.5
+  },
+  "pullback_bonus": {
+    "rsi_lt_20": 20,
+    "rsi_lt_30": 15,
+    "rsi_lt_35": 10,
+    "rsi_lt_40": 5,
+    "rsi_ge_40": 0
+  },
+  "liquidity_bonus": {
+    "aligned": 15,
+    "partial": 8,
+    "neutral": 0,
+    "hostile": -10
+  },
+  "domain_weights": {
+    "technical": 0.40,
+    "structure": 0.30,
+    "context": 0.30
+  },
+  "contra_penalty": {
+    "n1": 5,
+    "n2": 15,
+    "n3_plus": 30
+  },
+  "min_dqs_to_track": 40,
+  "min_dqs_to_execute": 50,
+  "min_dqs_to_pending": 50,
+  "min_dqs_fair": 50,
+  "min_dqs_good": 65,
+  "min_dqs_excellent": 75,
+  "calibration_curve": {
+    "dqs_breakpoints": [
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100
+    ],
+    "win_probabilities": [
+      0.0,
+      0.3478,
+      0.3478,
+      0.3478,
+      0.3478,
+      0.3478,
+      0.3478,
+      0.3478,
+      0.3478,
+      0.4286,
+      0.4286
+    ],
+    "n_samples_used": 31,
+    "last_calibrated_utc": "2026-06-17T10:52:27.867096+00:00",
+    "symbol_curves": {
+      "BTCUSDT": {
+        "dqs_breakpoints": [
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100
+        ],
+        "win_probabilities": [
+          0.5,
+          0.6667,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "n_samples_used": 7
+      },
+      "SOLUSDT": {
+        "dqs_breakpoints": [
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100
+        ],
+        "win_probabilities": [
+          0.75,
+          0.6667,
+          0.5,
+          0.5,
+          0.3333,
+          0.3333,
+          0.5,
+          0.3333,
+          0.25,
+          0.3333,
+          0.75
+        ],
+        "n_samples_used": 13
+      },
+      "ETHUSDT": {
+        "dqs_breakpoints": [
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100
+        ],
+        "win_probabilities": [
+          0.25,
+          0.25,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "n_samples_used": 4
+      },
+      "BNBUSDT": {
+        "dqs_breakpoints": [
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100
+        ],
+        "win_probabilities": [
+          0.5,
+          0.3333,
+          0.0,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.3333
+        ],
+        "n_samples_used": 5
+      },
+      "XRPUSDT": {
+        "dqs_breakpoints": [
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100
+        ],
+        "win_probabilities": [
+          0.5,
+          0.6667,
+          0.5,
+          0.5,
+          0.5,
+          0.3333,
+          0.6667,
+          0.5,
+          0.3333,
+          0.75,
+          0.5
+        ],
+        "n_samples_used": 8
+      },
+      "DOGEUSDT": {
+        "dqs_breakpoints": [
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100
+        ],
+        "win_probabilities": [
+          0.5,
+          0.5,
+          0.3333,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "n_samples_used": 1
+      }
+    }
+  }
+}

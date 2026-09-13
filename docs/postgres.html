@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostgreSQL / TimescaleDB · VLTHR</title>
+<style>
+:root{--bg:#000;--surface:#0a0a0a;--surface-2:#141414;--surface-3:#1a1a1a;--border:#222;--border-light:#2a2a2a;--text:#e8e8e8;--text-2:#a0a0a0;--text-muted:#666;--accent:#e82127;--accent-dim:rgba(232,33,39,.15);--accent-glow:rgba(232,33,39,.4);--blue:#2d7ff9;--green:#00e676;--yellow:#ffd600;--orange:#ff9100;--purple:#b388ff;--red:#ff5252;--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1);--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 32px}
+.hero{position:relative;padding:80px 0 60px;text-align:center;background:radial-gradient(ellipse at center,var(--surface-2) 0%,var(--bg) 70%);border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 50%);animation:pulse-glow 6s ease-in-out infinite;pointer-events:none}
+@keyframes pulse-glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:3em;font-weight:700;letter-spacing:-1px;margin-bottom:12px;position:relative;animation:fade-up .8s ease-out}
+.hero h1 .accent{color:var(--accent)}
+.hero .subtitle{font-size:1.2em;color:var(--text-2);margin-bottom:24px;position:relative;animation:fade-up .8s ease-out .1s both}
+.hero .meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;animation:fade-up .8s ease-out .2s both}
+.hero .meta-item{text-align:center}
+.hero .meta-item .label{font-size:.75em;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero .meta-item .value{font-size:1.3em;font-weight:600;color:var(--text)}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 24px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:.9em;font-weight:500;cursor:pointer;white-space:nowrap;transition:var(--transition);border-bottom:2px solid transparent;position:relative}
+.tab-btn:hover{color:var(--text);background:var(--surface-2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-num{font-size:.75em;opacity:.5;margin-right:4px}
+.tab-content{display:none;padding:48px 0;animation:fade-in .4s ease-out}
+.tab-content.active{display:block}
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h2{font-size:2em;font-weight:700;letter-spacing:-.5px;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:1.4em;font-weight:600;margin-top:40px;margin-bottom:16px;color:var(--text)}
+h4{font-size:1.15em;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--text-2)}
+p{margin-bottom:14px;color:var(--text)}
+ul,ol{margin-bottom:16px;padding-left:24px}
+li{margin-bottom:6px;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);background:var(--surface-3);padding:2px 8px;border-radius:4px;font-size:.88em;color:var(--accent);border:1px solid var(--border)}
+pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin-bottom:20px;font-size:.85em}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.9em;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-size:.8em;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;transition:var(--transition)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.card-title{font-size:1.1em;font-weight:600;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78em;font-weight:600;letter-spacing:.3px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.3)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.3)}
+.badge-purple{background:rgba(179,136,255,.12);color:var(--purple);border:1px solid rgba(179,136,255,.3)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.3)}
+.badge-orange{background:rgba(255,145,0,.12);color:var(--orange);border:1px solid rgba(255,145,0,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:20px}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:600;margin-bottom:8px;color:var(--text)}
+.metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;transition:var(--transition)}
+.metric-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-tile .metric-value{font-size:2em;font-weight:700;margin-bottom:4px}
+.metric-tile .metric-label{font-size:.8em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85em}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>PostgreSQL <span class="accent">TimescaleDB</span></h1>
+  <p class="subtitle">Primary relational database. Signal state, risk ledger, portfolio snapshots, predictions, pipeline traces.</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Service</div><div class="value">postgres</div></div>
+    <div class="meta-item"><div class="label">Image</div><div class="value">timescale/timescaledb:latest-pg15</div></div>
+    <div class="meta-item"><div class="label">Container</div><div class="value">vlthr-postgres</div></div>
+    <div class="meta-item"><div class="label">Tables</div><div class="value">10+</div></div>
+  </div>
+</section>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)"><span class="tab-num">01</span>Overview</button>
+  <button class="tab-btn" onclick="switchTab(1)"><span class="tab-num">02</span>Schema</button>
+  <button class="tab-btn" onclick="switchTab(2)"><span class="tab-num">03</span>Migration</button>
+  <button class="tab-btn" onclick="switchTab(3)"><span class="tab-num">04</span>Indexes</button>
+  <button class="tab-btn" onclick="switchTab(4)"><span class="tab-num">05</span>Docker Config</button>
+  <button class="tab-btn" onclick="switchTab(5)"><span class="tab-num">06</span>Connections</button>
+</div>
+
+<div class="container">
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content active" id="tab-0">
+  <h2>Overview</h2>
+  <p>The PostgreSQL service runs TimescaleDB on PostgreSQL 15. It stores all relational state for the VLTHR pipeline: signal tracking, risk ledger, portfolio snapshots, trade counts, predictions, model state, pipeline traces, and error logs.</p>
+
+  <div class="grid-4">
+    <div class="metric-tile"><div class="metric-value" style="color:var(--accent)">10+</div><div class="metric-label">Tables</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--blue)">PG15</div><div class="metric-label">Version</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--green)">5</div><div class="metric-label">Consumers</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--orange)">15s</div><div class="metric-label">Health Interval</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Consumers</div>
+    <table>
+      <thead><tr><th>Service</th><th>Connection</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>pipeline</td><td>DB_URL env</td><td>Signal state CRUD, risk ledger, snapshots, traces</td></tr>
+        <tr><td>backend</td><td>DB_URL env</td><td>Read trades, treasury, signal state for API</td></tr>
+        <tr><td>ai-trader-engine</td><td>DB_URL env</td><td>Read/write predictions, model state</td></tr>
+        <tr><td>data-ingestion</td><td>psycopg2</td><td>Writes ingestion metadata</td></tr>
+        <tr><td>telegram</td><td>DB_URL env</td><td>Reads trade state for notifications</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Docker Service</div>
+    Runs as <code>vlthr-postgres</code> container. Image: <code>timescale/timescaledb:latest-pg15</code>. Data persisted in named volume <code>vlthr_pgdata</code>. Migration script <code>db_migration.py</code> runs automatically on first startup via <code>docker-entrypoint-initdb.d</code>.
+  </div>
+</div>
+
+<!-- TAB 1: SCHEMA -->
+<div class="tab-content" id="tab-1">
+  <h2>Database Schema</h2>
+
+  <div class="card">
+    <div class="card-title">signal_state <span class="badge badge-accent">Core</span></div>
+    <p>One row per symbol per signal bar. Updated each pipeline run (5 minutes). Tracks DQS trajectory, entry/SL/TP levels, risk percentage, and signal lifecycle status.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>SERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>signal_id</td><td>INT FK</td><td>References high_confidence_signals</td></tr>
+        <tr><td>symbol</td><td>VARCHAR(16)</td><td>Trading symbol</td></tr>
+        <tr><td>signal_bar_utc</td><td>TIMESTAMP</td><td>Signal candle timestamp</td></tr>
+        <tr><td>current_dqs</td><td>INT</td><td>Current Data Quality Score</td></tr>
+        <tr><td>current_entry / sl / tp</td><td>NUMERIC(18,8)</td><td>Entry, stop-loss, take-profit prices</td></tr>
+        <tr><td>risk_pct</td><td>NUMERIC(5,2)</td><td>Risk as percentage of account</td></tr>
+        <tr><td>dqs_delta</td><td>INT</td><td>Change since last run</td></tr>
+        <tr><td>trajectory_bonus</td><td>INT</td><td>Bonus from consecutive improvements</td></tr>
+        <tr><td>adjusted_score</td><td>INT</td><td>Final score after trajectory bonus</td></tr>
+        <tr><td>status</td><td>VARCHAR(20)</td><td>ACTIVE, EXPIRED, PENDING, OPENED</td></tr>
+        <tr><td>side</td><td>VARCHAR(8)</td><td>LONG or SHORT</td></tr>
+        <tr><td>strategy</td><td>VARCHAR(32)</td><td>trend_following or mean_reversion</td></tr>
+        <tr><td>session</td><td>VARCHAR(16)</td><td>London, NY, Asia</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">signal_state_log <span class="badge badge-blue">Append-Only</span></div>
+    <p>Append-only history of every signal state update. One row per pipeline run per signal. Used for trajectory analysis and audit.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>SERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>signal_id</td><td>INT FK</td><td>References high_confidence_signals</td></tr>
+        <tr><td>symbol</td><td>VARCHAR(16)</td><td>Trading symbol</td></tr>
+        <tr><td>run_time</td><td>TIMESTAMP</td><td>When this run executed</td></tr>
+        <tr><td>run_number</td><td>INT</td><td>Sequential run counter</td></tr>
+        <tr><td>dqs</td><td>INT</td><td>DQS at this run</td></tr>
+        <tr><td>trajectory</td><td>VARCHAR(32)</td><td>IMPROVING, DECLINING, STABLE</td></tr>
+        <tr><td>delta</td><td>INT</td><td>DQS change from previous run</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">risk_ledger <span class="badge badge-orange">Risk</span></div>
+    <p>Tracks open dollar risk per symbol and total portfolio risk. One row per open trade.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>SERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>symbol</td><td>VARCHAR(16)</td><td>Trading symbol</td></tr>
+        <tr><td>trade_id</td><td>INT FK</td><td>References paper_trades</td></tr>
+        <tr><td>entry_price</td><td>NUMERIC(18,8)</td><td>Entry price</td></tr>
+        <tr><td>sl_price</td><td>NUMERIC(18,8)</td><td>Stop-loss price</td></tr>
+        <tr><td>qty_contracts</td><td>NUMERIC(18,4)</td><td>Position size</td></tr>
+        <tr><td>dollar_risk</td><td>NUMERIC(12,2)</td><td>Dollar amount at risk</td></tr>
+        <tr><td>risk_pct_of_account</td><td>NUMERIC(5,2)</td><td>Risk as % of account</td></tr>
+        <tr><td>is_open</td><td>BOOLEAN</td><td>True if trade still open</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">trade_count_log</div>
+    <p>Session and daily trade counters. Enforces max trades per session and per day.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>SERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>date</td><td>DATE</td><td>Trading date</td></tr>
+        <tr><td>session</td><td>VARCHAR(16)</td><td>London, NY_LATE, etc.</td></tr>
+        <tr><td>symbol</td><td>VARCHAR(16)</td><td>Trading symbol</td></tr>
+        <tr><td>action</td><td>VARCHAR(16)</td><td>OPENED or CLOSED</td></tr>
+        <tr><td>count_type</td><td>VARCHAR(16)</td><td>SESSION or DAILY</td></tr>
+        <tr><td>running_total</td><td>INT</td><td>Cumulative count</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">portfolio_snapshot</div>
+    <p>Point-in-time snapshot of portfolio state. Taken every pipeline run (5 minutes).</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>SERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>run_time</td><td>TIMESTAMP</td><td>Snapshot timestamp</td></tr>
+        <tr><td>account_balance</td><td>NUMERIC(12,2)</td><td>Current balance</td></tr>
+        <tr><td>account_equity</td><td>NUMERIC(12,2)</td><td>Current equity</td></tr>
+        <tr><td>margin_used</td><td>NUMERIC(12,2)</td><td>Margin in use</td></tr>
+        <tr><td>total_open_risk</td><td>NUMERIC(12,2)</td><td>Sum of dollar risk</td></tr>
+        <tr><td>active_trades_count</td><td>INT</td><td>Open positions</td></tr>
+        <tr><td>daily_trades_count</td><td>INT</td><td>Trades today</td></tr>
+        <tr><td>highest_dqs_active</td><td>INT</td><td>Top DQS among open signals</td></tr>
+        <tr><td>lowest_dqs_active</td><td>INT</td><td>Bottom DQS among open signals</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">error_log <span class="badge badge-red">Safety</span></div>
+    <p>Circuit breaker and safety layer. Critical errors trigger pipeline shutdown.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>SERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>source</td><td>VARCHAR(64)</td><td>Which component errored</td></tr>
+        <tr><td>error_type</td><td>VARCHAR(32)</td><td>Error classification</td></tr>
+        <tr><td>message</td><td>TEXT</td><td>Error message</td></tr>
+        <tr><td>stack_trace</td><td>TEXT</td><td>Full stack trace</td></tr>
+        <tr><td>is_critical</td><td>BOOLEAN</td><td>Triggers circuit breaker</td></tr>
+        <tr><td>resolved</td><td>BOOLEAN</td><td>Acknowledged by operator</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">pipeline_heartbeat <span class="badge badge-green">Monitoring</span></div>
+    <p>One row per pipeline iteration. Tracks run status, duration, signals scanned and approved, and per-node pass/fail summary.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>BIGSERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>run_time</td><td>TIMESTAMPTZ</td><td>Iteration timestamp</td></tr>
+        <tr><td>status</td><td>TEXT</td><td>OK, ABORTED, or ERROR</td></tr>
+        <tr><td>abort_reason</td><td>TEXT</td><td>Why the run was aborted</td></tr>
+        <tr><td>duration_ms</td><td>INTEGER</td><td>Run duration in milliseconds</td></tr>
+        <tr><td>signals_scanned</td><td>INTEGER</td><td>Signals evaluated</td></tr>
+        <tr><td>signals_approved</td><td>INTEGER</td><td>Signals that passed all gates</td></tr>
+        <tr><td>node_summary</td><td>JSONB</td><td>Per-node pass/fail rollup</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">predictions <span class="badge badge-purple">Phase 3</span></div>
+    <p>One row per symbol per run. Stores model predictions with resolution on next bar close. Shadow mode until trust criteria met.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>BIGSERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>run_time</td><td>TIMESTAMPTZ</td><td>Prediction timestamp</td></tr>
+        <tr><td>symbol</td><td>VARCHAR(16)</td><td>Trading symbol</td></tr>
+        <tr><td>features</td><td>JSONB</td><td>Feature snapshot used</td></tr>
+        <tr><td>prob_favorable</td><td>NUMERIC(5,4)</td><td>P(favorable next bar)</td></tr>
+        <tr><td>predicted_outcome</td><td>INT</td><td>1 = favorable, 0 = unfavorable</td></tr>
+        <tr><td>actual_outcome</td><td>INT</td><td>Filled on next bar close</td></tr>
+        <tr><td>hit</td><td>BOOLEAN</td><td>Predicted equals actual</td></tr>
+        <tr><td>dqs_at_predict</td><td>INT</td><td>DQS when prediction made</td></tr>
+        <tr><td>shadow_mode</td><td>BOOLEAN</td><td>True until trust criteria met</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">model_state <span class="badge badge-purple">Phase 3</span></div>
+    <p>Serialized River model checkpoints. Stores model type, training samples, rolling accuracy, Brier score, and shadow PnL.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>SERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>model_type</td><td>TEXT</td><td>river_hoeffding_tree or river_logistic</td></tr>
+        <tr><td>symbol</td><td>VARCHAR(16)</td><td>NULL for global model</td></tr>
+        <tr><td>serialized</td><td>BYTEA</td><td>Pickled model bytes</td></tr>
+        <tr><td>n_samples</td><td>INT</td><td>Training samples seen</td></tr>
+        <tr><td>accuracy</td><td>NUMERIC(5,4)</td><td>Rolling accuracy</td></tr>
+        <tr><td>brier_score</td><td>NUMERIC(5,4)</td><td>Calibration metric</td></tr>
+        <tr><td>shadow_pnl</td><td>NUMERIC(12,2)</td><td>Cumulative shadow PnL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">pipeline_trace <span class="badge badge-blue">Phase 4</span></div>
+    <p>One row per pipeline node per run. Granular timing and pass/fail for each stage: scan, score, predict, state, rank, gate, upsert, snapshot, invariants.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>BIGSERIAL PK</td><td>Row ID</td></tr>
+        <tr><td>run_time</td><td>TIMESTAMPTZ</td><td>Run timestamp</td></tr>
+        <tr><td>node</td><td>TEXT</td><td>Pipeline node name</td></tr>
+        <tr><td>status</td><td>TEXT</td><td>OK, FAIL, SKIP, WARN</td></tr>
+        <tr><td>duration_ms</td><td>INTEGER</td><td>Node execution time</td></tr>
+        <tr><td>in_count</td><td>INTEGER</td><td>Items entering node</td></tr>
+        <tr><td>out_count</td><td>INTEGER</td><td>Items leaving node</td></tr>
+        <tr><td>detail</td><td>JSONB</td><td>Diagnostic payload</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 2: MIGRATION -->
+<div class="tab-content" id="tab-2">
+  <h2>Migration Script</h2>
+  <p>The migration script <code>postgres/db_migration.py</code> runs automatically on first container startup via Docker's <code>docker-entrypoint-initdb.d</code> mechanism. It creates all tables, indexes, and constraints if they do not exist.</p>
+
+  <div class="card">
+    <div class="card-title">Migration Flow</div>
+    <ol>
+      <li>Load <code>.env</code> to get <code>DB_URL</code></li>
+      <li>Connect to PostgreSQL (tries port 5432, falls back to 6543)</li>
+      <li>Execute <code>NEW_TABLES_SQL</code> — creates all 10 tables with <code>IF NOT EXISTS</code></li>
+      <li>Update <code>signal_state</code> unique constraint from <code>(symbol)</code> to <code>(symbol, signal_bar_utc)</code></li>
+      <li>Add columns: <code>side</code>, <code>strategy</code>, <code>session</code> to <code>signal_state</code></li>
+      <li>Create all performance indexes</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Idempotency</div>
+    <p>All DDL uses <code>CREATE TABLE IF NOT EXISTS</code> and <code>ADD COLUMN IF NOT EXISTS</code>. The migration is safe to run multiple times. Existing data is never modified or deleted.</p>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Manual Migration</div>
+    To run the migration manually: <code>python postgres/db_migration.py</code>. Requires <code>DB_URL</code> in environment or <code>.env</code> file.
+  </div>
+</div>
+
+<!-- TAB 3: INDEXES -->
+<div class="tab-content" id="tab-3">
+  <h2>Indexes</h2>
+  <p>Performance indexes are created by the migration script. All use <code>IF NOT EXISTS</code> for idempotency.</p>
+
+  <div class="card">
+    <div class="card-title">Index Inventory</div>
+    <table>
+      <thead><tr><th>Index Name</th><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>idx_signal_state_symbol</td><td>signal_state</td><td>symbol</td><td>Filter by symbol</td></tr>
+        <tr><td>idx_signal_state_status</td><td>signal_state</td><td>status</td><td>Filter active signals</td></tr>
+        <tr><td>idx_signal_state_symbol_bar</td><td>signal_state</td><td>symbol, signal_bar_utc</td><td>Unique constraint + lookup</td></tr>
+        <tr><td>idx_signal_log_symbol_time</td><td>signal_state_log</td><td>symbol, run_time</td><td>History queries</td></tr>
+        <tr><td>idx_risk_ledger_symbol</td><td>risk_ledger</td><td>symbol</td><td>Risk per symbol</td></tr>
+        <tr><td>idx_risk_ledger_open</td><td>risk_ledger</td><td>is_open</td><td>Open risk total</td></tr>
+        <tr><td>idx_trade_count_date_session</td><td>trade_count_log</td><td>date, session</td><td>Daily/session counts</td></tr>
+        <tr><td>idx_portfolio_snapshot_time</td><td>portfolio_snapshot</td><td>run_time</td><td>Time-series queries</td></tr>
+        <tr><td>idx_error_log_source</td><td>error_log</td><td>source</td><td>Filter by component</td></tr>
+        <tr><td>idx_error_log_created</td><td>error_log</td><td>created_at</td><td>Recent errors</td></tr>
+        <tr><td>idx_heartbeat_run_time</td><td>pipeline_heartbeat</td><td>run_time DESC</td><td>Latest heartbeats</td></tr>
+        <tr><td>idx_heartbeat_status</td><td>pipeline_heartbeat</td><td>status</td><td>Filter OK/ERROR</td></tr>
+        <tr><td>idx_predictions_run_time</td><td>predictions</td><td>run_time DESC</td><td>Recent predictions</td></tr>
+        <tr><td>idx_predictions_symbol</td><td>predictions</td><td>symbol</td><td>Per-symbol lookup</td></tr>
+        <tr><td>idx_predictions_resolved</td><td>predictions</td><td>actual_outcome (partial)</td><td>Resolved predictions only</td></tr>
+        <tr><td>idx_model_state_type_symbol</td><td>model_state</td><td>model_type, symbol</td><td>Model lookup</td></tr>
+        <tr><td>idx_trace_run_time</td><td>pipeline_trace</td><td>run_time DESC</td><td>Recent traces</td></tr>
+        <tr><td>idx_trace_node</td><td>pipeline_trace</td><td>node</td><td>Per-node analysis</td></tr>
+        <tr><td>idx_trace_status</td><td>pipeline_trace</td><td>status</td><td>Filter failures</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 4: DOCKER CONFIG -->
+<div class="tab-content" id="tab-4">
+  <h2>Docker Configuration</h2>
+
+  <div class="card">
+    <div class="card-title">Service Definition</div>
+    <pre><code>postgres:
+  image: timescale/timescaledb:latest-pg15
+  container_name: vlthr-postgres
+  environment:
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-your_postgres_password}
+    - POSTGRES_DB=${POSTGRES_DB:-postgres}
+  volumes:
+    - vlthr_pgdata:/var/lib/postgresql/data
+    - ./postgres/db_migration.py:/docker-entrypoint-initdb.d/db_migration.py:ro
+  networks:
+    - vlthr-net
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "pg_isready", "-U", "postgres"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+    start_period: 30s</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Volume</div>
+    <p>Data is persisted in the named Docker volume <code>vlthr_pgdata</code>. This survives container rebuilds and restarts. The migration script is mounted read-only into <code>docker-entrypoint-initdb.d</code> and executes only on first database initialization.</p>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Health Check</div>
+    Docker healthcheck runs <code>pg_isready -U postgres</code> every 10 seconds. Other services (<code>data-ingestion</code>, <code>pipeline</code>, <code>ai-trader-engine</code>, <code>telegram</code>) depend on this health check passing before starting.
+  </div>
+</div>
+
+<!-- TAB 5: CONNECTIONS -->
+<div class="tab-content" id="tab-5">
+  <h2>Connection Configuration</h2>
+
+  <div class="card">
+    <div class="card-title">Connection String</div>
+    <p>All services connect using the <code>DB_URL</code> environment variable, set in <code>docker-compose.yml</code>:</p>
+    <pre><code>DB_URL=postgresql://postgres:${POSTGRES_PASSWORD:-your_postgres_password}@vlthr-postgres:5432/postgres</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Password</div>
+    <p>The password is read from <code>.env</code> as <code>POSTGRES_PASSWORD</code>. If not set, defaults to <code>your_postgres_password</code> for local development. Production deployments must set a strong password in <code>.env</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Network</div>
+    <p>All services connect via the <code>vlthr-dashboard-net</code> Docker bridge network. The PostgreSQL container is reachable at <code>vlthr-postgres:5432</code> from other containers. No external port is exposed.</p>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Fallback Port</div>
+    The migration script tries port 5432 first, then falls back to port 6543. This handles environments where PostgreSQL runs on a non-standard port.
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  VLTHR PostgreSQL Documentation · Generated Jul 2026 · <a href="../docker-compose.yml" style="color:var(--accent)">docker-compose.yml</a>
+</div>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.tab-content').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

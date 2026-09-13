@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLTHR Pipeline Audit — Jul 21, 2026</title>
+<style>
+  :root {
+    --bg: #0b0b0f; --card: #1c1c22; --border: #2a2a35;
+    --green: #28c840; --red: #ff5f57; --amber: #febc2e; --blue: #5b8def; --purple: #a78bfa;
+    --text: #e4e4e8; --muted: #8a8a96;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Outfit',system-ui,sans-serif; line-height:1.6; padding:24px; max-width:1100px; margin:0 auto; }
+  h1 { font-size:2rem; font-weight:700; color:#fff; margin-bottom:4px; }
+  h2 { font-size:1.35rem; font-weight:600; color:#fff; margin:32px 0 16px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+  h3 { font-size:1.05rem; font-weight:600; color:var(--blue); margin:20px 0 10px; }
+  .subtitle { color:var(--muted); font-size:0.9rem; margin-bottom:24px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .metric { text-align:center; padding:12px; }
+  .metric .value { font-size:1.8rem; font-weight:700; }
+  .metric .label { font-size:0.78rem; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.5px; }
+  .green { color:var(--green); } .red { color:var(--red); } .amber { color:var(--amber); } .blue { color:var(--blue); } .purple { color:var(--purple); }
+  table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+  th { text-align:left; padding:8px 12px; color:var(--muted); font-weight:500; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); }
+  td { padding:8px 12px; border-bottom:1px solid rgba(42,42,53,0.5); }
+  tr:hover td { background:rgba(255,255,255,0.02); }
+  .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:600; }
+  .badge-pass { background:rgba(40,200,64,0.15); color:var(--green); }
+  .badge-fail { background:rgba(255,95,87,0.15); color:var(--red); }
+  .badge-warn { background:rgba(254,188,46,0.15); color:var(--amber); }
+  .badge-info { background:rgba(91,141,239,0.15); color:var(--blue); }
+  .rec { border-left:3px solid var(--blue); padding:10px 14px; margin:8px 0; background:rgba(91,141,239,0.06); border-radius:0 8px 8px 0; }
+  .rec.crit { border-left-color:var(--red); background:rgba(255,95,87,0.06); }
+  .rec.warn { border-left-color:var(--amber); background:rgba(254,188,46,0.06); }
+  .rec .tag { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+  .rec .who { font-size:0.72rem; color:var(--muted); margin-left:8px; }
+  .section-toc { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+  .section-toc a { color:var(--blue); text-decoration:none; font-size:0.85rem; padding:6px 12px; border:1px solid var(--border); border-radius:6px; }
+  .section-toc a:hover { background:var(--card); }
+  hr { border:none; border-top:1px solid var(--border); margin:24px 0; }
+  .code { font-family:'JetBrains Mono',monospace; font-size:0.8rem; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<h1>VLTHR Pipeline Audit Report</h1>
+<p class="subtitle">Snapshot: July 21, 2026 14:50 UTC &middot; 51 paper trades &middot; 9 services &middot; 68 DB tables</p>
+
+<div class="section-toc">
+  <a href="#s1">1. Service Health</a>
+  <a href="#s2">2. Bybit DNS Fix</a>
+  <a href="#s3">3. Trade Performance</a>
+  <a href="#s4">4. Pipeline Gates</a>
+  <a href="#s5">5. Data Staleness</a>
+  <a href="#s6">6. Recommendations</a>
+  <a href="#s7">7. Action Items</a>
+</div>
+
+<!-- ====== SECTION 1: SERVICE HEALTH ====== -->
+<h2 id="s1">1. Service Health</h2>
+<div class="card">
+  <div class="grid3">
+    <div class="metric"><div class="value green">9/9</div><div class="label">Containers Running</div></div>
+    <div class="metric"><div class="value green">All</div><div class="label">Healthchecks Passing</div></div>
+    <div class="metric"><div class="value amber">1</div><div class="label">DNS Fix Applied</div></div>
+  </div>
+</div>
+
+<table>
+  <tr><th>Service</th><th>Status</th><th>Port</th><th>Notes</th></tr>
+  <tr><td>vlthr-postgres</td><td><span class="badge badge-pass">HEALTHY</span></td><td>5432</td><td>TimescaleDB PG15, 68 tables</td></tr>
+  <tr><td>vlthr-dashboard-redis</td><td><span class="badge badge-pass">UP</span></td><td>6379</td><td>Redis 7 Alpine</td></tr>
+  <tr><td>vlthr-data-ingestion</td><td><span class="badge badge-pass">HEALTHY</span></td><td>-</td><td>Ingesting 1m/5m/15m/30m/1h/4h/1d for 6 symbols</td></tr>
+  <tr><td>vlthr-bybit-ws</td><td><span class="badge badge-pass">HEALTHY</span></td><td>8200</td><td>WebSocket klines/tickers/orderbooks</td></tr>
+  <tr><td>vlthr-pipeline</td><td><span class="badge badge-pass">HEALTHY</span></td><td>8201:8200</td><td>5-min scan cadence, 12-gate approval</td></tr>
+  <tr><td>vlthr-dashboard-backend</td><td><span class="badge badge-pass">HEALTHY</span></td><td>3003:3001</td><td>Express API, Bybit client, HTTP 200</td></tr>
+  <tr><td>vlthr-dashboard-frontend</td><td><span class="badge badge-pass">HEALTHY</span></td><td>5175:80</td><td>Vite SPA + nginx, HTTP 200</td></tr>
+  <tr><td>ai-trader-engine</td><td><span class="badge badge-pass">HEALTHY</span></td><td>8002:8000</td><td>FastAPI, uvicorn</td></tr>
+  <tr><td>vlthr-telegram</td><td><span class="badge badge-pass">HEALTHY</span></td><td>-</td><td>Telegram alerts bot</td></tr>
+</table>
+
+<p style="margin-top:12px;font-size:0.82rem;color:var(--muted);">
+  All containers were in <span class="code">Exited (255)</span> state at session start (system restart). Restarted via <span class="code">systemctl restart docker</span> + <span class="code">docker compose up -d</span>. Zombie docker-proxy processes on ports 3003/5175 were killed. DNS fix applied to backend, pipeline, and bybit-ws services (see Section 2).
+</p>
+
+<!-- ====== SECTION 2: BYBIT DNS FIX ====== -->
+<h2 id="s2">2. Bybit Demo: Root Cause &amp; Fix</h2>
+
+<h3>Problem</h3>
+<div class="card">
+  <p>Frontend showed Bybit balance as <span class="code red">$0.00</span> with <span class="code">connected: true</span>. No Bybit trades visible. The <span class="code">GET /api/bybit/account</span> endpoint returned zero balance despite valid API keys.</p>
+</div>
+
+<h3>Root Cause</h3>
+<div class="card">
+  <p><strong>DNS resolution failure inside Docker containers.</strong></p>
+  <p>The host uses <span class="code">systemd-resolved</span> listening on <span class="code">127.0.0.53</span>. Docker copied this into container <span class="code">/etc/resolv.conf</span>, but <span class="code">127.0.0.53</span> is unreachable from inside containers. The Bybit client (<span class="code">bybit-client.cjs</span>) got <span class="code">EAI_AGAIN</span> / <span class="code">ECONNREFUSED</span> when resolving <span class="code">api-demo.bybit.com</span>. <span class="code">getWalletBalance()</span> returned <span class="code">null</span>, and the endpoint defaulted to <span class="code">0.00</span>.</p>
+</div>
+
+<h3>Fix Applied</h3>
+<div class="card">
+  <p>Added explicit DNS servers to 3 services in <span class="code">docker-compose.yml</span>:</p>
+  <table>
+    <tr><th>Service</th><th>DNS Added</th></tr>
+    <tr><td>vlthr-dashboard-backend</td><td><span class="code">8.8.8.8, 1.1.1.1</span></td></tr>
+    <tr><td>vlthr-pipeline</td><td><span class="code">8.8.8.8, 1.1.1.1</span></td></tr>
+    <tr><td>vlthr-bybit-ws</td><td><span class="code">8.8.8.8, 1.1.1.1</span></td></tr>
+  </table>
+</div>
+
+<h3>Verification</h3>
+<div class="card">
+  <div class="grid2">
+    <div class="metric"><div class="value green">$45,531</div><div class="label">Bybit USDT Balance</div></div>
+    <div class="metric"><div class="value green">$45,668</div><div class="label">Bybit Equity</div></div>
+  </div>
+  <p style="margin-top:12px;font-size:0.82rem;">1 open position: SOLUSDT LONG, entry $78.01, unrealized PnL +$137.21. All 3 Bybit API endpoints return HTTP 200.</p>
+</div>
+
+<!-- ====== SECTION 3: TRADE PERFORMANCE ====== -->
+<h2 id="s3">3. Trade Performance Analysis</h2>
+
+<div class="grid2">
+  <div class="card">
+    <h3 style="margin-top:0;">Paper Account</h3>
+    <div class="grid2">
+      <div class="metric"><div class="value">$10,351.71</div><div class="label">Balance</div></div>
+      <div class="metric"><div class="value">$6,631.57</div><div class="label">Equity</div></div>
+      <div class="metric"><div class="value">$3,720.14</div><div class="label">Margin Used</div></div>
+      <div class="metric"><div class="value green">+$356.98</div><div class="label">Realized PnL</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0;">Trade Stats (Closed Only)</h3>
+    <div class="grid2">
+      <div class="metric"><div class="value">33</div><div class="label">Closed Trades</div></div>
+      <div class="metric"><div class="value amber">48.48%</div><div class="label">Win Rate</div></div>
+      <div class="metric"><div class="value green">+$10.82</div><div class="label">Avg PnL/Trade</div></div>
+      <div class="metric"><div class="value green">+0.46%</div><div class="label">Avg PnL %</div></div>
+    </div>
+  </div>
+</div>
+
+<h3>Per-Symbol Breakdown</h3>
+<table>
+  <tr><th>Symbol</th><th>Side</th><th>Total</th><th>Closed</th><th>W</th><th>L</th><th>Win Rate</th><th>Total PnL</th><th>Avg PnL%</th><th>Avg DQS</th></tr>
+  <tr><td>BTCUSDT</td><td>LONG</td><td>18</td><td>3</td><td>2</td><td>1</td><td>66.7%</td><td class="green">+$59.34</td><td>+1.09%</td><td>65.8</td></tr>
+  <tr><td>BTCUSDT</td><td>SHORT</td><td>7</td><td>6</td><td>2</td><td>4</td><td>33.3%</td><td class="red">-$19.07</td><td>-0.66%</td><td>69.9</td></tr>
+  <tr><td>XRPUSDT</td><td>LONG</td><td>5</td><td>5</td><td>1</td><td>4</td><td>20.0%</td><td class="red">-$73.93</td><td>-1.17%</td><td>68.6</td></tr>
+  <tr><td>SOLUSDT</td><td>LONG</td><td>5</td><td>5</td><td>3</td><td>2</td><td>60.0%</td><td class="red">-$280.95</td><td>+0.29%</td><td>70.0</td></tr>
+  <tr><td>ETHUSDT</td><td>SHORT</td><td>4</td><td>4</td><td>2</td><td>2</td><td>50.0%</td><td class="green">+$8.26</td><td>+0.41%</td><td>71.3</td></tr>
+  <tr><td>BNBUSDT</td><td>LONG</td><td>4</td><td>3</td><td>1</td><td>2</td><td>33.3%</td><td class="red">-$10.95</td><td>-0.73%</td><td>62.5</td></tr>
+  <tr><td>SOLUSDT</td><td>SHORT</td><td>3</td><td>3</td><td>3</td><td>0</td><td class="green">100%</td><td class="green">+$64.70</td><td>+4.32%</td><td>66.7</td></tr>
+  <tr><td>ETHUSDT</td><td>LONG</td><td>3</td><td>2</td><td>1</td><td>1</td><td>50.0%</td><td class="green">+$600.32</td><td>+2.96%</td><td>65.0</td></tr>
+  <tr><td>XRPUSDT</td><td>SHORT</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0.0%</td><td class="red">-$12.57</td><td>-2.51%</td><td>66.0</td></tr>
+  <tr><td>BNBUSDT</td><td>SHORT</td><td>1</td><td>1</td><td>1</td><td>0</td><td class="green">100%</td><td class="green">+$21.83</td><td>+4.37%</td><td>77.0</td></tr>
+</table>
+
+<h3>Bybit Execution Gap</h3>
+<div class="card">
+  <div class="grid3">
+    <div class="metric"><div class="value red">47/51</div><div class="label">Trades Missing Bybit Order</div></div>
+    <div class="metric"><div class="value">4</div><div class="label">Bybit Closed Trades</div></div>
+    <div class="metric"><div class="value green">+$2,065.85</div><div class="label">Bybit Total PnL</div></div>
+  </div>
+  <p style="margin-top:12px;font-size:0.82rem;">
+    Only 4 of 51 paper trades have a corresponding Bybit order. 47 trades have <span class="code">bybit_status = NULL</span> or <span class="code">PENDING</span>. The pipeline's dual-execution path (PENDING &rarr; OPEN) is not placing Bybit orders for most signals. The 4 that did execute show 75% WR and +$2,065.85 PnL, suggesting the execution logic works when triggered.
+  </p>
+</div>
+
+<!-- ====== SECTION 4: PIPELINE GATES ====== -->
+<h2 id="s4">4. Pipeline Gate Health</h2>
+
+<div class="card">
+  <h3 style="margin-top:0;">Last 2 Hours — Pipeline Trace</h3>
+  <table>
+    <tr><th>Node</th><th>Status</th><th>Count</th><th>Avg Duration</th><th>Assessment</th></tr>
+    <tr><td>scan</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>14,426 ms</td><td>Slow but passing. 14s scan time is high.</td></tr>
+    <tr><td>pre_flight</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>368 ms</td><td>4 passes out of 22 attempts</td></tr>
+    <tr><td>pre_flight</td><td><span class="badge badge-fail">FAIL</span></td><td>18</td><td>0 ms</td><td class="red"><strong>82% failure rate</strong> — primary blocker</td></tr>
+    <tr><td>rank</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>57 ms</td><td>Passing</td></tr>
+    <tr><td>gate</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>0 ms</td><td>12-gate loop passing for survivors</td></tr>
+    <tr><td>state</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>41 ms</td><td>Signal state updates</td></tr>
+    <tr><td>invariants</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>21 ms</td><td>Risk checks passing</td></tr>
+    <tr><td>upsert</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>0 ms</td><td>DB writes</td></tr>
+    <tr><td>snapshot</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>0 ms</td><td>Portfolio snapshot</td></tr>
+    <tr><td>cleanup</td><td><span class="badge badge-pass">OK</span></td><td>4</td><td>6 ms</td><td>Expired signal cleanup</td></tr>
+  </table>
+</div>
+
+<h3>Decision Events (Last 25)</h3>
+<div class="card">
+  <table>
+    <tr><th>Symbol</th><th>Side</th><th>Strategy</th><th>DQS</th><th>Live</th><th>Shadow</th><th>DQ Score</th><th>Crowded</th><th>Vetoed</th></tr>
+    <tr><td>BTCUSDT</td><td>LONG</td><td>trend_following</td><td>57</td><td><span class="badge badge-pass">APPROVED</span></td><td><span class="badge badge-warn">REDUCED</span></td><td>60</td><td>f</td><td>f</td></tr>
+    <tr><td>ETHUSDT</td><td>LONG</td><td>trend_following</td><td>57</td><td><span class="badge badge-pass">APPROVED</span></td><td><span class="badge badge-warn">REDUCED</span></td><td>68</td><td class="amber">t</td><td>f</td></tr>
+    <tr><td>XRPUSDT</td><td>SHORT</td><td>trend_following</td><td>85</td><td><span class="badge badge-pass">APPROVED</span></td><td><span class="badge badge-fail">VETOED</span></td><td>60</td><td>f</td><td class="red">t</td></tr>
+    <tr><td>XRPUSDT</td><td>SHORT</td><td>mean_reversion</td><td>52</td><td><span class="badge badge-pass">APPROVED</span></td><td><span class="badge badge-warn">REDUCED</span></td><td>79</td><td>f</td><td>f</td></tr>
+  </table>
+  <p style="margin-top:12px;font-size:0.82rem;color:var(--muted);">
+    Pattern: BTCUSDT + ETHUSDT both LONG trend_following trigger crowding detection (same cluster). XRPUSDT DQS=85 correctly vetoed by V7 rule. Most decisions get shadow=REDUCED (Kelly &times; 0.50 from crowding). Data quality scores hover at 60-79, barely above the 60 threshold.
+  </p>
+</div>
+
+<h3>Gate-by-Gate Assessment</h3>
+<table>
+  <tr><th>#</th><th>Gate</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>0</td><td>Pre-flight (data freshness)</td><td><span class="badge badge-fail">82% FAIL</span></td><td class="red">Data 46-86 min stale across all 5 symbols. This is the primary blocker.</td></tr>
+  <tr><td>1</td><td>Scan / V2 Filters</td><td><span class="badge badge-pass">PASS</span></td><td>4 scans passing per 2hr window. RSI momentum fix (Jul 19) still in place.</td></tr>
+  <tr><td>2</td><td>Ranker</td><td><span class="badge badge-pass">PASS</span></td><td>DQS scores 52-85 range. Mean 65.8 across all trades.</td></tr>
+  <tr><td>3</td><td>V7 Kelly</td><td><span class="badge badge-pass">PASS</span></td><td>DQS&ge;85 veto working (XRPUSDT SHORT correctly blocked).</td></tr>
+  <tr><td>4</td><td>Disabled Symbols</td><td><span class="badge badge-pass">PASS</span></td><td>All 6 symbols active. DOGEUSDT being ingested but not traded.</td></tr>
+  <tr><td>5</td><td>Regime Gate</td><td><span class="badge badge-pass">PASS</span></td><td>Regime router active. MIXED regime on most signals.</td></tr>
+  <tr><td>6</td><td>Data Quality Gate</td><td><span class="badge badge-warn">MARGINAL</span></td><td>Scores 60-79, barely above 60 threshold. Data staleness drags freshness component.</td></tr>
+  <tr><td>7</td><td>Correlation Guard</td><td><span class="badge badge-pass">PASS</span></td><td>Crowding detection working. BTC+ETH LONG both flagged.</td></tr>
+  <tr><td>8</td><td>Trade Count</td><td><span class="badge badge-pass">PASS</span></td><td>2 active trades, well below 8 max.</td></tr>
+  <tr><td>9</td><td>Directional</td><td><span class="badge badge-pass">PASS</span></td><td>Mixed LONG/SHORT balance.</td></tr>
+  <tr><td>10</td><td>Risk Budget</td><td><span class="badge badge-pass">PASS</span></td><td>0.95% total open risk. Well below 12% max.</td></tr>
+  <tr><td>11</td><td>Calibration</td><td><span class="badge badge-pass">PASS</span></td><td>Threshold 0.40. Most signals passing.</td></tr>
+</table>
+
+<!-- ====== SECTION 5: DATA STALENESS ====== -->
+<h2 id="s5">5. Data Staleness — Critical Issue</h2>
+
+<div class="card" style="border-color:var(--red);">
+  <h3 style="margin-top:0;color:var(--red);">CRITICAL: All Symbols 46-86 Minutes Stale</h3>
+  <p>Error logs show escalating staleness across all 5 traded symbols:</p>
+  <table>
+    <tr><th>Timestamp</th><th>BTC</th><th>ETH</th><th>SOL</th><th>XRP</th><th>BNB</th></tr>
+    <tr><td>~13:00 UTC</td><td class="red">46m</td><td class="red">51m</td><td class="red">43m</td><td class="red">49m</td><td class="red">48m</td></tr>
+    <tr><td>~13:30 UTC</td><td class="red">76m</td><td class="red">81m</td><td class="red">73m</td><td class="red">79m</td><td class="red">78m</td></tr>
+  </table>
+  <p style="margin-top:12px;">This causes:</p>
+  <ul style="margin-left:20px;font-size:0.85rem;">
+    <li><strong>82% pre-flight failure rate</strong> — 18 of 22 scans rejected before reaching gates</li>
+    <li><strong>Signal expiry</strong> — high-confidence signals (DQS 78, 79, 85) expire as "stale (>45min)" before execution</li>
+    <li><strong>Circuit breaker trips</strong> — 11+ warnings in last hour</li>
+    <li><strong>No new trades</strong> — portfolio frozen at 2 active trades for hours</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Current Ingestion Status</h3>
+  <p>Ingestion is <span class="green">currently working</span> — all recent fetches show <span class="code">status=ok</span>, <span class="code">gaps_found=0</span>. The staleness errors were from the Docker restart window (~50 min downtime). The pipeline's freshness threshold (45 min for 15m bars) was exceeded during the outage, and the pipeline hasn't recovered because:</p>
+  <ol style="margin-left:20px;font-size:0.85rem;">
+    <li>Pre-flight rejects stale data before it reaches the scan</li>
+    <li>Signals that were generated before the outage expired during the downtime</li>
+    <li>New signals need fresh 15m bar data, which takes 1-2 cycles to accumulate post-restart</li>
+  </ol>
+</div>
+
+<!-- ====== SECTION 6: RECOMMENDATIONS ====== -->
+<h2 id="s6">6. Recommendations for Development Agents</h2>
+
+<h3>6.1 Pipeline Agent — CRITICAL</h3>
+
+<div class="rec crit">
+  <span class="tag red">CRITICAL</span><span class="who">Pipeline Agent</span>
+  <p><strong>Fix pre-flight recovery after Docker restart.</strong> When all containers restart, the pipeline should detect the cold-start condition and either (a) bypass freshness checks for the first 2 cycles, or (b) use a graduated freshness threshold that starts宽松 and tightens over 30 minutes. Currently the pipeline enters a death spiral: data is stale &rarr; pre-flight fails &rarr; no signals generated &rarr; no trades &rarr; circuit breaker trips.</p>
+  <p><strong>Implementation:</strong> Add a <span class="code">cold_start_grace_cycles</span> config (default 3) to <span class="code">portfolio_config.py</span>. During grace period, set <span class="code">bar_max_age_min</span> to 120 instead of 20. Decrement each cycle.</p>
+</div>
+
+<div class="rec crit">
+  <span class="tag red">CRITICAL</span><span class="who">Pipeline Agent</span>
+  <p><strong>Investigate Bybit execution gap.</strong> 47 of 51 trades have no Bybit order. The dual-execution path at PENDING &rarr; OPEN is either not being reached or failing silently. Check <span class="code">portfolio_orchestrator.py</span> lines 655-729 for try/except that may be swallowing Bybit placement errors. Add explicit logging for every Bybit order attempt (success and failure).</p>
+  <p><strong>Implementation:</strong> Add <span class="code">logger.info(f"BYBIT_ORDER: symbol={s} side={d} qty={q} result={r}")</span> at each placement attempt. Check if the DNS fix resolves this going forward.</p>
+</div>
+
+<div class="rec warn">
+  <span class="tag amber">WARNING</span><span class="who">Pipeline Agent</span>
+  <p><strong>Scan duration is 14.4 seconds.</strong> This is high for a 5-minute cadence. Profile the scan step to identify bottlenecks. If scan time exceeds 60 seconds, it will overlap with the next cycle. Consider parallelizing per-symbol scans or optimizing the V2 filter path.</p>
+</div>
+
+<h3>6.2 Data Ingestion Agent</h3>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">Ingestion Agent</span>
+  <p><strong>Add 15m bar freshness monitoring.</strong> The pipeline depends on 15m bars being &le;45 min old. Add a healthcheck endpoint or metric that reports the age of the newest 15m bar per symbol. If any symbol exceeds 30 min, trigger an alert before the pipeline fails.</p>
+</div>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">Ingestion Agent</span>
+  <p><strong>DOGEUSDT is being ingested but not traded.</strong> Either add DOGEUSDT to the trading universe (if backtest supports it) or stop ingesting it to save bandwidth and processing time. 6 symbols &times; 7 timeframes = 42 fetches per cycle.</p>
+</div>
+
+<h3>6.3 Backend Agent</h3>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">Backend Agent</span>
+  <p><strong>Add DNS healthcheck.</strong> The DNS failure was silent — the Bybit client returned <span class="code">null</span> and the endpoint defaulted to <span class="code">0.00</span>. Add a <span class="code">GET /api/bybit/health</span> endpoint that tests actual API connectivity and reports DNS resolution status, latency, and whether the wallet balance call succeeded.</p>
+</div>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">Backend Agent</span>
+  <p><strong>Add <span class="code">bybit_status</span> to paper_trades query.</strong> The <span class="code">/api/bybit/trades</span> endpoint should include a filter for trades where <span class="code">bybit_status IS NULL</span> (execution gap) so the frontend can surface which signals never reached Bybit.</p>
+</div>
+
+<h3>6.4 Frontend Agent</h3>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">Frontend Agent</span>
+  <p><strong>Build the DEMO tab per handoff spec.</strong> The Bybit data is now flowing. Implement <span class="code">DemoPage.tsx</span> following <span class="code">docs/memory/2026-07-19-frontend-bybit-handoff.md</span>. Account comparison cards (Bybit vs Paper), Open/Closed/Compare sub-tabs, PnL shown as percentage first. Polling-based data fetching. Follow existing PaperPage patterns.</p>
+</div>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">Frontend Agent</span>
+  <p><strong>Add pipeline health indicator.</strong> Show pre-flight pass rate, data freshness per symbol, and circuit breaker status on the dashboard. A simple green/amber/red dot per symbol based on bar age would surface staleness issues immediately.</p>
+</div>
+
+<h3>6.5 DevOps / Infrastructure Agent</h3>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">DevOps Agent</span>
+  <p><strong>Add DNS config to remaining services.</strong> Only backend, pipeline, and bybit-ws got DNS servers. The ai-trader-engine, telegram, and data-ingestion services may also need external network access. Add <span class="code">dns: [8.8.8.8, 1.1.1.1]</span> to all services in <span class="code">docker-compose.yml</span> that make outbound HTTP requests.</p>
+</div>
+
+<div class="rec">
+  <span class="tag blue">ACTION</span><span class="who">DevOps Agent</span>
+  <p><strong>Add Docker healthcheck for DNS.</strong> Add a healthcheck that runs <span class="code">node -e "require('dns').resolve('api-demo.bybit.com', ...)"</span> on the backend container. This would have caught the DNS failure immediately instead of silently returning zero balance.</p>
+</div>
+
+<!-- ====== SECTION 7: ACTION ITEMS ====== -->
+<h2 id="s7">7. Prioritized Action Items</h2>
+
+<table>
+  <tr><th>Priority</th><th>Agent</th><th>Action</th><th>Effort</th><th>Impact</th></tr>
+  <tr>
+    <td><span class="badge badge-fail">P0</span></td>
+    <td>Pipeline</td>
+    <td>Add cold-start grace period for pre-flight freshness checks</td>
+    <td>Small</td>
+    <td>Eliminates 82% failure rate after restarts</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-fail">P0</span></td>
+    <td>Pipeline</td>
+    <td>Add explicit logging to Bybit dual-execution path; verify DNS fix resolves execution gap</td>
+    <td>Small</td>
+    <td>47 missing Bybit orders</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-warn">P1</span></td>
+    <td>Backend</td>
+    <td>Add <span class="code">GET /api/bybit/health</span> with DNS + API connectivity test</td>
+    <td>Small</td>
+    <td>Prevents silent failures</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-warn">P1</span></td>
+    <td>DevOps</td>
+    <td>Add DNS servers to all remaining services in docker-compose.yml</td>
+    <td>Small</td>
+    <td>Prevents future DNS failures</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-warn">P1</span></td>
+    <td>Frontend</td>
+    <td>Build DemoPage.tsx with Bybit vs Paper comparison</td>
+    <td>Medium</td>
+    <td>Bybit data now flowing, needs UI</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-info">P2</span></td>
+    <td>Ingestion</td>
+    <td>Add 15m bar freshness metric + alert at 30 min threshold</td>
+    <td>Small</td>
+    <td>Early warning for pipeline failures</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-info">P2</span></td>
+    <td>Pipeline</td>
+    <td>Profile and optimize scan step (currently 14.4s)</td>
+    <td>Medium</td>
+    <td>Headroom for 5-min cadence</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-info">P2</span></td>
+    <td>Frontend</td>
+    <td>Add pipeline health indicator (pre-flight rate, bar age per symbol)</td>
+    <td>Small</td>
+    <td>Operator visibility</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-info">P2</span></td>
+    <td>Ingestion</td>
+    <td>Decide: add DOGEUSDT to trading or stop ingesting it</td>
+    <td>Small</td>
+    <td>Clean up unused data</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-info">P2</span></td>
+    <td>Backend</td>
+    <td>Add <span class="code">bybit_status IS NULL</span> filter to trades endpoint</td>
+    <td>Small</td>
+    <td>Surfaces execution gap in UI</td>
+  </tr>
+</table>
+
+<hr>
+
+<h2>Summary</h2>
+
+<div class="card">
+  <div class="grid2">
+    <div>
+      <h3 style="margin-top:0;color:var(--red);">What's Broken</h3>
+      <ul style="font-size:0.85rem;">
+        <li>Pre-flight 82% failure rate — data staleness after Docker restart</li>
+        <li>47/51 trades missing Bybit execution — dual-execution gap</li>
+        <li>Pipeline frozen at 2 active trades for hours</li>
+        <li>Circuit breaker tripping repeatedly</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-top:0;color:var(--green);">What's Working</h3>
+      <ul style="font-size:0.85rem;">
+        <li>All 9 services healthy after DNS fix</li>
+        <li>Bybit API returning balance ($45,531) and positions</li>
+        <li>DQS&ge;85 veto correctly blocking overconfident signals</li>
+        <li>Crowding detection correctly flagging BTC+ETH LONG</li>
+        <li>Ingestion running clean (all ok, no gaps)</li>
+        <li>Risk budget at 0.95% — well within limits</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="text-align:center;">
+  <p style="font-size:0.9rem;color:var(--muted);">
+    CSV exports: <span class="code">exports/csv_snapshot_20260721/</span> (27 files, all tables with data)<br>
+    Report generated: July 21, 2026 14:55 UTC &middot; VLTHR v3 DEVOPS
+  </p>
+</div>
+
+</body>
+</html>

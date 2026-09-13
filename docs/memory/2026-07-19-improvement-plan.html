@@ -1,0 +1,1061 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>VLTHR Improvement Plan</title>
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/bb5de19d87c09a95216dc6ccd96e37c6?family=Nimbus+Sans+TW01" />
+  <style>
+    :root {
+      --font-sans: 'Nimbus Sans TW01', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+      /* Dark mode palette */
+      --bg-body: #0b0b0f;
+      --bg-phone: #141418;
+      --bg-card: #1c1c22;
+      --bg-card-hover: #22222a;
+      --bg-elevated: #28282f;
+      --border-subtle: rgba(255,255,255,0.06);
+      --border-default: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.16);
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #6b6b76;
+      --text-muted: #4a4a55;
+      --accent-green: #28c840;
+      --accent-red: #ff5f57;
+      --accent-amber: #febc2e;
+      --accent-blue: #5b8def;
+      --accent-purple: #a78bfa;
+      --dash-bg: #1a1a1c;
+      --dash-titlebar: #242427;
+      --traffic-red: #ff5f57;
+      --traffic-amber: #febc2e;
+      --traffic-green: #28c840;
+      --topbar-height: 56px;
+      --bottom-tabs-height: 64px;
+      --radius-pill: 9999px;
+      --easing: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-body);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;
+      max-height: 932px;
+      background: var(--bg-phone);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (min-width: 768px) {
+      .phone {
+        height: 90vh;
+        border-radius: 44px;
+        border: 12px solid #050507;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+      }
+    }
+
+    .landscape {
+      display: none;
+      position: fixed; inset: 0; z-index: 1000;
+      background: var(--bg-body); color: #fff;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 24px; font-size: 18px;
+    }
+    @media (orientation: landscape) and (max-height: 500px) {
+      .landscape { display: flex; }
+      .phone { display: none; }
+    }
+
+    .icon { flex-shrink: 0; color: currentColor; }
+    .icon, .icon use { color: currentColor; }
+
+    /* ── Topbar ─────────────────────────────────────────────── */
+    .topbar {
+      flex-shrink: 0;
+      height: var(--topbar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: rgba(20,20,24,0.88);
+      backdrop-filter: blur(20px) saturate(1.8);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 50;
+      animation: fade-down 0.7s var(--easing) both;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-primary); text-decoration: none;
+      font-size: 17px; font-weight: 500; letter-spacing: -0.02em;
+    }
+    .logo { width: 22px; height: 22px; color: var(--text-primary); }
+    .hamburger {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: none; background: transparent;
+      color: var(--text-primary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .hamburger:hover { background: rgba(255,255,255,0.08); }
+    .hamburger[aria-expanded="true"] .icon-menu { display: none; }
+    .hamburger[aria-expanded="false"] .icon-close { display: none; }
+
+    .mobile-menu {
+      position: absolute; left: 16px; right: 16px; top: var(--topbar-height);
+      z-index: 40;
+      background: rgba(28,28,34,0.92);
+      backdrop-filter: blur(24px) saturate(1.8);
+      border: 1px solid var(--border-default);
+      border-radius: 20px; padding: 8px 0;
+      transform-origin: top center;
+      transform: scaleY(0); opacity: 0; pointer-events: none;
+      transition: transform 0.25s var(--easing), opacity 0.2s ease;
+    }
+    .mobile-menu.open { transform: scaleY(1); opacity: 1; pointer-events: auto; }
+    .mobile-menu a, .mobile-menu button {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 12px 20px;
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 15px; border: none; background: transparent;
+      border-bottom: 1px solid var(--border-subtle); cursor: pointer;
+    }
+    .mobile-menu a:last-of-type, .mobile-menu button:last-child { border-bottom: none; }
+    .menu-cta {
+      margin: 10px 20px 0; width: calc(100% - 40px);
+      justify-content: center; border-radius: var(--radius-pill);
+      background: var(--text-primary); color: var(--bg-phone);
+      font-weight: 500; padding: 10px;
+    }
+
+    /* ── Scroll / Panels ────────────────────────────────────── */
+    .scroll {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      position: relative; scroll-behavior: smooth;
+    }
+    .tab-panel { display: none; animation: tab-in 0.35s var(--easing); }
+    .tab-panel.active { display: block; }
+    .page-pad { padding: 20px; }
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 340px;
+      background: linear-gradient(160deg, #1a1a22 0%, #0e0e12 100%);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; padding: 24px;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(91,141,239,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 20; width: 100%; max-width: 390px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,95,87,0.12); color: var(--accent-red);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 12px; border-radius: var(--radius-pill);
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,95,87,0.2);
+      opacity: 0; animation: fade-up 0.8s var(--easing) both;
+    }
+    .headline {
+      font-weight: 400; line-height: 1.05; letter-spacing: -0.04em;
+      color: var(--text-primary); font-size: clamp(34px, 10vw, 46px);
+    }
+    .headline .line { opacity: 0; animation: fade-up 0.9s var(--easing) both; }
+    .headline .line.delay-1 { animation-delay: 100ms; }
+    .hero-description {
+      margin-top: 18px; color: var(--text-secondary);
+      font-size: 15px; line-height: 1.55;
+      max-width: 320px; margin-left: auto; margin-right: auto;
+      opacity: 0; animation: fade-up 0.9s var(--easing) 0.22s both;
+    }
+    .cta-row {
+      margin-top: 18px; display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: center; gap: 10px;
+      opacity: 0; animation: fade-up 0.9s var(--easing) 0.34s both;
+    }
+    .btn-primary, .btn-secondary {
+      font-family: inherit; font-size: 14px; font-weight: 500;
+      padding: 11px 24px; border-radius: var(--radius-pill);
+      border: none; cursor: pointer;
+      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+    .btn-primary { background: var(--text-primary); color: var(--bg-phone); }
+    .btn-primary:hover { background: #e0e0e4; box-shadow: 0 6px 18px rgba(255,255,255,0.1); }
+    .btn-secondary {
+      background: transparent; color: var(--text-secondary);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.06); }
+
+    /* ── Dashboard Chrome ───────────────────────────────────── */
+    .dashboard-wrap {
+      width: 92%; margin: -40px auto 24px;
+      position: relative; z-index: 15;
+      opacity: 0; animation: hero-rise 1.1s var(--easing) 0.46s both;
+    }
+    @media (min-width: 768px) { .dashboard-wrap { margin-top: -56px; } }
+    .dash-chrome {
+      border-radius: 16px 16px 0 0; overflow: hidden;
+      background: var(--dash-bg);
+      box-shadow: 0 -20px 80px rgba(0,0,0,0.5);
+      border: 1px solid var(--border-default);
+      color: #fff;
+    }
+    .dash-titlebar {
+      background: var(--dash-titlebar);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 8px 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .traffic-lights { display: flex; gap: 6px; }
+    .traffic-lights span { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-url {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+      background: #1a1a1c; border-radius: 6px; padding: 4px 10px;
+      color: rgba(255,255,255,0.55); font-size: 10px;
+    }
+    .dash-actions { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.4); }
+    .dash-body { display: flex; min-height: 200px; }
+    .dash-body.wide { display: block; padding: 16px; }
+
+    .status-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    }
+    .status-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 14px 8px; text-align: center;
+    }
+    .status-card .value { font-size: 22px; font-weight: 500; color: #fff; letter-spacing: -0.02em; }
+    .status-card .label { font-size: 9px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .status-ok { color: var(--accent-green); }
+    .status-warn { color: var(--accent-amber); }
+    .status-critical { color: var(--accent-red); }
+
+    /* ── Page Content ───────────────────────────────────────── */
+    .page-title { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; color: var(--text-primary); margin-bottom: 16px; }
+    .section-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5; }
+
+    .accordion {
+      border: 1px solid var(--border-default);
+      border-radius: 16px; overflow: hidden;
+      background: var(--bg-card); margin-bottom: 10px;
+    }
+    .accordion summary {
+      list-style: none; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; cursor: pointer; font-weight: 500; color: var(--text-primary);
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary .chevron { transition: transform 0.25s var(--easing); color: var(--text-tertiary); }
+    .accordion[open] summary .chevron { transform: rotate(180deg); }
+    .accordion-body { padding: 0 16px 16px; color: var(--text-secondary); font-size: 14px; line-height: 1.55; }
+    .accordion-body p, .accordion-body ul { margin-bottom: 10px; }
+    .accordion-body ul { padding-left: 18px; }
+    .accordion-body li { margin-bottom: 6px; }
+    .accordion-body code {
+      font-family: var(--font-mono); font-size: 12px;
+      background: rgba(255,255,255,0.06); padding: 2px 5px;
+      border-radius: 4px; color: var(--accent-blue);
+    }
+    .accordion-body strong { color: var(--text-primary); }
+
+    /* ── Metric Cards ───────────────────────────────────────── */
+    .metric-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;
+    }
+    .metric-card {
+      border: 1px solid var(--border-default);
+      border-radius: 12px; padding: 12px;
+      background: var(--bg-card);
+    }
+    .metric-card .value { font-size: 18px; font-weight: 500; color: var(--text-primary); }
+    .metric-card .label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
+
+    /* ── Param List ─────────────────────────────────────────── */
+    .param-list { display: flex; flex-direction: column; gap: 8px; }
+    .param-row { display: flex; justify-content: space-between; font-size: 13px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+    .param-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .param-label { color: var(--text-secondary); }
+    .param-value { color: var(--text-primary); font-weight: 500; }
+
+    /* ── Tables ─────────────────────────────────────────────── */
+    .prod-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    .prod-table th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); padding: 8px 6px; border-bottom: 1px solid var(--border-default); }
+    .prod-table td { padding: 8px 6px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+    .prod-table tr:last-child td { border-bottom: none; }
+    .pnl-pos { color: var(--accent-green); font-weight: 500; }
+    .pnl-neg { color: var(--accent-red); font-weight: 500; }
+
+    /* ── Badges ─────────────────────────────────────────────── */
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill); letter-spacing: 0.04em; }
+    .badge-critical { background: rgba(255,95,87,0.15); color: var(--accent-red); border: 1px solid rgba(255,95,87,0.25); }
+    .badge-major { background: rgba(254,188,46,0.15); color: var(--accent-amber); border: 1px solid rgba(254,188,46,0.25); }
+    .badge-minor { background: rgba(91,141,239,0.15); color: var(--accent-blue); border: 1px solid rgba(91,141,239,0.25); }
+    .badge-ok { background: rgba(40,200,64,0.15); color: var(--accent-green); border: 1px solid rgba(40,200,64,0.25); }
+
+    /* ── Code Block ─────────────────────────────────────────── */
+    .code-block {
+      background: #0e0e12; border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 14px; margin: 10px 0;
+      font-family: var(--font-mono); font-size: 12px; line-height: 1.6;
+      color: var(--text-secondary); overflow-x: auto;
+      white-space: pre;
+    }
+    .code-block .kw { color: var(--accent-purple); }
+    .code-block .fn { color: var(--accent-blue); }
+    .code-block .num { color: var(--accent-amber); }
+    .code-block .str { color: var(--accent-green); }
+    .code-block .comment { color: var(--text-muted); }
+
+    /* ── Priority List ──────────────────────────────────────── */
+    .priority-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid var(--border-subtle);
+    }
+    .priority-item:last-child { border-bottom: none; }
+    .priority-num {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600;
+      background: var(--bg-elevated); color: var(--text-primary);
+      border: 1px solid var(--border-default);
+    }
+    .priority-num.urgent { background: rgba(255,95,87,0.15); color: var(--accent-red); border-color: rgba(255,95,87,0.3); }
+    .priority-body { flex: 1; }
+    .priority-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+    .priority-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ── Callout ────────────────────────────────────────────── */
+    .callout {
+      border-radius: 12px; padding: 14px; margin: 10px 0;
+      font-size: 13px; line-height: 1.5;
+    }
+    .callout-warn {
+      background: rgba(254,188,46,0.08); border: 1px solid rgba(254,188,46,0.2);
+      color: var(--accent-amber);
+    }
+    .callout-danger {
+      background: rgba(255,95,87,0.08); border: 1px solid rgba(255,95,87,0.2);
+      color: var(--accent-red);
+    }
+    .callout-info {
+      background: rgba(91,141,239,0.08); border: 1px solid rgba(91,141,239,0.2);
+      color: var(--accent-blue);
+    }
+    .callout strong { color: inherit; }
+
+    /* ── Bottom Tabs ────────────────────────────────────────── */
+    .bottom-tabs {
+      flex-shrink: 0; height: var(--bottom-tabs-height);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      display: flex; justify-content: space-around; align-items: center;
+      background: rgba(20,20,24,0.92);
+      backdrop-filter: blur(20px) saturate(1.8);
+      border-top: 1px solid var(--border-subtle);
+      z-index: 50;
+    }
+    .tab-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      border: none; background: transparent;
+      color: var(--text-tertiary);
+      font-size: 9px; font-weight: 600; letter-spacing: 0.04em;
+      padding: 8px 0; cursor: pointer; position: relative; font-family: inherit;
+    }
+    .tab-btn svg { width: 20px; height: 20px; transition: transform 0.2s var(--easing); }
+    .tab-btn.active { color: var(--text-primary); }
+    .tab-btn.active svg { transform: translateY(-2px); }
+    .tab-btn::after {
+      content: ''; position: absolute; bottom: 5px;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--text-primary); opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .tab-btn.active::after { opacity: 1; }
+
+    /* ── Modal ──────────────────────────────────────────────── */
+    .app-modal {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      margin: 0; border: none; padding: 0; border-radius: 24px;
+      background: transparent; max-width: 340px; width: 88%;
+    }
+    .app-modal::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .modal-card {
+      background: var(--bg-card); border: 1px solid var(--border-default);
+      border-radius: 24px; padding: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .modal-title { font-size: 20px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+    .modal-text { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; }
+    .modal-list { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+    .modal-list li { display: flex; gap: 8px; }
+    .modal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-red); margin-top: 7px; flex-shrink: 0; }
+    .modal-close {
+      margin-top: 16px; width: 100%; border: none;
+      background: transparent; color: var(--text-secondary);
+      font-size: 14px; cursor: pointer; padding: 10px; font-family: inherit;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes fade-down {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(64px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes tab-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="landscape">
+    <p>Please rotate your device to portrait mode.</p>
+  </div>
+
+  <svg style="display:none;" aria-hidden="true">
+    <symbol id="icon-logo" viewBox="0 0 256 256">
+      <path d="M 144 256 L 27.598 256 L 144 139.598 Z M 256 207.5 L 200 256 L 200 56 L 0 56 L 48 0 L 256 0 Z M0 204.402 L0 112 L92.402 112 Z" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 6h16M4 12h16M4 18h16"/>
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </symbol>
+    <symbol id="icon-alert-triangle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </symbol>
+    <symbol id="icon-trending-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
+    </symbol>
+    <symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+    </symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </symbol>
+    <symbol id="icon-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+    </symbol>
+    <symbol id="icon-refresh-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+    </symbol>
+    <symbol id="icon-list-todo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </symbol>
+    <symbol id="icon-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+    </symbol>
+    <symbol id="icon-rotate-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36l2.12 6.36"/>
+    </symbol>
+    <symbol id="icon-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </symbol>
+  </svg>
+
+  <div class="phone" role="application" aria-label="VLTHR Improvement Plan">
+
+    <header class="topbar">
+      <a href="#" class="brand" aria-label="VLTHR home">
+        <svg class="icon logo" aria-hidden="true"><use href="#icon-logo"/></svg>
+        <span>VLTHR</span>
+      </a>
+      <button class="hamburger" id="menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg class="icon icon-menu" width="20" height="20" aria-hidden="true"><use href="#icon-menu"/></svg>
+        <svg class="icon icon-close" width="20" height="20" aria-hidden="true"><use href="#icon-x"/></svg>
+      </button>
+    </header>
+
+    <nav id="mobile-menu" class="mobile-menu" aria-hidden="true" aria-label="Mobile navigation">
+      <a href="#">Plan summary</a>
+      <a href="#">Do not touch list</a>
+      <a href="#">Workflow alignment</a>
+      <button class="menu-cta" data-open-modal>Approve plan</button>
+    </nav>
+
+    <main class="scroll">
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           HOME / SUMMARY
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-home" class="tab-panel active" aria-label="Summary">
+        <div class="hero">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <svg width="12" height="12" aria-hidden="true"><use href="#icon-alert-triangle"/></svg>
+              Draft — Pending Approval
+            </div>
+            <h1 class="headline">
+              <div class="line">Improvement.</div>
+              <div class="line delay-1">Plan.</div>
+            </h1>
+            <p class="hero-description">
+              7 gaps found in live paper trading. Risk sizing is broken, BTC is bleeding, and the system has no feedback loop. This plan fixes all three.
+            </p>
+            <div class="cta-row">
+              <button class="btn-primary" data-open-modal>Review plan</button>
+              <button class="btn-secondary" data-tab="panel-risk">Risk sizing</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-wrap" aria-label="Gap summary">
+          <div class="dash-chrome">
+            <div class="dash-titlebar">
+              <div class="traffic-lights" aria-hidden="true">
+                <span style="background:var(--traffic-red)"></span>
+                <span style="background:var(--traffic-amber)"></span>
+                <span style="background:var(--traffic-green)"></span>
+              </div>
+              <div class="dash-url">
+                <svg class="icon" width="12" height="12" aria-hidden="true"><use href="#icon-monitor"/></svg>
+                vlthrlab.app/plan
+              </div>
+              <div class="dash-actions">
+                <svg class="icon" width="14" height="14" aria-hidden="true"><use href="#icon-rotate-cw"/></svg>
+                <svg class="icon" width="14" height="14" aria-hidden="true"><use href="#icon-share"/></svg>
+              </div>
+            </div>
+            <div class="dash-body wide">
+              <div class="status-grid">
+                <div class="status-card">
+                  <div class="value status-critical">7</div>
+                  <div class="label">Gaps found</div>
+                </div>
+                <div class="status-card">
+                  <div class="value status-critical">2</div>
+                  <div class="label">Critical</div>
+                </div>
+                <div class="status-card">
+                  <div class="value status-warn">3</div>
+                  <div class="label">Major</div>
+                </div>
+                <div class="status-card">
+                  <div class="value">2</div>
+                  <div class="label">Minor</div>
+                </div>
+                <div class="status-card">
+                  <div class="value status-critical">33x</div>
+                  <div class="label">Risk undersized</div>
+                </div>
+                <div class="status-card">
+                  <div class="value pnl-neg">-$19</div>
+                  <div class="label">BTC net PnL</div>
+                </div>
+                <div class="status-card">
+                  <div class="value status-warn">OFF</div>
+                  <div class="label">Pipeline brain</div>
+                </div>
+                <div class="status-card">
+                  <div class="value status-ok">0</div>
+                  <div class="label">Params changed</div>
+                </div>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 8px;">Snapshot: Jul 19, 2026 09:04 UTC</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-pad">
+          <h2 class="page-title">Priority order</h2>
+          <p class="section-sub">Each gap ranked by impact and urgency. No changes without human approval.</p>
+
+          <div class="priority-item">
+            <div class="priority-num urgent">1</div>
+            <div class="priority-body">
+              <div class="priority-title">Risk sizing <span class="badge badge-critical">CRITICAL</span></div>
+              <div class="priority-desc">Every trade is 33x undersized. $6 risk instead of $200. Cannot evaluate strategy with broken sizing.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num urgent">2</div>
+            <div class="priority-body">
+              <div class="priority-title">BTC duplication <span class="badge badge-critical">CRITICAL</span></div>
+              <div class="priority-desc">15 expired trades from one signal on Jul 17. Cross-iteration dedup missing.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num urgent">3</div>
+            <div class="priority-body">
+              <div class="priority-title">BTC strategy review <span class="badge badge-major">MAJOR</span></div>
+              <div class="priority-desc">Trend_following with tight ATR stops not working. 43% WR, -$19 PnL. Needs D5 backtest.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num">4</div>
+            <div class="priority-body">
+              <div class="priority-title">Feedback loop <span class="badge badge-major">MAJOR</span></div>
+              <div class="priority-desc">Pipeline brain disabled. Decision log write-only. System never learns from outcomes.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num">5</div>
+            <div class="priority-body">
+              <div class="priority-title">Exchange reconciliation <span class="badge badge-major">MAJOR</span></div>
+              <div class="priority-desc">No slippage or funding cost tracking. Live results will diverge from backtest.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num">6</div>
+            <div class="priority-body">
+              <div class="priority-title">Redundancy and backup <span class="badge badge-minor">MINOR</span></div>
+              <div class="priority-desc">Single Postgres, no backup strategy. Data loss risk if container dies.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num">7</div>
+            <div class="priority-body">
+              <div class="priority-title">Test suite and CI <span class="badge badge-minor">MINOR</span></div>
+              <div class="priority-desc">test_risk_logic.py exists but no CI. No regression protection on deploy.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           RISK SIZING
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-risk" class="tab-panel" aria-label="Risk Sizing">
+        <div class="page-pad">
+          <h2 class="page-title">Risk Sizing</h2>
+          <p class="section-sub"><span class="badge badge-critical">CRITICAL</span> Every trade is 33x undersized. A notional cap overrides the risk percentage config.</p>
+
+          <div class="callout callout-danger">
+            <strong>Root cause:</strong> <code>cap_position_size()</code> in <code>portfolio_config.py:289</code> caps notional to <code>$2,000</code>. This overrides <code>risk_pct * kelly_mult</code> entirely.
+          </div>
+
+          <details class="accordion" open>
+            <summary>
+              The bug trace
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Orchestrator computes dollar risk from <code>risk_pct * kelly_mult</code>, derives a quantity, then caps the notional to $2,000. The cap is always binding.</p>
+              <div class="code-block"><span class="comment"># portfolio_config.py:289</span>
+<span class="kw">def</span> <span class="fn">cap_position_size</span>(position_size_1x, account_balance):
+    <span class="kw">return</span> <span class="fn">min</span>(position_size_1x,
+           <span class="num">2000.0</span>,  <span class="comment"># CAPITAL_PER_SYMBOL</span>
+           account_balance * <span class="num">0.25</span>)  <span class="comment"># SYMBOL_ALLOC_CAP</span></div>
+              <p>For BTC at $64,322 with 0.3% SL distance ($193):</p>
+              <table class="prod-table">
+                <thead>
+                  <tr><th>DQS</th><th>Tier</th><th>Kelly</th><th>Intended</th><th>Pre-cap</th><th>Post-cap</th><th>Actual</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>55</td><td>2.0%</td><td>0.3x</td><td>$60</td><td>$19,996</td><td>$2,000</td><td class="pnl-neg">$6</td></tr>
+                  <tr><td>65</td><td>3.0%</td><td>0.7x</td><td>$210</td><td>$69,988</td><td>$2,000</td><td class="pnl-neg">$6</td></tr>
+                  <tr><td>75</td><td>5.0%</td><td>1.5x</td><td>$750</td><td>$249,956</td><td>$2,000</td><td class="pnl-neg">$6</td></tr>
+                </tbody>
+              </table>
+              <p>Every trade across every symbol shows ~$2,000 notional. Actual risk is $6-20 per trade, which is 0.06-0.20% of the $10k account.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Dead code: per-symbol risk_pct
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><code>PER_SYMBOL_PARAMS["BTCUSDT"]["risk_pct"] = 0.05</code> is never read by the orchestrator. Position sizing uses <code>RISK_TIERS</code> (tier-based by DQS), not per-symbol <code>risk_pct</code>. This config value is misleading.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Fix options
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Option A (minimal):</strong> Raise <code>CAPITAL_PER_SYMBOL</code>. But even at $10,000, a 0.3% SL gives only $30 risk. Still too small.</p>
+              <p><strong>Option B (correct):</strong> Cap dollar risk, not notional:</p>
+              <div class="code-block"><span class="kw">def</span> <span class="fn">cap_dollar_risk</span>(dollar_risk, account_balance, max_risk_pct=<span class="num">2.0</span>):
+    <span class="kw">return</span> <span class="fn">min</span>(dollar_risk, account_balance * max_risk_pct / <span class="num">100</span>)</div>
+              <p>Then size quantity from the capped dollar risk. This decouples position size from SL distance.</p>
+              <p><strong>Option C (recommended):</strong> Remove <code>cap_position_size</code> from the sizing path entirely. Let <code>risk_pct * kelly_mult</code> determine dollar risk. Use Gate 4c (Risk Budget Ledger) and the backend per-symbol margin cap ($1,667) as the real constraints.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Impact at 2% risk
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="metric-grid">
+                <div class="metric-card"><div class="value">$200</div><div class="label">Risk per trade</div></div>
+                <div class="metric-card"><div class="value">$15</div><div class="label">EV per trade</div></div>
+                <div class="metric-card"><div class="value">$375</div><div class="label">Projected (25 trades)</div></div>
+                <div class="metric-card"><div class="value pnl-pos">8x</div><div class="label">vs current $47.92</div></div>
+              </div>
+              <div class="callout callout-warn" style="margin-top: 12px;">
+                <strong>Projection, not a guarantee.</strong> Run D6 (Risk sizing with leverage and funding costs) to validate before changing live config.
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           BTC
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-btc" class="tab-panel" aria-label="BTC">
+        <div class="page-pad">
+          <h2 class="page-title">BTC Underperformance</h2>
+          <p class="section-sub"><span class="badge badge-critical">CRITICAL</span> 22 trades, 15 expired, 7 closed, 43% win rate, -$19.10 net PnL.</p>
+
+          <div class="metric-grid" style="margin-bottom: 16px;">
+            <div class="metric-card"><div class="value pnl-neg">22</div><div class="label">Total trades</div></div>
+            <div class="metric-card"><div class="value pnl-neg">15</div><div class="label">Expired</div></div>
+            <div class="metric-card"><div class="value">7</div><div class="label">Closed</div></div>
+            <div class="metric-card"><div class="value pnl-neg">43%</div><div class="label">Win rate</div></div>
+            <div class="metric-card"><div class="value pnl-neg">-$19.10</div><div class="label">Net PnL</div></div>
+            <div class="metric-card"><div class="value">3/4</div><div class="label">TP / SL hits</div></div>
+          </div>
+
+          <details class="accordion" open>
+            <summary>
+              Bug 2a: Signal duplication (15 expired)
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>15 BTC trades created on Jul 17 with identical SL ($62,731.94) and TP ($63,658.19). All expired. The same signal was repeatedly submitted as PENDING without deduplication across scan iterations.</p>
+              <p>The dedup check at line 1152 only prevents duplicates <strong>within the same scan iteration</strong>, not across iterations.</p>
+              <p><strong>Fix:</strong> Before creating a new PENDING trade, check if a PENDING trade already exists for the same symbol with the same <code>signal_bar_utc</code>. If so, skip.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Bug 2b: Trend_following strategy mismatch
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>BTC is configured as <code>trend_following</code> with <code>sl_mult=2.5, tp_mult=7.5</code>. Actual SL distances range from 0.3% to 0.8%, suggesting very tight ATR readings. BTC noise easily triggers SL before the trend develops.</p>
+              <p><strong>4 out of 7 closed BTC trades were SL_HIT:</strong></p>
+              <table class="prod-table">
+                <thead><tr><th>Trade</th><th>Side</th><th>SL distance</th><th>Result</th></tr></thead>
+                <tbody>
+                  <tr><td>#10</td><td>SHORT</td><td>0.80%</td><td class="pnl-neg">SL_HIT -$18.99</td></tr>
+                  <tr><td>#27</td><td>LONG</td><td>0.56%</td><td class="pnl-neg">SL_HIT -$13.16</td></tr>
+                  <tr><td>#28</td><td>SHORT</td><td>0.69%</td><td class="pnl-neg">SL_HIT -$17.69</td></tr>
+                  <tr><td>#35</td><td>SHORT</td><td>0.44%</td><td class="pnl-neg">SL_HIT -$11.30</td></tr>
+                </tbody>
+              </table>
+              <p>Compare to SOL (also trend_following, 5 closed, 4 wins). SOL's lower price means ATR-based stops are proportionally wider relative to noise.</p>
+              <p><strong>Fix options:</strong></p>
+              <ul>
+                <li>Switch BTC to <code>mean_reversion</code> (like ETH, BNB, XRP). BTC was range-bound $62k-65k during test period.</li>
+                <li>Increase <code>sl_mult</code> from 2.5 to 3.5-4.0 to give trends more room.</li>
+                <li>Add minimum SL distance floor (e.g., 0.5% for BTC).</li>
+                <li>Run D5 (realworld backtest) with modified params to validate.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Bug 2c: Too many non-executing signals
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Even after fixing the duplication bug, BTC generates too many signals that never execute. 15 expired out of 22 total. This suggests the DQS threshold for BTC may be too low, or the V2 filters are not strict enough for BTC's current regime.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           FEEDBACK LOOP
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-feedback" class="tab-panel" aria-label="Feedback Loop">
+        <div class="page-pad">
+          <h2 class="page-title">Feedback Loop</h2>
+          <p class="section-sub"><span class="badge badge-major">MAJOR</span> The system has instrumentation but no reasoning. It accumulates incidents, not insight.</p>
+
+          <div class="callout callout-info">
+            Every 5-minute scan starts fresh without asking: <strong>"Have I seen this setup before? What happened last time?"</strong>
+          </div>
+
+          <details class="accordion" open>
+            <summary>
+              Current state
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="param-list">
+                <div class="param-row"><span class="param-label">Pipeline Brain</span><span class="param-value pnl-neg">BRAIN_ENABLED = False</span></div>
+                <div class="param-row"><span class="param-label">Decision logging</span><span class="param-value">Write-only (signal_node_log)</span></div>
+                <div class="param-row"><span class="param-label">Trade outcomes</span><span class="param-value">Recorded, not analyzed</span></div>
+                <div class="param-row"><span class="param-label">Telegram alerts</span><span class="param-value">Notify, no root cause</span></div>
+                <div class="param-row"><span class="param-label">Rejection analysis</span><span class="param-value">None</span></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Fix plan
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li><strong>Backfill Pipeline Brain:</strong> Run predictions against historical Parquet + signal_state_log to accumulate the 30+ samples needed for trust criteria. Don't wait for live shadow trades one at a time.</li>
+                <li><strong>Wire decision log into scoring:</strong> Before <code>adaptive_scorer.py</code> finalizes a DQS score, query <code>signal_node_log</code> for similar prior setups (same symbol, same strategy, similar DQS range). Let historical outcomes adjust the score by 2-5 points, not override it.</li>
+                <li><strong>Add rejection analysis:</strong> Weekly job that samples rejected signals, checks what would have happened if they were approved, and reports false-positive rate per gate.</li>
+                <li><strong>RCA integration:</strong> Wire pipeline Step 12 (post-flight trace) to POST failures to an RCA endpoint instead of just logging a string.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           OTHER GAPS
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-other" class="tab-panel" aria-label="Other Gaps">
+        <div class="page-pad">
+          <h2 class="page-title">Other Gaps</h2>
+          <p class="section-sub">Gaps 4-6: reconciliation, redundancy, and test coverage.</p>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-major">MAJOR</span> No exchange reconciliation
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Paper trading is simulated entirely inside the system. Nothing checks simulated fills against actual Bybit prices. The backtest assumes no slippage, no funding costs, and static crowding clusters.</p>
+              <p><strong>Fix:</strong></p>
+              <ul>
+                <li>Record the Bybit ticker price at signal creation and at trade open/close. Compare to simulated entry/exit.</li>
+                <li>Track funding rate paid/received during open positions. Subtract from PnL.</li>
+                <li>Estimate slippage as the difference between simulated fill and next-bar open.</li>
+                <li>Run this for 50 trades, then feed average slippage and funding cost back into the backtest.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-major">MAJOR</span> No redundancy or backup
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Single Postgres container, single pipeline container, no replicas, no failover.</li>
+                <li><code>vlthr_pgdata</code> named volume has no backup strategy.</li>
+                <li>If Postgres dies mid-trade, there is no recovery story.</li>
+              </ul>
+              <p><strong>Fix:</strong></p>
+              <ul>
+                <li>Add <code>pg_dump</code> cron job to the Postgres container, writing to a mounted backup volume.</li>
+                <li>Add health check retry logic to the pipeline container.</li>
+                <li>Document recovery procedure: restore from dump, restart pipeline, verify trade state consistency.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-minor">MINOR</span> No test suite or CI
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li><code>test_risk_logic.py</code> exists but is not run in any CI pipeline.</li>
+                <li>No automated test runs on deploy.</li>
+                <li>PIVP Phase 2 (Automated Debug Pass) is manual.</li>
+              </ul>
+              <p><strong>Fix:</strong></p>
+              <ul>
+                <li>Add <code>pytest</code> step to a deploy script or CI workflow.</li>
+                <li>Add integration test that runs one pipeline iteration against fixture data.</li>
+                <li>Gate deploys on test pass.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Do not touch
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li><code>calibration.json</code> (V7 Gold Standard is frozen)</li>
+                <li>DQS scoring weights</li>
+                <li>Kelly sizing bands (fix the cap, not the bands)</li>
+                <li>Entry filter threshold (0.40, already softened from 0.48)</li>
+                <li>DOGEUSDT (remains disabled)</li>
+                <li><code>data/</code> directory contents</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Workflow protocol alignment
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>GBEGP:</strong> No dev/prod separation. Risk sizing fix should be tested in dev first. Implement one gap at a time per Section 2.2.</p>
+              <p><strong>PIVP:</strong> Run D6 before risk sizing changes. Run D5 before BTC strategy changes. Gate after each fix.</p>
+              <p><strong>CCP:</strong> No parameter changes without explicit human approval. This plan is a proposal, not a directive.</p>
+              <p><strong>RODP:</strong> This document lives in <code>/docs/memory/</code> per Section 6. Progress reports per Section 7.</p>
+              <p><strong>Gate Audit:</strong> The 12-gate chain is structurally sound. Gaps are in pre-gate (sizing) and post-gate (feedback), not in the gates themselves. Gate 4c passes but the trade is undersized because <code>cap_position_size</code> overrides after the gate.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="bottom-tabs" aria-label="Primary navigation">
+      <button class="tab-btn active" data-tab="panel-home" aria-label="Summary" aria-selected="true" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-home"/></svg>
+        <span>Summary</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-risk" aria-label="Risk" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-alert-triangle"/></svg>
+        <span>Risk</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-btc" aria-label="BTC" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-trending-down"/></svg>
+        <span>BTC</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-feedback" aria-label="Feedback" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-brain"/></svg>
+        <span>Brain</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-other" aria-label="Other" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-shield"/></svg>
+        <span>Other</span>
+      </button>
+    </nav>
+
+    <dialog class="app-modal" id="modal" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <h3 class="modal-title" id="modal-title">Approve plan</h3>
+        <p class="modal-text">Before any code changes, confirm the following:</p>
+        <ul class="modal-list">
+          <li>Run D6 backtest to validate new risk sizing parameters.</li>
+          <li>Run D5 backtest before changing BTC strategy.</li>
+          <li>Test risk sizing fix in a dev environment first.</li>
+          <li>Do not touch calibration.json or Kelly bands.</li>
+          <li>Implement one gap at a time with PIVP gate after each.</li>
+        </ul>
+        <button class="modal-close" id="modal-close" type="button">Close</button>
+      </div>
+    </dialog>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.tab-panel');
+      const modal = document.getElementById('modal');
+      const modalClose = document.getElementById('modal-close');
+      const openModalBtns = document.querySelectorAll('[data-open-modal]');
+
+      function setMenu(open) {
+        menuBtn.setAttribute('aria-expanded', String(open));
+        mobileMenu.classList.toggle('open', open);
+        mobileMenu.setAttribute('aria-hidden', String(!open));
+      }
+
+      menuBtn.addEventListener('click', () => setMenu(!mobileMenu.classList.contains('open')));
+      mobileMenu.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('click', () => setMenu(false));
+      });
+
+      function switchTab(targetId) {
+        tabBtns.forEach(btn => {
+          const isActive = btn.dataset.tab === targetId;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', String(isActive));
+        });
+        panels.forEach(panel => {
+          panel.classList.toggle('active', panel.id === targetId);
+        });
+        document.querySelector('.scroll').scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      document.querySelectorAll('[data-tab]').forEach(el => {
+        if (!el.classList.contains('tab-btn')) {
+          el.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab(el.dataset.tab);
+          });
+        }
+      });
+
+      openModalBtns.forEach(btn => btn.addEventListener('click', () => modal.showModal()));
+      modalClose.addEventListener('click', () => modal.close());
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.close();
+      });
+    });
+  </script>
+</body>
+</html>

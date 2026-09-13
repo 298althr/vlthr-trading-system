@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Trader Engine · VLTHR</title>
+<style>
+:root{--bg:#000;--surface:#0a0a0a;--surface-2:#141414;--surface-3:#1a1a1a;--border:#222;--border-light:#2a2a2a;--text:#e8e8e8;--text-2:#a0a0a0;--text-muted:#666;--accent:#e82127;--accent-dim:rgba(232,33,39,.15);--accent-glow:rgba(232,33,39,.4);--blue:#2d7ff9;--green:#00e676;--yellow:#ffd600;--orange:#ff9100;--purple:#b388ff;--red:#ff5252;--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1);--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 32px}
+.hero{position:relative;padding:80px 0 60px;text-align:center;background:radial-gradient(ellipse at center,var(--surface-2) 0%,var(--bg) 70%);border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 50%);animation:pulse-glow 6s ease-in-out infinite;pointer-events:none}
+@keyframes pulse-glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:3em;font-weight:700;letter-spacing:-1px;margin-bottom:12px;position:relative;animation:fade-up .8s ease-out}
+.hero h1 .accent{color:var(--accent)}
+.hero .subtitle{font-size:1.2em;color:var(--text-2);margin-bottom:24px;position:relative;animation:fade-up .8s ease-out .1s both}
+.hero .meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;animation:fade-up .8s ease-out .2s both}
+.hero .meta-item{text-align:center}
+.hero .meta-item .label{font-size:.75em;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero .meta-item .value{font-size:1.3em;font-weight:600;color:var(--text)}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 24px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:.9em;font-weight:500;cursor:pointer;white-space:nowrap;transition:var(--transition);border-bottom:2px solid transparent;position:relative}
+.tab-btn:hover{color:var(--text);background:var(--surface-2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-num{font-size:.75em;opacity:.5;margin-right:4px}
+.tab-content{display:none;padding:48px 0;animation:fade-in .4s ease-out}
+.tab-content.active{display:block}
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h2{font-size:2em;font-weight:700;letter-spacing:-.5px;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:1.4em;font-weight:600;margin-top:40px;margin-bottom:16px;color:var(--text)}
+h4{font-size:1.15em;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--text-2)}
+p{margin-bottom:14px;color:var(--text)}
+ul,ol{margin-bottom:16px;padding-left:24px}
+li{margin-bottom:6px;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);background:var(--surface-3);padding:2px 8px;border-radius:4px;font-size:.88em;color:var(--accent);border:1px solid var(--border)}
+pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin-bottom:20px;font-size:.85em}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.9em;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-size:.8em;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;transition:var(--transition)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.card-title{font-size:1.1em;font-weight:600;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78em;font-weight:600;letter-spacing:.3px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.3)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.3)}
+.badge-purple{background:rgba(179,136,255,.12);color:var(--purple);border:1px solid rgba(179,136,255,.3)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.3)}
+.badge-orange{background:rgba(255,145,0,.12);color:var(--orange);border:1px solid rgba(255,145,0,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:20px}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:600;margin-bottom:8px;color:var(--text)}
+.metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;transition:var(--transition)}
+.metric-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-tile .metric-value{font-size:2em;font-weight:700;margin-bottom:4px}
+.metric-tile .metric-label{font-size:.8em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85em}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>AI Trader <span class="accent">Engine</span></h1>
+  <p class="subtitle">FastAPI backtest service. D1-D7 pipeline stages, strategy management, NVIDIA AI proxy, data exploration.</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Service</div><div class="value">ai-trader-engine</div></div>
+    <div class="meta-item"><div class="label">Framework</div><div class="value">FastAPI / Uvicorn</div></div>
+    <div class="meta-item"><div class="label">Port</div><div class="value">8002:8000</div></div>
+    <div class="meta-item"><div class="label">Endpoints</div><div class="value">25+</div></div>
+    <div class="meta-item"><div class="label">Container</div><div class="value">ai_trader_engine</div></div>
+  </div>
+</section>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)"><span class="tab-num">01</span>Overview</button>
+  <button class="tab-btn" onclick="switchTab(1)"><span class="tab-num">02</span>Endpoints</button>
+  <button class="tab-btn" onclick="switchTab(2)"><span class="tab-num">03</span>Pipeline Stages</button>
+  <button class="tab-btn" onclick="switchTab(3)"><span class="tab-num">04</span>AI Proxy</button>
+  <button class="tab-btn" onclick="switchTab(4)"><span class="tab-num">05</span>Docker Config</button>
+</div>
+
+<div class="container">
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content active" id="tab-0">
+  <h2>Overview</h2>
+  <p>The AI Trader Engine is a FastAPI service that exposes the D1-D7 backtest pipeline, strategy management, data exploration, and an NVIDIA AI chat proxy. It reads OHLCV data from the shared Parquet store and connects to PostgreSQL for predictions and model state.</p>
+
+  <div class="grid-4">
+    <div class="metric-tile"><div class="metric-value" style="color:var(--accent)">25+</div><div class="metric-label">Endpoints</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--blue)">7</div><div class="metric-label">Pipeline Stages</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--green)">2</div><div class="metric-label">CPU Limit</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--orange)">1 GB</div><div class="metric-label">Memory Limit</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Capabilities</div>
+    <table>
+      <thead><tr><th>Capability</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Market Data Access</td><td>Read OHLCV, funding, open interest from Parquet store</td></tr>
+        <tr><td>Feature Computation</td><td>Technical indicators (RSI, EMA, ATR, etc.) on demand</td></tr>
+        <tr><td>Strategy Management</td><td>Create, mutate, list, and retrieve trading strategies</td></tr>
+        <tr><td>Backtest Execution</td><td>Queue and run backtests with progress tracking</td></tr>
+        <tr><td>D1-D7 Pipeline</td><td>Run individual stages or the full pipeline end-to-end</td></tr>
+        <tr><td>Probe and Compare</td><td>Regime detection, pattern analysis, parameter suggestions</td></tr>
+        <tr><td>Validation</td><td>Walk-forward, Monte Carlo, out-of-sample validation</td></tr>
+        <tr><td>Decision Logging</td><td>Store AI decisions with context, hypothesis, backtest, belief</td></tr>
+        <tr><td>Memory Store</td><td>Key-value memory for AI agent state persistence</td></tr>
+        <tr><td>NVIDIA AI Proxy</td><td>Chat completions via NVIDIA integrate API</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Docker Service</div>
+    Runs as <code>ai_trader_engine</code> container. Built from <code>./ai-trader-engine/Dockerfile</code>. Exposes port 8000 (mapped to host 8002). Resource limits: 2 CPUs, 1 GB memory. Depends on PostgreSQL health check.
+  </div>
+</div>
+
+<!-- TAB 1: ENDPOINTS -->
+<div class="tab-content" id="tab-1">
+  <h2>API Endpoints</h2>
+
+  <div class="card">
+    <div class="card-title">Market Data <span class="badge badge-blue">GET</span></div>
+    <table>
+      <thead><tr><th>Path</th><th>Params</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>/candles</td><td>symbol, start, end, interval, limit</td><td>Fetch OHLCV candle data from Parquet</td></tr>
+        <tr><td>/funding</td><td>symbol, start, end</td><td>Funding rate history</td></tr>
+        <tr><td>/open-interest</td><td>symbol, start, end</td><td>Open interest history</td></tr>
+        <tr><td>/data/range</td><td>symbol, interval</td><td>Earliest and latest available timestamps</td></tr>
+        <tr><td>/data/symbols</td><td>none</td><td>List all symbols with available data</td></tr>
+        <tr><td>/data/intervals</td><td>symbol</td><td>List available intervals for a symbol</td></tr>
+        <tr><td>/features</td><td>symbol, interval, start, end</td><td>Compute technical indicators on demand</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Strategy Management</div>
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/strategy/create</td><td>Register a new strategy with parameters and rules</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/strategy/{id}</td><td>Retrieve a strategy by ID</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/strategy</td><td>List all strategies</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/strategy/mutate</td><td>Merge new parameters into existing strategy</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Backtest Execution</div>
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/backtest/start</td><td>Queue a backtest, returns ID immediately</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/backtest/status/{id}</td><td>Check backtest progress</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/backtest/result/{id}</td><td>Get completed backtest results</td></tr>
+        <tr><td><span class="badge badge-red">POST</span></td><td>/backtest/cancel/{id}</td><td>Cancel a running backtest</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pipeline Stages (D1-D7)</div>
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Stage</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/d1</td><td>Data quality audit</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/d4</td><td>Feature discovery and domain weights</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/d5a</td><td>Mechanical base backtest</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/d5b</td><td>Parameter optimization (IS/OOS split)</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/d5c</td><td>DQS-scored backtest</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/d6</td><td>Risk sizing with leverage and funding costs</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/d7</td><td>Reality probe across stress scenarios</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/pipeline/full</td><td>Run complete D1 to D7 pipeline</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Probe Endpoints</div>
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/probe/symbol</td><td>Probe single symbol: regimes, patterns, feature ranks</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/probe/compare</td><td>Compare multiple symbols on same timeframe</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/probe/suggest</td><td>Suggest strategy parameters for detected regime</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Validation Endpoints</div>
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Alias For</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/validate/walkforward</td><td>D5B IS/OOS split</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/validate/montecarlo</td><td>D7 reality probe stress scenarios</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/validate/oos</td><td>D5B OOS metrics</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Decision and Memory</div>
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/decision/create</td><td>Store AI decision with full context</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/decision/{id}</td><td>Retrieve a decision</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/decision</td><td>List all decisions</td></tr>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/memory/store</td><td>Store key-value with metadata</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/memory/{key}</td><td>Retrieve stored value</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">AI Chat Proxy</div>
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-green">POST</span></td><td>/chat</td><td>Proxy chat completions to NVIDIA integrate API</td></tr>
+        <tr><td><span class="badge badge-blue">GET</span></td><td>/health</td><td>Health check endpoint</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 2: PIPELINE STAGES -->
+<div class="tab-content" id="tab-2">
+  <h2>D1-D7 Pipeline Stages</h2>
+  <p>The engine implements a 7-stage backtest pipeline. Each stage can be run independently or as part of the full pipeline. All stages operate on Parquet data loaded via <code>pipeline/data.py</code>.</p>
+
+  <div class="card">
+    <div class="card-title">D1: Data Quality Audit <span class="badge badge-yellow">Stage 1</span></div>
+    <p>Validates input data integrity. Checks for gaps, outliers, stale bars, and schema compliance. Returns a quality report with pass/fail per check.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">D4: Feature Discovery <span class="badge badge-blue">Stage 2</span></div>
+    <p>Computes technical indicators and assigns domain weights. Outputs a feature matrix with importance scores. Indicators include RSI, EMA, ATR, Bollinger Bands, MACD, and volume profile.</p>
+    <ul>
+      <li><strong>Module:</strong> <code>pipeline/indicators.py</code> — <code>add_all()</code> function</li>
+      <li><strong>Output:</strong> Feature DataFrame with weighted columns</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">D5A: Mechanical Base Backtest <span class="badge badge-orange">Stage 3</span></div>
+    <p>Runs a mechanical backtest with fixed parameters. No optimization. Establishes baseline performance metrics: win rate, profit factor, Sharpe ratio, max drawdown, Sortino ratio.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">D5B: Parameter Optimization <span class="badge badge-purple">Stage 4</span></div>
+    <p>Parameter sweep with in-sample / out-of-sample split. Tests parameter combinations on IS data, validates on OOS data. Reports overfitting risk and parameter stability.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">D5C: DQS-Scored Backtest <span class="badge badge-accent">Stage 5</span></div>
+    <p>Backtest with Data Quality Score integration. Signals are scored on data quality (freshness, completeness, outliers). Only signals above the DQS threshold are taken. This is the stage that validates the DQS veto logic.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">D6: Risk Sizing <span class="badge badge-green">Stage 6</span></div>
+    <p>Position sizing with leverage and funding cost adjustments. Computes Kelly fraction, applies risk caps, and factors in funding costs for perpetual positions.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">D7: Reality Probe <span class="badge badge-red">Stage 7</span></div>
+    <p>Stress tests across multiple scenarios: latency injection, slippage modeling, fee variation, and adverse selection. Validates that the strategy survives real-world frictions.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Full Pipeline</div>
+    <p>The <code>/pipeline/full</code> endpoint runs all stages sequentially: D1 to D7. Returns combined results from all stages. Each stage's output feeds into the next.</p>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Helper Functions</div>
+    <p>Shared helpers in <code>pipeline/stages.py</code>: <code>_sharpe()</code>, <code>_max_drawdown()</code>, <code>_profit_factor()</code>, <code>_sortino()</code>, <code>_native()</code> (numpy to Python type conversion).</p>
+  </div>
+</div>
+
+<!-- TAB 3: AI PROXY -->
+<div class="tab-content" id="tab-3">
+  <h2>NVIDIA AI Chat Proxy</h2>
+  <p>The engine proxies chat completion requests to the NVIDIA integrate API. This allows the frontend and AI agents to use NVIDIA-hosted LLMs through a single endpoint.</p>
+
+  <div class="card">
+    <div class="card-title">Configuration</div>
+    <table>
+      <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>API URL</td><td>https://integrate.api.nvidia.com/v1/chat/completions</td></tr>
+        <tr><td>API Key</td><td>Read from <code>NVIDIA_API_KEY</code> env var</td></tr>
+        <tr><td>CORS Origins</td><td>localhost:5174, localhost:3002, NGROK_DOMAIN</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Request Format</div>
+    <pre><code>POST /chat
+{
+  "messages": [
+    {"role": "system", "content": "..."},
+    {"role": "user", "content": "..."}
+  ],
+  "model": "nvidia/llama-3.1-nemotron-70b-instruct",
+  "tools": [],
+  "stream": false
+}</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">NaN-Safe Serialization</div>
+    <p>The engine includes a <code>_sanitize_nan()</code> helper that recursively replaces <code>NaN</code>, <code>Inf</code>, and <code>-Inf</code> with <code>null</code> in JSON responses. This prevents invalid JSON from numpy calculations reaching the client.</p>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">API Key Required</div>
+    The <code>NVIDIA_API_KEY</code> environment variable must be set in <code>.env</code> or <code>ai-trader-engine/.env</code>. Without it, the chat endpoint returns empty responses.
+  </div>
+</div>
+
+<!-- TAB 4: DOCKER CONFIG -->
+<div class="tab-content" id="tab-4">
+  <h2>Docker Configuration</h2>
+
+  <div class="card">
+    <div class="card-title">Service Definition</div>
+    <pre><code>ai-trader-engine:
+  build:
+    context: ./ai-trader-engine
+    dockerfile: Dockerfile
+  container_name: ai_trader_engine
+  ports:
+    - "8002:8000"
+  env_file:
+    - .env
+  environment:
+    - DATA_ROOT=/app/data
+    - DB_URL=postgresql://postgres:${POSTGRES_PASSWORD:-your_postgres_password}@vlthr-postgres:5432/postgres
+  volumes:
+    - ./data:/app/data
+    - ./ai-trader-engine/.env:/app/.env:ro
+  depends_on:
+    postgres:
+      condition: service_healthy
+  networks:
+    - vlthr-net
+  restart: unless-stopped
+  deploy:
+    resources:
+      limits:
+        cpus: "2"
+        memory: 1G</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dockerfile</div>
+    <p>Base image: <code>python:3.11-slim</code>. Installs <code>gcc</code> and <code>g++</code> for numpy/pyarrow wheel builds. Python packages from <code>requirements.txt</code>. Runs <code>uvicorn main:app</code> on port 8000 with <code>--log-level info</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Volume Mounts</div>
+    <table>
+      <thead><tr><th>Host Path</th><th>Container Path</th><th>Mode</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>./data</td><td>/app/data</td><td>rw</td><td>Parquet data store (shared with ingestion)</td></tr>
+        <tr><td>./ai-trader-engine/.env</td><td>/app/.env</td><td>ro</td><td>Engine-specific env vars (NVIDIA_API_KEY)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Resource Limits</div>
+    <table>
+      <thead><tr><th>Resource</th><th>Limit</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>CPUs</td><td>2.0</td><td>Backtest computations are CPU-bound. 2 cores balance speed and host contention.</td></tr>
+        <tr><td>Memory</td><td>1 GB</td><td>Parquet data is loaded on demand. Pandas DataFrames for single symbols fit in 1 GB.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Health Check</div>
+    Docker healthcheck runs <code>python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"</code> every 30 seconds. Start period: 15 seconds. Retries: 5.
+  </div>
+
+  <div class="card">
+    <div class="card-title">CORS Configuration</div>
+    <p>CORS is configured via FastAPI middleware. Allowed origins:</p>
+    <ul>
+      <li><code>http://localhost:5174</code> (frontend dev)</li>
+      <li><code>http://localhost:3002</code> (backend dev)</li>
+      <li><code>NGROK_DOMAIN</code> from env (production HTTPS tunnel)</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  VLTHR AI Trader Engine Documentation · Generated Jul 2026 · <a href="../docker-compose.yml" style="color:var(--accent)">docker-compose.yml</a>
+</div>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.tab-content').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

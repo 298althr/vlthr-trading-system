@@ -1,0 +1,70 @@
+# VLTHR Extra Services — pipeline + ai-trader-engine (LINUX)
+# Joins existing vlthr-dashboard-net (managed by docker-compose.linux.ngrok.yml)
+#
+# Usage (from the vlthr-signal-dashboard directory):
+#   export VLTHR_ROOT=/home/<user>/VLTHR
+#   export DASHBOARD_ROOT=$VLTHR_ROOT/paper_trade_unzipped/vlthr-signal-dashboard
+#   docker compose -f docker-compose.linux.yml up -d --build
+
+services:
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.pipeline
+    container_name: vlthr-pipeline
+    restart: unless-stopped
+    env_file:
+      - ${VLTHR_ROOT}/.env
+    environment:
+      - REDIS_URL=redis://vlthr-dashboard-redis:6379
+      - PYTHONUNBUFFERED=1
+      - PIPELINE_HEALTH_PORT=8200
+      - DISABLE_PREFECT=true
+      - PARQUET_DATA_ROOT=/app/data
+      - PREFECT_API_URL=${PREFECT_API_URL:-}
+      - PREFECT_HOME=/app/.prefect
+    ports:
+      - "8200:8200"
+    volumes:
+      - ${DASHBOARD_ROOT}/engine:/app/engine:ro
+      - ${VLTHR_ROOT}/v3/departments:/app/departments:ro
+      - ${VLTHR_ROOT}/data:/app/data:ro
+      - ${VLTHR_ROOT}/.env:/app/.env:ro
+      - ${VLTHR_ROOT}/logs:/app/logs
+    command: ["python", "-m", "engine.run_pipeline", "--loop", "--interval", "900"]
+    networks:
+      - vlthr-dashboard-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8200/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  ai-trader-engine:
+    build:
+      context: ${VLTHR_ROOT}/v3/backtestsystem/ai-trader-engine
+      dockerfile: Dockerfile
+    container_name: ai_trader_engine
+    ports:
+      - "8001:8000"
+    env_file:
+      - ${VLTHR_ROOT}/.env
+    environment:
+      - DATA_ROOT=/app/data
+    volumes:
+      - ${VLTHR_ROOT}/data:/app/data
+      - ${VLTHR_ROOT}/v3/backtestsystem/ai-trader-engine/.env:/app/.env:ro
+    networks:
+      - vlthr-dashboard-net
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+
+networks:
+  vlthr-dashboard-net:
+    external: true
+    name: vlthr-dashboard-net

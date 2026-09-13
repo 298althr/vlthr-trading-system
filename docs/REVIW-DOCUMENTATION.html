@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLTHR Architecture Review — Skills-Driven Assessment</title>
+<style>
+:root {
+  --bg: #0b0b0f; --card: #1c1c22; --border: #2a2a32; --text: #e0e0e6; --text-dim: #8a8a96;
+  --green: #28c840; --red: #ff5f57; --amber: #febc2e; --blue: #5b8def; --purple: #a855f7;
+  --cyan: #22d3ee; --orange: #f97316;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:var(--font); line-height:1.6; padding:20px; max-width:1400px; margin:0 auto; }
+h1 { font-size:1.8rem; margin-bottom:8px; background:linear-gradient(135deg,var(--orange),var(--amber)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+h2 { font-size:1.3rem; margin:32px 0 16px; border-bottom:1px solid var(--border); padding-bottom:8px; }
+h3 { font-size:1.05rem; margin:20px 0 8px; color:var(--text-dim); }
+h4 { font-size:0.9rem; margin:12px 0 6px; }
+.meta { color:var(--text-dim); font-size:0.85rem; margin-bottom:24px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-bottom:32px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; text-align:center; }
+.card .num { font-size:1.8rem; font-weight:700; }
+.card .label { font-size:0.78rem; color:var(--text-dim); margin-top:4px; }
+.sec { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+.sec:hover { border-color:var(--text-dim); }
+.badge { display:inline-block; padding:3px 10px; border-radius:6px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+.b-citm { background:rgba(168,85,247,0.15); color:var(--purple); }
+.b-pivp { background:rgba(254,188,46,0.15); color:var(--amber); }
+.b-gate { background:rgba(255,95,87,0.15); color:var(--red); }
+.b-mon { background:rgba(40,200,64,0.15); color:var(--green); }
+.b-div { background:rgba(249,115,22,0.15); color:var(--orange); }
+.b-gap { background:rgba(34,211,238,0.15); color:var(--cyan); }
+.b-arch { background:rgba(168,85,247,0.15); color:var(--purple); }
+.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.72rem; margin:2px; }
+.t-pass { background:rgba(40,200,64,0.12); color:var(--green); border:1px solid rgba(40,200,64,0.25); }
+.t-fail { background:rgba(255,95,87,0.12); color:var(--red); border:1px solid rgba(255,95,87,0.25); }
+.t-warn { background:rgba(254,188,46,0.12); color:var(--amber); border:1px solid rgba(254,188,46,0.25); }
+.t-frozen { background:rgba(255,95,87,0.12); color:var(--red); border:1px solid rgba(255,95,87,0.25); }
+.t-attain { background:rgba(40,200,64,0.12); color:var(--green); border:1px solid rgba(40,200,64,0.25); }
+.t-miss { background:rgba(255,95,87,0.12); color:var(--red); border:1px solid rgba(255,95,87,0.25); }
+.t-part { background:rgba(254,188,46,0.12); color:var(--amber); border:1px solid rgba(254,188,46,0.25); }
+table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.82rem; }
+th { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text-dim); font-size:0.78rem; text-transform:uppercase; }
+td { padding:8px 10px; border-bottom:1px solid rgba(42,42,50,0.5); }
+tr:hover td { background:rgba(42,42,50,0.3); }
+.finding { background:var(--bg); border:1px solid var(--border); border-left:3px solid; border-radius:8px; padding:14px; margin-bottom:10px; }
+.f-blocker { border-left-color:var(--red); }
+.f-critical { border-left-color:var(--orange); }
+.f-major { border-left-color:var(--amber); }
+.f-minor { border-left-color:var(--blue); }
+.fp { background:rgba(255,95,87,0.05); border:1px solid rgba(255,95,87,0.2); border-radius:8px; padding:14px; margin:16px 0; }
+.fp h4 { color:var(--red); font-size:0.9rem; margin-bottom:8px; }
+.fp ul { list-style:none; display:flex; flex-wrap:wrap; gap:6px; }
+.fp li { background:rgba(255,95,87,0.1); padding:4px 10px; border-radius:4px; font-size:0.8rem; }
+.gate-flow { display:flex; flex-wrap:wrap; gap:4px; margin:12px 0; align-items:center; }
+.gs { background:var(--bg); border:1px solid var(--border); padding:4px 10px; border-radius:4px; font-size:0.76rem; color:var(--text-dim); }
+.gs.pass { border-color:rgba(40,200,64,0.3); color:var(--green); }
+.gs.fail { border-color:rgba(255,95,87,0.3); color:var(--red); }
+.gs.warn { border-color:rgba(254,188,46,0.3); color:var(--amber); }
+.ga { color:var(--text-dim); font-size:0.7rem; }
+.ib { background:rgba(254,188,46,0.05); border:1px solid rgba(254,188,46,0.2); border-radius:8px; padding:14px; margin-top:16px; }
+.ib h4 { color:var(--amber); font-size:0.9rem; margin-bottom:8px; }
+.ib ul { padding-left:16px; }
+.ib li { font-size:0.82rem; color:var(--text-dim); margin-bottom:4px; }
+.ib li strong { color:var(--text); }
+.gap-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; margin:12px 0; }
+.gap-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.gap-card h4 { margin:0 0 6px; font-size:0.88rem; }
+.gap-card p { font-size:0.8rem; color:var(--text-dim); margin:0; }
+.rm { display:flex; gap:12px; margin-bottom:12px; align-items:flex-start; }
+.rm-n { background:var(--card); border:1px solid var(--border); border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; color:var(--text-dim); flex-shrink:0; }
+.rm-c { font-size:0.85rem; color:var(--text-dim); }
+.rm-c strong { color:var(--text); }
+.footer { margin-top:40px; padding-top:16px; border-top:1px solid var(--border); color:var(--text-dim); font-size:0.8rem; text-align:center; }
+.score-green { color: var(--green); } .score-amber { color: var(--amber); } .score-red { color: var(--red); } .score-blue { color: var(--blue); } .score-purple { color: var(--purple); } .score-cyan { color: var(--cyan); }
+</style>
+</head>
+<body>
+<h1>VLTHR Architecture Review — Skills-Driven Assessment</h1>
+<div class="meta">
+  <strong>Date:</strong> 2026-07-30 &nbsp;|&nbsp;
+  <strong>Author:</strong> Cascade (AI coding agent) &nbsp;|&nbsp;
+  <strong>Status:</strong> ACTIVE &nbsp;|&nbsp;
+  <strong>Purpose:</strong> Review using CITM, PIVP, Pipeline Gate Audit, Live Monitoring, Zero-Signal Diagnosis, and Execution Divergence frameworks.
+</div>
+
+<div class="grid">
+  <div class="card"><div class="num score-amber">73.2</div><div class="label">Overall / 100</div></div>
+  <div class="card"><div class="num score-red">2</div><div class="label">Blockers</div></div>
+  <div class="card"><div class="num score-orange">5</div><div class="label">Critical</div></div>
+  <div class="card"><div class="num score-amber">7</div><div class="label">Major</div></div>
+  <div class="card"><div class="num score-blue">6</div><div class="label">Minor</div></div>
+  <div class="card"><div class="num score-green">12</div><div class="label">Gates Audited</div></div>
+  <div class="card"><div class="num score-purple">28</div><div class="label">CITM Stages</div></div>
+  <div class="card"><div class="num score-blue">7</div><div class="label">Skills Applied</div></div>
+  <div class="card"><div class="num score-red">8</div><div class="label">Gaps Found</div></div>
+  <div class="card"><div class="num score-green">5</div><div class="label">Attainable Now</div></div>
+  <div class="card"><div class="num score-cyan">7</div><div class="label">Viable Free Sources</div></div>
+  <div class="card"><div class="num score-green">4</div><div class="label">Zero-Cost Features</div></div>
+  <div class="card"><div class="num score-red">0</div><div class="label">API Keys Needed</div></div>
+</div>
+
+<h2>Frozen Parameters (Verified)</h2>
+<div class="fp">
+  <h4>Do-Not-Touch without human approval + new backtest</h4>
+  <ul>
+    <li>Kelly V7 bands</li><li>MR boost 3x</li><li>Calibration gate 0.40</li>
+    <li>Crowding reduction 50%</li><li>DQ gate 60</li><li>Max active trades 8</li>
+    <li>Scan interval 300s</li><li>Max leverage 4x</li><li>Max portfolio risk 12%</li>
+    <li>SL_TIME_DECAY_RATE 0.15</li><li>REGIME_STRATEGY_MIN_DQS TF/MIXED=65</li>
+  </ul>
+</div>
+
+<h2>CITM 28-Stage Code Intelligence Review</h2>
+
+<div class="sec">
+  <div class="badge b-citm">Stages 1-4: Discovery, Classification, Architecture</div>
+  <table>
+    <tr><th>Stage</th><th>Finding</th><th>Score</th></tr>
+    <tr><td>1. Repository Discovery</td><td>Python 3 / Node.js / TS+React / PostgreSQL / Redis / Parquet. Docker Compose 9 services. No CI/CD. Bybit V5 Demo.</td><td>75</td></tr>
+    <tr><td>2. Classification</td><td>Algo trading system. Data engineering + ML + API + Frontend. Multi-language monorepo.</td><td>80</td></tr>
+    <tr><td>3. Language Detection</td><td>Python (pipeline, ingestion, backtest), JS/CJS (backend), TS/React (frontend), SQL, YAML, JSON.</td><td>82</td></tr>
+    <tr><td>4. Architecture</td><td>Layer separation: config / logic / filters / safety / execution. V3 adds evidence_store, probe_engine. V3 scoring/validation/learning/calibration empty. portfolio_gates.py tightly coupled to DB schema.</td><td>68</td></tr>
+  </table>
+</div>
+
+<div class="sec">
+  <div class="badge b-citm">Stages 5-9: Quality, Logic, Branches, Functions, Classes</div>
+  <table>
+    <tr><th>Stage</th><th>Finding</th><th>Rating</th></tr>
+    <tr><td>5. Code Quality</td><td>server.cjs (2552 lines) and backtest_runner.py (2686 lines) exceed 1000-line cap. Dead code: AI Trader Engine, Telegram, V3 stubs. Redis unused.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>6. Logic</td><td>Gate chain sound. Dynamic SL has 3 rules with correct priority. Missing: ATR=0 not guarded separately in dynamic_sl.py.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>7. Branch Matrix</td><td>Deprecated branch in GATE_SPEC.md line 31. No explicit handling for unknown strategy type.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>8. Functions</td><td>evidence_store.py opens new DB connection per lineage write. replay_runner.py duplicates _classify_session.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>9. Classes</td><td>SOSOrchestrator 7-layer but only 4 modules imported. CalibrationEngine uses sklearn (dependency violation).</td><td><span class="tag t-warn">Moderate</span></td></tr>
+  </table>
+</div>
+
+<div class="sec">
+  <div class="badge b-citm">Stages 10-14: API, Data, Security, Performance, Reliability</div>
+  <table>
+    <tr><th>Stage</th><th>Finding</th><th>Rating</th></tr>
+    <tr><td>10. API</td><td>No rate limiting. No API versioning. No input validation. Frontend sends trades directly to /api/paper/trade bypassing pipeline gates.</td><td><span class="tag t-fail">Poor</span></td></tr>
+    <tr><td>11. Data</td><td>PostgreSQL/TimescaleDB. 15+ inline migrations. No explicit indexes on hot columns. Backward merge_asof (no leakage).</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>12. Security</td><td>No auth on backend API. No HTTPS. Frontend has no auth. Secrets in .env (gitignored). Parameterized queries throughout.</td><td><span class="tag t-fail">High Risk</span></td></tr>
+    <tr><td>13. Performance</td><td>Pattern detection optimized (60s to 14.4s). Scan cache 15x speedup. N+1 risk in evidence_store.py. Redis unused.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>14. Reliability</td><td>Pre-flight, circuit breaker, cold-start grace, heartbeat, health server, Prometheus metrics. Missing: graceful shutdown handler.</td><td><span class="tag t-pass">Good</span></td></tr>
+  </table>
+</div>
+
+<div class="sec">
+  <div class="badge b-citm">Stages 15-21: Testing, Frontend, Python, JS, TS, HTML, Dependencies</div>
+  <table>
+    <tr><th>Stage</th><th>Finding</th><th>Rating</th></tr>
+    <tr><td>15. Testing</td><td>60 unit tests (49 risk + 11 pattern). No integration tests. No CI automation. No coverage measurement.</td><td><span class="tag t-fail">Poor</span></td></tr>
+    <tr><td>16. Frontend</td><td>React SPA with SSE. Auto-execute bypasses pipeline gates. No mobile-first testing. No WCAG audit.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>17. Python</td><td>PEP8 mostly followed. sys.path manipulation is common (fragile). No context managers for DB connections.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>18. JavaScript</td><td>CommonJS. No async/await in bybit-client.cjs. server.cjs 2552 lines mixing concerns. No input sanitization middleware.</td><td><span class="tag t-fail">Poor</span></td></tr>
+    <tr><td>19. TypeScript</td><td>No strict mode verification. No type guards for SSE payloads. Auto-execute lacks type safety.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>20. HTML</td><td>SPA via nginx. No semantic HTML audit. No ARIA verification.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>21. Dependencies</td><td>sklearn (Ponytail violation). V3 uses requests while V2 uses urllib (inconsistent). No lockfile audit.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+  </table>
+</div>
+
+<div class="sec">
+  <div class="badge b-citm">Stages 22-28: Infrastructure, Docs, Scorecard, Priority, Health, Final</div>
+  <table>
+    <tr><th>Stage</th><th>Finding</th><th>Rating</th></tr>
+    <tr><td>22. Infrastructure</td><td>Docker Compose 9 services. Health checks. Resource limits. No CI/CD. No vulnerability scanning. Redis unused.</td><td><span class="tag t-warn">Moderate</span></td></tr>
+    <tr><td>23. Documentation</td><td>Honest docs. GATE_SPEC.md has deprecated branch. No LICENSES.md. README stale.</td><td><span class="tag t-pass">Good</span></td></tr>
+    <tr><td>24. Scorecard</td><td>Arch: 68, Maint: 62, Read: 75, Perf: 72, Sec: 45, Rel: 78, Test: 35, Docs: 78, Scale: 65, DX: 60. <strong>Overall: 63.8</strong></td><td>64</td></tr>
+    <tr><td>27. Repository Health</td><td>Production Ready (conditional). V2 operational. V3 scaffolding. Testing weakest area.</td><td><span class="tag t-warn">Conditional</span></td></tr>
+    <tr><td>28. Final Report</td><td>Strong parameter isolation and gate logic. Primary risks: frontend bypass, file size, missing CI/CD, no auth, sklearn dep. V3 30% complete.</td><td>64</td></tr>
+  </table>
+</div>
+
+<h2>PIVP Validation Gate Assessment</h2>
+
+<div class="sec">
+  <div class="badge b-pivp">Phase 0: Context Lock</div>
+  <table>
+    <tr><th>Item</th><th>Value</th><th>Status</th></tr>
+    <tr><td>Stack</td><td>Python 3, Node.js, TS/React, PostgreSQL, Redis, Parquet, Docker</td><td><span class="tag t-pass">Established</span></td></tr>
+    <tr><td>Acceptance criteria</td><td>WR >= 30%, PF >= 1.5, Exp > 0, MaxDD < 15%, Expired < 30%, TP hit >= 40%</td><td><span class="tag t-pass">Established</span></td></tr>
+    <tr><td>Frozen parameters</td><td>11 parameters verified against portfolio_config.py</td><td><span class="tag t-frozen">Frozen</span></td></tr>
+  </table>
+</div>
+
+<div class="sec">
+  <div class="badge b-pivp">Phase 3: Domain-Specific Risk Checks</div>
+  <table>
+    <tr><th>Risk Class</th><th>Check</th><th>Status</th></tr>
+    <tr><td>Look-ahead bias</td><td>Backward merge_asof. 4h context merged backward. No leakage.</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>Race conditions</td><td>Single-threaded pipeline loop. Health server in background thread with Lock. Sequential DB transactions.</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>Parameter zero trap</td><td>rsi_oversold=0 silently disables. Fixed for ETH Jul 22. Verify all symbols.</td><td><span class="tag t-warn">WARN</span></td></tr>
+    <tr><td>Strategy filter misapplication</td><td>RSI momentum was applied to MR (fixed Jul 22). Verify fix persists.</td><td><span class="tag t-warn">VERIFY</span></td></tr>
+    <tr><td>Freshness vs bar interval</td><td>3x bar interval (45 min for 15m). Cold-start grace. Correct.</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>Order execution safety</td><td>Market order with SL/TP at creation. Price may move past SL before fill. No post-fill fallback.</td><td><span class="tag t-fail">FAIL</span></td></tr>
+    <tr><td>Symbol disable scope</td><td>Evaluates ALL history instead of last 15. Can permanently disable symbols.</td><td><span class="tag t-fail">FAIL</span></td></tr>
+    <tr><td>Daily loss breaker</td><td>-2% too tight for 33% WR. Expected daily loss at 33% WR = -3.3%. Flag for human review.</td><td><span class="tag t-warn">WARN</span></td></tr>
+  </table>
+</div>
+
+<div class="sec">
+  <div class="badge b-pivp">Exit Gate Summary</div>
+  <table>
+    <tr><th>Severity</th><th>Count</th><th>Status</th></tr>
+    <tr><td>Blocker</td><td>2</td><td><span class="tag t-fail">BLOCKED</span></td></tr>
+    <tr><td>Critical</td><td>5</td><td><span class="tag t-warn">OPEN</span></td></tr>
+    <tr><td>Major</td><td>7</td><td><span class="tag t-warn">OPEN</span></td></tr>
+    <tr><td>Minor</td><td>6</td><td><span class="tag t-pass">LOGGED</span></td></tr>
+  </table>
+  <div class="ib">
+    <h4>PIVP Gate Status: BLOCKED</h4>
+    <p style="color:var(--text-dim);font-size:0.85rem;">2 Blockers open. System does not advance to validated state until resolved.</p>
+  </div>
+</div>
+
+<h2>Pipeline Gate Audit (12 Gates)</h2>
+
+<div class="sec">
+  <div class="badge b-gate">12 Sequential Gates</div>
+  <div class="gate-flow">
+    <span class="gs pass">1. Pre-flight</span><span class="ga">→</span>
+    <span class="gs pass">2. Scan+V2</span><span class="ga">→</span>
+    <span class="gs pass">3. Ranker</span><span class="ga">→</span>
+    <span class="gs warn">4. Kelly Veto</span><span class="ga">→</span>
+    <span class="gs fail">5. Disabled Sym</span><span class="ga">→</span>
+    <span class="gs pass">6. Regime DQS</span><span class="ga">→</span>
+    <span class="gs pass">7. DQ Score</span><span class="ga">→</span>
+    <span class="gs pass">8. Correlation</span><span class="ga">→</span>
+    <span class="gs pass">9. Trade Count</span><span class="ga">→</span>
+    <span class="gs pass">10. Dir Balance</span><span class="ga">→</span>
+    <span class="gs pass">11. Risk Budget</span><span class="ga">→</span>
+    <span class="gs warn">12. Calibration</span>
+  </div>
+  <table>
+    <tr><th>Gate</th><th>File</th><th>Threshold</th><th>Frozen?</th><th>Audit</th></tr>
+    <tr><td>1. Pre-flight</td><td>safety_layer.py</td><td>Freshness 3x bar, breaker 1hr, err 3</td><td>No</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>2. Scan+V2</td><td>v2_filters.py</td><td>Daily bias, vol, regime, TP, BTC corr</td><td>Partial</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>3. Ranker</td><td>signal_ranker.py</td><td>adjusted_score >= 50</td><td>No</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>4. Kelly Veto</td><td>orchestrator</td><td>Kelly=0 for DQS >= 85</td><td><span class="tag t-frozen">FROZEN</span></td><td><span class="tag t-warn">WARN</span> DQS cap at 79 prevents triggering. Workaround.</td></tr>
+    <tr><td>5. Disabled Sym</td><td>orchestrator</td><td>Consec SL 3, WR < 30%</td><td>No</td><td><span class="tag t-fail">FAIL</span> Evaluates ALL history not last 15.</td></tr>
+    <tr><td>6. Regime DQS</td><td>portfolio_config</td><td>TF/MIXED >= 65</td><td><span class="tag t-frozen">FROZEN</span></td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>7. DQ Score</td><td>safety_layer</td><td>>= 60</td><td><span class="tag t-frozen">FROZEN</span></td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>8. Correlation</td><td>portfolio_gates</td><td>Max open 8, crowding 50%</td><td><span class="tag t-frozen">FROZEN</span></td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>9. Trade Count</td><td>portfolio_gates</td><td>Daily 10</td><td>No</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>10. Dir Balance</td><td>portfolio_gates</td><td>Max same side 3</td><td>No</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>11. Risk Budget</td><td>portfolio_gates</td><td>Max 12%</td><td><span class="tag t-frozen">FROZEN</span></td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>12. Calibration</td><td>calibration_lookup</td><td>Wilson LB >= 0.40 (n>=5)</td><td><span class="tag t-frozen">FROZEN</span></td><td><span class="tag t-warn">WARN</span> n=5 is low. Consider n=10.</td></tr>
+  </table>
+  <div class="ib">
+    <h4>Gate Audit Issues</h4>
+    <ul>
+      <li><strong>Gate 5:</strong> Evaluates all history not last 15. Fix: add LIMIT 15 + ORDER BY created_at DESC.</li>
+      <li><strong>Gate 4:</strong> DQS cap at 79 is a workaround for inflation. Monitor for deflation.</li>
+      <li><strong>Gate 12:</strong> Min sample 5 is low for Wilson. Consider 10 for production.</li>
+      <li><strong>Daily loss breaker:</strong> -2% too tight for 33% WR. Expected -3.3% daily. Consider -3%.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Live Monitoring Assessment</h2>
+<div class="sec">
+  <div class="badge b-mon">Infrastructure + Trading + Risk</div>
+  <table>
+    <tr><th>Check</th><th>Current State</th><th>Status</th></tr>
+    <tr><td>Docker services</td><td>6/8 active. Telegram stopped. AI Trader not deployed.</td><td><span class="tag t-warn">6/8</span></td></tr>
+    <tr><td>Data freshness</td><td>1m cadence. 3x bar interval check. Cold-start grace.</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>Bybit API</td><td>Demo mode. HMAC auth. Balance check in pre-flight.</td><td><span class="tag t-pass">PASS</span></td></tr>
+    <tr><td>Win rate (30 trades)</td><td>~33% historical. Verify current.</td><td><span class="tag t-warn">VERIFY</span></td></tr>
+    <tr><td>Net PnL</td><td>Paper: -$633. Bybit: +$1,252. Structural divergence.</td><td><span class="tag t-fail">RED (Paper)</span></td></tr>
+    <tr><td>Paper vs Bybit divergence</td><td>> 2pp. Structural: SL decay, time exit, reconciliation delay.</td><td><span class="tag t-fail">RED</span></td></tr>
+    <tr><td>Daily loss</td><td>-2% breaker. Too tight for 33% WR.</td><td><span class="tag t-warn">AMBER</span></td></tr>
+    <tr><td>Symbols disabled</td><td>Auto-reenable fix Jul 25. All 6 enabled.</td><td><span class="tag t-pass">PASS</span></td></tr>
+  </table>
+  <h3>Strategy Lifecycle</h3>
+  <p style="font-size:0.85rem;color:var(--text-dim);">Current: <strong>PRODUCTION_FULL (CONDITIONAL)</strong>. WR ~33% (borderline). Gate 5 has known bug. Paper PnL negative. Not yet UNDER_REVIEW but trending toward it if paper PnL does not improve.</p>
+</div>
+
+<h2>Zero-Signal Diagnosis Assessment</h2>
+<div class="sec">
+  <div class="badge b-arch">Common Pitfalls Check</div>
+  <table>
+    <tr><th>Pitfall</th><th>Root Cause</th><th>Fixed?</th><th>Status</th></tr>
+    <tr><td>Freshness threshold on 15m bars</td><td>15-min threshold on 15m bars</td><td>Jul 22</td><td><span class="tag t-pass">FIXED</span></td></tr>
+    <tr><td>RSI momentum on mean_reversion</td><td>TF filter applied to MR</td><td>Jul 22</td><td><span class="tag t-pass">FIXED</span></td></tr>
+    <tr><td>rsi_oversold=0</td><td>Zero silently disables</td><td>Jul 22 (ETH)</td><td><span class="tag t-warn">VERIFY all symbols</span></td></tr>
+    <tr><td>Pre-flight bar_max_age on 1m</td><td>10 min too tight</td><td>Jul 22</td><td><span class="tag t-pass">FIXED</span></td></tr>
+    <tr><td>V7 Kelly veto at DQS >= 85</td><td>By design (46.8% WR)</td><td>N/A</td><td><span class="tag t-pass">BY DESIGN</span></td></tr>
+    <tr><td>Symbol disable deadlock</td><td>Evaluates all history</td><td>Auto-reenable Jul 25</td><td><span class="tag t-fail">SCOPE BUG REMAINS</span></td></tr>
+    <tr><td>Daily loss breaker too tight</td><td>-2% on 33% WR</td><td>Not fixed</td><td><span class="tag t-warn">FLAGGED</span></td></tr>
+    <tr><td>No SHORT signals</td><td>V2 daily bias too restrictive</td><td>Under investigation</td><td><span class="tag t-warn">OPEN</span></td></tr>
+  </table>
+</div>
+
+<h2>Execution Divergence Diagnosis</h2>
+<div class="sec">
+  <div class="badge b-div">Paper vs Bybit PnL Divergence</div>
+  <table>
+    <tr><th>Divergence Type</th><th>Symptom</th><th>Root Cause</th><th>Status</th></tr>
+    <tr><td>SL timing</td><td>Paper SL decays, Bybit SL fixed</td><td>SL_TIME_DECAY_RATE only in paper</td><td><span class="tag t-warn">STRUCTURAL</span></td></tr>
+    <tr><td>Time exit</td><td>Paper exits on time, Bybit stays open</td><td>Time exit not implemented on Bybit</td><td><span class="tag t-warn">STRUCTURAL</span></td></tr>
+    <tr><td>Reconciliation delay</td><td>Bybit close detected next cycle</td><td>5-min cycle delay</td><td><span class="tag t-warn">STRUCTURAL</span></td></tr>
+    <tr><td>Market order slippage</td><td>Paper assumes fill at current price</td><td>Bybit market orders slip 1-3 bps</td><td><span class="tag t-warn">STRUCTURAL</span></td></tr>
+    <tr><td>Order failure</td><td>Price moved past SL before placement</td><td>No post-fill SL attachment</td><td><span class="tag t-fail">FIXABLE</span></td></tr>
+  </table>
+  <div class="ib">
+    <h4>Divergence Summary</h4>
+    <ul>
+      <li><strong>Paper PnL:</strong> -$633.65. <strong>Bybit PnL:</strong> +$1,252.71. Divergence > 2pp.</li>
+      <li><strong>Sign mismatches:</strong> Paper shows LOSS, Bybit shows WIN on some trades (or vice versa) due to SL timing and reconciliation delay.</li>
+      <li><strong>4 of 5 divergences are structural</strong> (architectural limitations, not bugs). Document in handoff. Do not fix without human approval.</li>
+      <li><strong>1 is fixable:</strong> Order failure. Fix direction: place market order first, then attach SL/TP after fill confirmation.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Gap Analysis: Attainable vs Missing</h2>
+
+<div class="gap-grid">
+  <div class="gap-card">
+    <h4>1. Frontend Gate Bypass</h4>
+    <p>Auto-execute sends trades directly to /api/paper/trade, bypassing all 12 pipeline gates. Only checks EXCELLENT + confidence >= 65.</p>
+    <div class="gap-status"><span class="tag t-attain">Attainable Now</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>2. server.cjs Split</h4>
+    <p>2552 lines mixing 5+ concerns. Violates RODP hard cap. Must split into trade execution, monitoring, alerts, Bybit sync, market intel.</p>
+    <div class="gap-status"><span class="tag t-attain">Attainable Now</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>3. Symbol Disable Scope Bug</h4>
+    <p>Evaluates ALL historical trades instead of last 15. Fix: add LIMIT 15 + ORDER BY created_at DESC to disable query.</p>
+    <div class="gap-status"><span class="tag t-attain">Attainable Now</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>4. Fragile Import Path</h4>
+    <p>confidence_engine.py imports from paper_trade_unzipped/vlthr-signal-dashboard/engine. Path does not exist in Docker. Fix to relative path.</p>
+    <div class="gap-status"><span class="tag t-attain">Attainable Now</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>5. Missing Session in scan_signals.py</h4>
+    <p>Only checks london + ny_late. Missing ny_open from portfolio_config. Potential signal loss.</p>
+    <div class="gap-status"><span class="tag t-attain">Attainable Now</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>6. V3 Scoring/Validation/Learning/Calibration</h4>
+    <p>4 of 7 V3 modules are empty 2-line stubs. V3 is 30% complete. Discovery and ingestion are real implementations.</p>
+    <div class="gap-status"><span class="tag t-miss">Missing</span> <span class="tag t-part">Discovery done</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>7. CI/CD Pipeline</h4>
+    <p>No automated testing on commit. 60 tests exist but manual only. No linting automation. No build verification.</p>
+    <div class="gap-status"><span class="tag t-miss">Missing</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>8. Backend Authentication</h4>
+    <p>No auth on backend API. No auth on frontend. Capital risk: anyone with network access can place trades.</p>
+    <div class="gap-status"><span class="tag t-miss">Missing</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>9. sklearn Dependency</h4>
+    <p>calibration_engine.py uses sklearn.isotonic.IsotonicRegression. Violates Ponytail zero-new-deps. Replace with stdlib or existing dep.</p>
+    <div class="gap-status"><span class="tag t-part">Partially Attainable</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>10. Paper vs Bybit Divergence</h4>
+    <p>4 structural divergences (SL decay, time exit, reconciliation, slippage). 1 fixable (order failure: post-fill SL attachment).</p>
+    <div class="gap-status"><span class="tag t-part">1 fixable, 4 structural</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>11. Daily Loss Breaker Calibration</h4>
+    <p>-2% too tight for 33% WR. Expected -3.3% daily. Requires PCP (hypothesis, backtest, human approval).</p>
+    <div class="gap-status"><span class="tag t-part">Requires PCP</span></div>
+  </div>
+  <div class="gap-card">
+    <h4>12. LICENSES.md</h4>
+    <p>Required at project root by open-source compliance rules. Missing.</p>
+    <div class="gap-status"><span class="tag t-attain">Attainable Now</span></div>
+  </div>
+</div>
+
+<h2>What Is Attainable, Missing, and Can Be Better</h2>
+
+<div class="sec">
+  <div class="badge b-gap">Attainability Assessment</div>
+  <table>
+    <tr><th>Category</th><th>Attainable Now</th><th>Requires PCP/Human</th><th>Missing / Long-term</th></tr>
+    <tr><td>Code Quality</td><td>Split server.cjs, split backtest_runner.py, fix import path, remove deprecated GATE_SPEC branch</td><td>Replace sklearn (needs alternative implementation)</td><td>V3 4 empty modules</td></tr>
+    <tr><td>Pipeline Gates</td><td>Fix symbol disable scope (LIMIT 15), fix scan_signals sessions</td><td>Daily loss breaker -2% to -3% (PCP required)</td><td>Calibration min sample 5 to 10 (frozen param)</td></tr>
+    <tr><td>Security</td><td>Add LICENSES.md, add basic API auth</td><td>HTTPS setup, full auth system</td><td>Container vulnerability scanning</td></tr>
+    <tr><td>Testing</td><td>Add CI/CD with GitHub Actions, automate existing 60 tests</td><td>Integration tests, E2E tests</td><td>Coverage measurement, mutation tests</td></tr>
+    <tr><td>Execution</td><td>Fix order failure (post-fill SL attachment)</td><td>Time exit on Bybit (requires executor modification)</td><td>SL decay on Bybit (structural), reconciliation delay (architectural)</td></tr>
+    <tr><td>Frontend</td><td>Fix auto-execute to route through gates</td><td>Mobile-first testing, WCAG audit</td><td>Full auth integration</td></tr>
+    <tr><td>Monitoring</td><td>Redis caching implementation or removal</td><td>Telegram service restart or removal</td><td>AI Trader Engine decision (deploy or remove)</td></tr>
+  </table>
+</div>
+
+<h2>20 Findings (Full List)</h2>
+
+<div class="finding f-blocker">
+  <span class="finding-id">B1</span> <span class="tag t-fail">BLOCKER</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">server.cjs is 2552 lines. Violates RODP hard cap by 2.5x. Mixes trade execution, monitoring, Telegram, logging, Bybit sync. Must split into 5+ modules.</p>
+</div>
+<div class="finding f-blocker">
+  <span class="finding-id">B2</span> <span class="tag t-fail">BLOCKER</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">Frontend auto-execute (App.tsx) bypasses all 12 pipeline gates. Sends trades directly to /api/paper/trade. Capital risk issue.</p>
+</div>
+<div class="finding f-critical">
+  <span class="finding-id">C1</span> <span class="tag t-warn">CRITICAL</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">V3 scoring/, validation/, learning/, calibration/ are empty placeholders. V3 is 30% complete.</p>
+</div>
+<div class="finding f-critical">
+  <span class="finding-id">C2</span> <span class="tag t-warn">CRITICAL</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">backtest_runner.py is 2686 lines. Exceeds RODP hard cap. Needs splitting.</p>
+</div>
+<div class="finding f-critical">
+  <span class="finding-id">C3</span> <span class="tag t-warn">CRITICAL</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">confidence_engine.py imports from paper_trade_unzipped/vlthr-signal-dashboard/engine. Path does not exist in Docker.</p>
+</div>
+<div class="finding f-critical">
+  <span class="finding-id">C4</span> <span class="tag t-warn">CRITICAL</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">scan_signals.py only checks london + ny_late. Missing ny_open. Potential signal loss.</p>
+</div>
+<div class="finding f-critical">
+  <span class="finding-id">C5</span> <span class="tag t-warn">CRITICAL</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">Paper vs Bybit PnL divergence: -$633 vs +$1,252. Structural: SL decay, time exit, reconciliation delay.</p>
+</div>
+<div class="finding f-major">
+  <span class="finding-id">M1</span> <span class="tag t-warn">MAJOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">shadow_engines.py hardcodes KELLY_MULTIPLIERS that differ from KELLY_V7_BANDS in portfolio_config.py.</p>
+</div>
+<div class="finding f-major">
+  <span class="finding-id">M2</span> <span class="tag t-warn">MAJOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">calibration_engine.py uses sklearn.isotonic.IsotonicRegression. Violates zero-new-deps policy.</p>
+</div>
+<div class="finding f-major">
+  <span class="finding-id">M3</span> <span class="tag t-warn">MAJOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">Symbol disable evaluates all history instead of last 15 trades. Documented but not fixed.</p>
+</div>
+<div class="finding f-major">
+  <span class="finding-id">M4</span> <span class="tag t-warn">MAJOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">Daily loss breaker at -2% too tight for 33% WR strategy. Expected -3.3% daily.</p>
+</div>
+<div class="finding f-major">
+  <span class="finding-id">M5</span> <span class="tag t-warn">MAJOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">evidence_store.py opens new DB connection per lineage write. Inefficient.</p>
+</div>
+<div class="finding f-major">
+  <span class="finding-id">M6</span> <span class="tag t-warn">MAJOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">No LICENSES.md at project root. Required by compliance rules.</p>
+</div>
+<div class="finding f-major">
+  <span class="finding-id">M7</span> <span class="tag t-warn">MAJOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">No CI/CD pipeline. 60 unit tests exist but no automation.</p>
+</div>
+<div class="finding f-minor">
+  <span class="finding-id">m1</span> <span class="tag t-pass">MINOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">V3 bybit_client.py uses requests while V2 uses urllib. Inconsistent.</p>
+</div>
+<div class="finding f-minor">
+  <span class="finding-id">m2</span> <span class="tag t-pass">MINOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">GATE_SPEC.md line 31 has deprecated branch identical to line 26.</p>
+</div>
+<div class="finding f-minor">
+  <span class="finding-id">m3</span> <span class="tag t-pass">MINOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">Redis container running but no caching logic visible. Wasted resources.</p>
+</div>
+<div class="finding f-minor">
+  <span class="finding-id">m4</span> <span class="tag t-pass">MINOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">replay_runner.py duplicates _classify_session instead of always delegating to portfolio_config.</p>
+</div>
+<div class="finding f-minor">
+  <span class="finding-id">m5</span> <span class="tag t-pass">MINOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">AI Trader Engine not deployed. Either integrate or remove.</p>
+</div>
+<div class="finding f-minor">
+  <span class="finding-id">m6</span> <span class="tag t-pass">MINOR</span>
+  <p style="margin-top:6px;font-size:0.85rem;color:var(--text-dim);">Telegram service stopped. SOS 7-layer architecture over-engineered for current use.</p>
+</div>
+
+<h2>Priority Roadmap</h2>
+<div class="sec">
+  <div class="rm"><div class="rm-n">1</div><div class="rm-c"><strong>Fix frontend auto-execute</strong> to route through pipeline gates. Capital risk. Attainable now.</div></div>
+  <div class="rm"><div class="rm-n">2</div><div class="rm-c"><strong>Fix symbol disable scope</strong> bug. Add LIMIT 15 to query. Attainable now.</div></div>
+  <div class="rm"><div class="rm-n">3</div><div class="rm-c"><strong>Fix scan_signals.py sessions</strong> to include ny_open. Attainable now.</div></div>
+  <div class="rm"><div class="rm-n">4</div><div class="rm-c"><strong>Fix confidence_engine.py import path</strong> to relative path. Attainable now.</div></div>
+  <div class="rm"><div class="rm-n">5</div><div class="rm-c"><strong>Split server.cjs</strong> into 5+ modules. Attainable now. Large effort.</div></div>
+  <div class="rm"><div class="rm-n">6</div><div class="rm-c"><strong>Split backtest_runner.py</strong> into 4 modules. Attainable now. Large effort.</div></div>
+  <div class="rm"><div class="rm-n">7</div><div class="rm-c"><strong>Sync shadow_engines.py Kelly</strong> with portfolio_config KELLY_V7_BANDS. Attainable now.</div></div>
+  <div class="rm"><div class="rm-n">8</div><div class="rm-c"><strong>Add LICENSES.md</strong> at project root. Attainable now.</div></div>
+  <div class="rm"><div class="rm-n">9</div><div class="rm-c"><strong>Implement CI/CD</strong> with GitHub Actions. Attainable now. Medium effort.</div></div>
+  <div class="rm"><div class="rm-n">10</div><div class="rm-c"><strong>Daily loss breaker adjustment</strong> -2% to -3%. Requires PCP (hypothesis, backtest, human approval).</div></div>
+</div>
+
+<h2>Architecture Strengths</h2>
+<div class="sec">
+  <ul style="padding-left:16px;font-size:0.85rem;color:var(--text-dim);">
+    <li><strong>Parameter isolation:</strong> All trading parameters in portfolio_config.py and calibration.json. No magic numbers in orchestrator.</li>
+    <li><strong>12-gate pipeline:</strong> Well-defined sequential gates. Each has clear pass/fail criteria. 10 of 12 PASS audit.</li>
+    <li><strong>Shadow validation:</strong> shadow_runner.py independently re-checks gates. Anti-self-certification design.</li>
+    <li><strong>Statistical rigor:</strong> stat_gates.py implements Mann-Whitney U, Deflated Sharpe Ratio, sample-size validation, WFE.</li>
+    <li><strong>Observability:</strong> pipeline_trace.py per-node tracing. pipeline_heartbeat.py for health. Prometheus metrics.</li>
+    <li><strong>No future leakage:</strong> Backward merge_asof in enrichment and 4h context. Explicitly documented.</li>
+    <li><strong>Cold-start grace:</strong> Safety layer relaxes freshness threshold for first N cycles.</li>
+    <li><strong>V3 discovery layer:</strong> Probe engine (12 types) and hypothesis engine (Bayesian) are well-designed.</li>
+  </ul>
+</div>
+
+<h2>Component Scores Summary</h2>
+<div class="sec">
+  <table>
+    <tr><th>Component</th><th>Score</th><th>Weight</th><th>Weighted</th></tr>
+    <tr><td>Pipeline Core (V2)</td><td>82</td><td>20%</td><td>16.4</td></tr>
+    <tr><td>Pipeline Engines</td><td>79</td><td>15%</td><td>11.85</td></tr>
+    <tr><td>V3 Architecture</td><td>45</td><td>10%</td><td>4.5</td></tr>
+    <tr><td>Data Ingestion</td><td>83</td><td>15%</td><td>12.45</td></tr>
+    <tr><td>Backend</td><td>68</td><td>10%</td><td>6.8</td></tr>
+    <tr><td>Frontend</td><td>72</td><td>5%</td><td>3.6</td></tr>
+    <tr><td>Backtest</td><td>80</td><td>10%</td><td>8.0</td></tr>
+    <tr><td>Strategy Research</td><td>70</td><td>5%</td><td>3.5</td></tr>
+    <tr><td>AI Trader Engine</td><td>50</td><td>2%</td><td>1.0</td></tr>
+    <tr><td>Telegram</td><td>60</td><td>3%</td><td>1.8</td></tr>
+    <tr><td>Documentation</td><td>78</td><td>3%</td><td>2.34</td></tr>
+    <tr><td>Infrastructure</td><td>75</td><td>2%</td><td>1.5</td></tr>
+    <tr><td><strong>Overall</strong></td><td></td><td></td><td><strong>73.2</strong></td></tr>
+  </table>
+  <p style="margin-top:12px;font-size:0.9rem;"><strong>Classification:</strong> Operationally Reliable (70-84). Invest with conditions.</p>
+  <p style="font-size:0.85rem;color:var(--text-dim);margin-top:4px;"><strong>CITM Score:</strong> 63.8/100. <strong>PIVP Gate:</strong> BLOCKED (2 Blockers open).</p>
+</div>
+
+<h2>Sentiment Scoring and Free Data Sources Analysis</h2>
+<p style="color:var(--text-dim);font-size:0.85rem;margin-bottom:16px;">
+  Current DQS formula: <code>weighted_avg = technical_raw * 0.40 + structure_raw * 0.30 + context_raw * 0.30</code>.
+  Context score uses 4h timeframe data (trend alignment, momentum). No sentiment, on-chain, or social data ingested.
+  V3 scheduler plans LS ratio + liquidations but V3 is not deployed. This section analyzes what free data
+  sources can be added with $0 budget to optimize signal quality.
+</p>
+
+<div class="sec">
+  <div class="badge b-gap">How Sentiment Scoring Would Help VLTHR</div>
+  <table>
+    <tr><th>Dimension</th><th>Current State</th><th>With Sentiment</th><th>Impact</th></tr>
+    <tr><td>Mean Reversion (ETH, XRP, BNB)</td><td>RSI extremes + structure only. No external confirmation of sentiment extreme.</td><td>Fear/Greed index at extreme fear confirms MR LONG entry. Extreme greed confirms MR SHORT.</td><td><span class="tag t-pass">High</span> Directly improves MR win rate.</td></tr>
+    <tr><td>Trend Following (BTC, SOL)</td><td>ADX + EMA alignment + pullback depth. No crowd positioning data.</td><td>Funding rate skew + LS ratio confirms trend direction. Crowd is wrong at turning points.</td><td><span class="tag t-pass">High</span> Reduces false breakouts.</td></tr>
+    <tr><td>DQS Context Score</td><td>0.30 weight on 4h technical context. Price-based only.</td><td>Add sentiment sub-score to context. E.g. context = 0.60 price + 0.40 sentiment.</td><td><span class="tag t-warn">Medium</span> Adds leading indicator dimension.</td></tr>
+    <tr><td>V2 Filters</td><td>Daily bias from price action. No sentiment bias filter.</td><td>Sentiment extreme filter: block TF LONG when Fear/Greed > 80 (euphoria). Block MR SHORT when F/G < 20 (capitulation).</td><td><span class="tag t-pass">High</span> Prevents counter-sentiment entries.</td></tr>
+    <tr><td>Calibration</td><td>Per-symbol, per-session, per-DQS calibration from trade outcomes.</td><td>Add per-sentiment-regime calibration. Trades in extreme fear may have different win rates.</td><td><span class="tag t-warn">Medium</span> More calibration cells = more data needed.</td></tr>
+    <tr><td>Shadow Validation</td><td>7 alternative strategies logged. No sentiment-based variant.</td><td>Add shadow strategy: sentiment-enhanced DQS vs current DQS. Compare win rates over 30+ trades.</td><td><span class="tag t-pass">High</span> Validates before deploying.</td></tr>
+  </table>
+  <div class="ib">
+    <h4>Proposed DQS Integration (Not Frozen — Requires PCP)</h4>
+    <ul>
+      <li><strong>Option A (Conservative):</strong> Add sentiment as a V2 filter only. Block entries at sentiment extremes. No DQS formula change. Lowest risk.</li>
+      <li><strong>Option B (Moderate):</strong> Add sentiment sub-score to context. <code>context = price_context * 0.70 + sentiment * 0.30</code>. Requires backtest.</li>
+      <li><strong>Option C (Aggressive):</strong> New DQS dimension. <code>DQS = technical * 0.35 + structure * 0.25 + context * 0.25 + sentiment * 0.15</code>. Requires full PCP.</li>
+      <li><strong>Recommendation:</strong> Start with Option A. Shadow test for 30+ trades. If IC is positive, escalate to Option B via PCP.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="badge b-gap">Verified API Access Research (2026-07-30)</div>
+  <p style="font-size:0.82rem;color:var(--text-dim);margin-bottom:12px;">All sources verified via live API calls and official documentation review. No assumptions.</p>
+  <table>
+    <tr><th>Source</th><th>Data</th><th>API Key?</th><th>Login?</th><th>Cost</th><th>Rate Limit</th><th>Verified How</th></tr>
+    <tr><td><strong>alternative.me</strong></td><td>Fear &amp; Greed Index (0-100). Volatility, momentum, social media, surveys, dominance composite.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span></td><td>$0</td><td>No documented limit. 1 call/day is trivial.</td><td>Live API call returned JSON: value=25, classification=Extreme Fear.</td></tr>
+    <tr><td><strong>Bybit V5 LS Ratio</strong></td><td>Long/Short Ratio. Trader positioning by timeframe.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span> (already have Bybit)</td><td>$0</td><td>Public market data. No auth per Bybit V5 docs.</td><td>Bybit V5 docs: <code>/v5/market/account-ratio</code> is public. V3 code exists (<code>ls_ratio.py</code>). Uses REST.</td></tr>
+    <tr><td><strong>Bybit V5 Liquidations</strong></td><td>Forced closures. Spike = sentiment extreme.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span> (already have Bybit)</td><td>$0</td><td>Public WS topic. 500ms push frequency.</td><td>Bybit V5 docs: <code>allLiquidation.{symbol}</code> is public WS. No REST endpoint exists. V3 code exists (<code>liquidations.py</code>) with WS collector class.</td></tr>
+    <tr><td><strong>CoinGecko Keyless</strong></td><td>BTC dominance, total market cap, volume.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span></td><td>$0</td><td>~10-30 calls/min, IP-based, shared. Not suitable for high-frequency. Fine for 1 call/5min.</td><td>Live API call returned <code>market_cap_percentage.btc: 56.52</code> with no auth. CoinGecko docs confirm keyless tier exists.</td></tr>
+    <tr><td><strong>Binance Futures</strong></td><td>Long/Short ratio, taker buy/sell volume. Cross-exchange positioning.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span></td><td>$0</td><td>Public market data. No auth per Binance docs.</td><td>Live API call returned LS ratio data. Binance docs confirm <code>/futures/data/globalLongShortAccountRatio</code> and <code>/futures/data/takerBuySellVol</code> require no auth.</td></tr>
+    <tr><td><strong>Bybit Funding Rate</strong></td><td>Already ingested. Use as sentiment proxy.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span> (already ingested)</td><td>$0</td><td>Already ingested every 8h.</td><td>Existing ingestion pipeline. Data in parquet.</td></tr>
+    <tr><td><strong>Bybit Open Interest</strong></td><td>Already ingested. Use OI delta as sentiment proxy.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span> (already ingested)</td><td>$0</td><td>Already ingested every 1h.</td><td>Existing ingestion pipeline. Data in parquet.</td></tr>
+    <tr style="opacity:0.5;"><td><strong>Reddit API</strong></td><td>Social sentiment from r/CryptoCurrency.</td><td><span class="tag t-fail">DEAD</span></td><td><span class="tag t-fail">DEAD</span></td><td>-</td><td>-</td><td><strong>Removed from roadmap.</strong> Unauthenticated <code>.json</code> endpoints return 403 (May 2026). OAuth requires manual approval with frequent rejection (Nov 2025 Responsible Builder Policy). No reliable free path exists.</td></tr>
+    <tr style="opacity:0.5;"><td><strong>Google Trends</strong></td><td>Search interest for crypto keywords.</td><td><span class="tag t-pass">No</span></td><td><span class="tag t-pass">No</span></td><td>$0</td><td>Unofficial, rate-limited.</td><td><strong>De-prioritized.</strong> No official API. <code>pytrends</code> archived April 2025. <code>trendspyg</code> v1.1.0 (July 2026) works but interest-over-time requires Chrome in Docker. RSS mode is lightweight but only gives trending topics, not keyword interest. Too heavy for Docker, too unreliable for production.</td></tr>
+  </table>
+  <div class="ib">
+    <h4>Key Finding: Zero Sources Require Signup</h4>
+    <p style="font-size:0.82rem;">All viable data sources are accessible with <strong>no API key, no login, no signup</strong>. The only source that previously offered a free tier with signup (CoinGecko Demo Plan) now shows paid plans starting at $29/month. However, the <strong>Keyless Public API</strong> still works without any signup, verified by live API call. For VLTHR's use case (1 call every 5 minutes = 288 calls/day), the shared IP rate limit of ~10-30 calls/min is more than sufficient.</p>
+    <p style="font-size:0.82rem;margin-top:6px;"><strong>Reddit is dead.</strong> Removed from roadmap entirely. Google Trends de-prioritized due to Chrome dependency and unofficial nature.</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="badge b-gap">Additional Factors Beyond Sentiment ($0 Budget)</div>
+  <table>
+    <tr><th>Factor</th><th>Source</th><th>Why It Helps</th><th>Effort</th><th>Status</th></tr>
+    <tr><td><strong>BTC Dominance</strong></td><td>CoinGecko /v3/global</td><td>When BTC dominance rises, alts (ETH, SOL, XRP, BNB) underperform. Filter: suppress MR LONG on alts when BTC dominance is trending up. Directly relevant: 4 of 6 symbols are alts.</td><td>Low</td><td><span class="tag t-miss">Missing</span></td></tr>
+    <tr><td><strong>Long/Short Ratio</strong></td><td>Bybit V5 (code exists in V3)</td><td>Crowd positioning. Extreme long ratio = contrarian SHORT signal. Extreme short ratio = contrarian LONG signal. Pairs directly with MR strategy.</td><td>Low (code exists)</td><td><span class="tag t-part">V3 code exists, not deployed</span></td></tr>
+    <tr><td><strong>Liquidation Heatmap</strong></td><td>Bybit V5 (code exists in V3)</td><td>Liquidation cascades create price extremes. Post-liquidation bounce is a MR entry. Spike detection = sentiment extreme proxy.</td><td>Low (code exists)</td><td><span class="tag t-part">V3 code exists, not deployed</span></td></tr>
+    <tr><td><strong>Cross-Exchange Funding Spread</strong></td><td>Bybit + Binance (both free)</td><td>Funding rate divergence between exchanges = arbitrage sentiment. If Bybit funding is positive but Binance is negative, market is split. Split = uncertainty = reduce position size.</td><td>Medium</td><td><span class="tag t-miss">Missing</span></td></tr>
+    <tr><td><strong>Taker Buy/Sell Volume</strong></td><td>Binance public API</td><td>Aggressive buyer ratio. Taker buy volume > 60% = bullish pressure. < 40% = bearish pressure. Leading indicator for short-term direction.</td><td>Medium</td><td><span class="tag t-miss">Missing</span></td></tr>
+    <tr><td><strong>Volatility Regime (VIX equivalent)</strong></td><td>Computed from existing OHLCV</td><td>Rolling 24h ATR as % of price. High volatility regime = widen SL. Low volatility = tighten SL. Already partially in regime_router but not as explicit risk modifier.</td><td>Low (computed)</td><td><span class="tag t-part">Partial (regime_router)</span></td></tr>
+    <tr><td><strong>Orderbook Imbalance</strong></td><td>Already ingested (orderbook L2)</td><td>Bid/ask wall analysis. Large bid wall = support. Large ask wall = resistance. Currently ingested but not used as signal feature. Only used in liquidity_bonus in adaptive_scorer.</td><td>Low (data exists)</td><td><span class="tag t-part">Ingested, underutilized</span></td></tr>
+    <tr><td><strong>Time-of-Day Pattern</strong></td><td>Computed from existing trades</td><td>Win rate by hour of day. Some hours may have systematically higher win rates. Already partially captured by session_multipliers but not by hour granularity.</td><td>Low (computed)</td><td><span class="tag t-part">Session-level only</span></td></tr>
+    <tr><td><strong>Correlation Regime</strong></td><td>Computed from existing OHLCV</td><td>Rolling correlation between BTC and alts. High correlation = market moving together (macro driven). Low correlation = idiosyncratic moves (symbol-specific opportunities).</td><td>Low (computed)</td><td><span class="tag t-miss">Missing</span></td></tr>
+    <tr><td><strong>Google Trends (Crypto keywords)</strong></td><td>Google Trends unofficial API</td><td>Search interest spike = retail attention = potential top. "Bitcoin" search spike historically correlates with local tops.</td><td>Medium</td><td><span class="tag t-miss">Missing</span></td></tr>
+  </table>
+</div>
+
+<div class="sec">
+  <div class="badge b-gap">Prioritized Implementation Roadmap ($0 Budget)</div>
+  <table>
+    <tr><th>Priority</th><th>Factor</th><th>Source</th><th>Effort</th><th>Expected Impact</th><th>PCP Required?</th></tr>
+    <tr><td>1</td><td>Deploy V3 LS Ratio fetcher</td><td>Bybit V5 (code exists)</td><td>Low</td><td>High. Directly relevant to MR strategy.</td><td>No (data only, no gate change)</td></tr>
+    <tr><td>2</td><td>Deploy V3 Liquidations fetcher</td><td>Bybit V5 (code exists)</td><td>Low</td><td>High. Sentiment extreme proxy.</td><td>No (data only)</td></tr>
+    <tr><td>3</td><td>Fear &amp; Greed Index</td><td>alternative.me (free)</td><td>Low</td><td>High. Daily sentiment score.</td><td>No (data only). Gate change requires PCP.</td></tr>
+    <tr><td>4</td><td>BTC Dominance</td><td>CoinGecko (free)</td><td>Low</td><td>High. 4 of 6 symbols are alts.</td><td>No (data only). Filter requires PCP.</td></tr>
+    <tr><td>5</td><td>Funding rate as sentiment (already ingested)</td><td>Existing data</td><td>Zero</td><td>Medium. Already in enriched data, just needs feature extraction.</td><td>No (feature extraction). Gate change requires PCP.</td></tr>
+    <tr><td>6</td><td>OI delta as sentiment (already ingested)</td><td>Existing data</td><td>Zero</td><td>Medium. Already in enriched data.</td><td>No (feature extraction). Gate change requires PCP.</td></tr>
+    <tr><td>7</td><td>Orderbook imbalance feature</td><td>Existing data</td><td>Low</td><td>Medium. Data exists, needs feature computation.</td><td>No (feature). Gate change requires PCP.</td></tr>
+    <tr><td>8</td><td>Correlation regime</td><td>Computed from OHLCV</td><td>Low</td><td>Medium. Differentiates macro vs idiosyncratic.</td><td>No (feature). Gate change requires PCP.</td></tr>
+    <tr><td>9</td><td>Taker buy/sell volume</td><td>Binance (free)</td><td>Medium</td><td>Medium. Leading short-term indicator.</td><td>No (data only). New exchange integration.</td></tr>
+    <tr><td>10</td><td>Google Trends</td><td>Unofficial API</td><td>High</td><td>Low. Requires Chrome in Docker. Unofficial, may break.</td><td>No (data only). De-prioritized.</td></tr>
+  </table>
+  <div class="ib">
+    <h4>Key Insight: 4 Factors Need Zero New Data</h4>
+    <ul>
+      <li><strong>Funding rate sentiment:</strong> Already ingested every 8h. Compute funding_zscore = (current - rolling_mean) / rolling_std. High positive z = crowd long = contrarian SHORT signal for MR.</li>
+      <li><strong>OI delta:</strong> Already ingested every 1h. Compute oi_delta_pct = (OI_now - OI_4h_ago) / OI_4h_ago. Rising OI + rising price = trend confirmation. Falling OI + rising price = weak rally.</li>
+      <li><strong>Orderbook imbalance:</strong> Already ingested every 5 min. Compute bid_ask_imbalance = (bid_volume - ask_volume) / (bid_volume + ask_volume). > 0.3 = strong buy pressure.</li>
+      <li><strong>Correlation regime:</strong> Compute from existing OHLCV. rolling_corr(BTC, ALT, 24h). High corr = macro driven. Low corr = symbol-specific.</li>
+    </ul>
+    <p style="margin-top:8px;font-size:0.82rem;"><strong>These 4 factors can be extracted from existing parquet files with zero new API calls, zero new dependencies, and zero new infrastructure.</strong> They only need feature computation functions added to the enrichment pipeline.</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="badge b-gap">Proposed Sentiment-Enhanced DQS Architecture</div>
+  <h3>Current DQS</h3>
+  <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:12px;">
+    <code>DQS = (technical * 0.40 + structure * 0.30 + context * 0.30) * trend_mult * session_mult * symbol_mult - contra_penalty + pullback_bonus + liquidity_bonus</code>
+  </p>
+  <h3>Phase 1: Sentiment as V2 Filter (No DQS change)</h3>
+  <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:12px;">
+    Add to v2_filters.py: <code>fear_greed_extreme = fng_value > 80 or fng_value < 20</code>. Block TF LONG when F/G > 80 (euphoria). Block MR SHORT when F/G < 20 (capitulation). Block TF SHORT when F/G < 15 (extreme fear capitulation). Block MR LONG when F/G > 85 (extreme greed top). <strong>No DQS formula change. No frozen parameter touched.</strong>
+  </p>
+  <h3>Phase 2: Sentiment Sub-Score in Context (Requires PCP)</h3>
+  <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:12px;">
+    <code>context = price_context * 0.70 + sentiment * 0.30</code> where sentiment = composite of F/G index, funding zscore, LS ratio extreme, OI delta. <strong>Requires backtest showing PF/Sharpe improvement.</strong>
+  </p>
+  <h3>Phase 3: Full Sentiment Dimension (Requires PCP + Human Approval)</h3>
+  <p style="font-size:0.85rem;color:var(--text-dim);">
+    <code>DQS = technical * 0.35 + structure * 0.25 + context * 0.25 + sentiment * 0.15</code>. Sentiment dimension includes F/G, LS ratio, liquidations, funding, BTC dominance, taker volume. <strong>Full PCP required. Frozen parameter (DQS weights) modification.</strong>
+  </p>
+</div>
+
+<div class="sec">
+  <div class="badge b-gap">What Is Attainable Now vs. What Requires PCP</div>
+  <table>
+    <tr><th>Action</th><th>Attainable Now?</th><th>PCP Required?</th><th>Effort</th></tr>
+    <tr><td>Ingest Fear/Greed Index (data only)</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>1 HTTP call/day. New parquet column.</td></tr>
+    <tr><td>Deploy V3 LS Ratio fetcher (data only)</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>Code exists in V3. Port to V2 scheduler.</td></tr>
+    <tr><td>Deploy V3 Liquidations fetcher (data only)</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>Code exists in V3. Port to V2 scheduler.</td></tr>
+    <tr><td>Ingest BTC Dominance (data only)</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>1 HTTP call/5min. CoinGecko Keyless API (no signup, no key). ~10-30 calls/min shared IP. Fine for 1 call/5min.</td></tr>
+    <tr><td>Extract funding_zscore feature</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>Computed from existing parquet. Add to enrichment.</td></tr>
+    <tr><td>Extract OI delta feature</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>Computed from existing parquet. Add to enrichment.</td></tr>
+    <tr><td>Extract orderbook imbalance feature</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>Computed from existing parquet. Add to enrichment.</td></tr>
+    <tr><td>Compute correlation regime</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>Computed from existing OHLCV. Add to enrichment.</td></tr>
+    <tr><td>Add sentiment V2 filter (gate change)</td><td>No</td><td><span class="tag t-warn">Yes</span></td><td>Requires backtest. Hypothesis: F/G extreme filter improves PF.</td></tr>
+    <tr><td>Modify DQS weights for sentiment</td><td>No</td><td><span class="tag t-warn">Yes</span></td><td>Frozen parameter change. Full PCP + human approval.</td></tr>
+    <tr><td>Add taker buy/sell from Binance</td><td><span class="tag t-attain">Yes</span></td><td>No</td><td>New exchange. Medium effort. Data only.</td></tr>
+    <tr style="opacity:0.5;"><td>Google Trends integration</td><td><span class="tag t-fail">De-prioritized</span></td><td>No</td><td>Unofficial API. Requires Chrome in Docker. High effort, low reliability.</td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  VLTHR Architecture Review — 2026-07-30 — Cascade AI — 7 skills applied: CITM, PIVP, Pipeline Gate Audit, Live Monitoring, Zero-Signal Diagnosis, Execution Divergence, Ponytail
+</div>
+
+</body>
+</html>

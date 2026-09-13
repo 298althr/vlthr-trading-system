@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline Engine · VLTHR</title>
+<style>
+:root{--bg:#000;--surface:#0a0a0a;--surface-2:#141414;--surface-3:#1a1a1a;--border:#222;--border-light:#2a2a2a;--text:#e8e8e8;--text-2:#a0a0a0;--text-muted:#666;--accent:#e82127;--accent-dim:rgba(232,33,39,.15);--accent-glow:rgba(232,33,39,.4);--blue:#2d7ff9;--green:#00e676;--yellow:#ffd600;--orange:#ff9100;--purple:#b388ff;--red:#ff5252;--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1);--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 32px}
+.hero{position:relative;padding:80px 0 60px;text-align:center;background:radial-gradient(ellipse at center,var(--surface-2) 0%,var(--bg) 70%);border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 50%);animation:pulse-glow 6s ease-in-out infinite;pointer-events:none}
+@keyframes pulse-glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:3em;font-weight:700;letter-spacing:-1px;margin-bottom:12px;position:relative;animation:fade-up .8s ease-out}
+.hero h1 .accent{color:var(--accent)}
+.hero .subtitle{font-size:1.2em;color:var(--text-2);margin-bottom:24px;position:relative;animation:fade-up .8s ease-out .1s both}
+.hero .meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;animation:fade-up .8s ease-out .2s both}
+.hero .meta-item{text-align:center}
+.hero .meta-item .label{font-size:.75em;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero .meta-item .value{font-size:1.3em;font-weight:600;color:var(--text)}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 24px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:.9em;font-weight:500;cursor:pointer;white-space:nowrap;transition:var(--transition);border-bottom:2px solid transparent;position:relative}
+.tab-btn:hover{color:var(--text);background:var(--surface-2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-num{font-size:.75em;opacity:.5;margin-right:4px}
+.tab-content{display:none;padding:48px 0;animation:fade-in .4s ease-out}
+.tab-content.active{display:block}
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h2{font-size:2em;font-weight:700;letter-spacing:-.5px;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:1.4em;font-weight:600;margin-top:40px;margin-bottom:16px;color:var(--text)}
+h4{font-size:1.15em;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--text-2)}
+p{margin-bottom:14px;color:var(--text)}
+ul,ol{margin-bottom:16px;padding-left:24px}
+li{margin-bottom:6px;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);background:var(--surface-3);padding:2px 8px;border-radius:4px;font-size:.88em;color:var(--accent);border:1px solid var(--border)}
+pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin-bottom:20px;font-size:.85em}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.9em;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-size:.8em;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;transition:var(--transition)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.card-title{font-size:1.1em;font-weight:600;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78em;font-weight:600;letter-spacing:.3px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.3)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.3)}
+.badge-purple{background:rgba(179,136,255,.12);color:var(--purple);border:1px solid rgba(179,136,255,.3)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.3)}
+.badge-orange{background:rgba(255,145,0,.12);color:var(--orange);border:1px solid rgba(255,145,0,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:20px}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:600;margin-bottom:8px;color:var(--text)}
+.metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;transition:var(--transition)}
+.metric-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-tile .metric-value{font-size:2em;font-weight:700;margin-bottom:4px}
+.metric-tile .metric-label{font-size:.8em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85em}
+.flow-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);transition:var(--transition)}
+.flow-step:hover{border-color:var(--accent);transform:translateX(4px)}
+.flow-step .step-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9em;border:1px solid rgba(232,33,39,.3)}
+.flow-step .step-content{flex:1}
+.flow-step .step-title{font-weight:600;margin-bottom:4px;color:var(--text)}
+.flow-step .step-desc{font-size:.9em;color:var(--text-2)}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>Pipeline <span class="accent">Engine</span></h1>
+  <p class="subtitle">Portfolio-centric DQS signal pipeline. 5-minute loop, 12-gate sequence, online ML predictions, calibration, shadow validation.</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Service</div><div class="value">pipeline</div></div>
+    <div class="meta-item"><div class="label">Container</div><div class="value">vlthr-pipeline</div></div>
+    <div class="meta-item"><div class="label">Loop</div><div class="value">300s (5 min)</div></div>
+    <div class="meta-item"><div class="label">Gates</div><div class="value">12</div></div>
+    <div class="meta-item"><div class="label">Health Port</div><div class="value">8201:8200</div></div>
+  </div>
+</section>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)"><span class="tab-num">01</span>Overview</button>
+  <button class="tab-btn" onclick="switchTab(1)"><span class="tab-num">02</span>Iteration Flow</button>
+  <button class="tab-btn" onclick="switchTab(2)"><span class="tab-num">03</span>12 Gates</button>
+  <button class="tab-btn" onclick="switchTab(3)"><span class="tab-num">04</span>Modules</button>
+  <button class="tab-btn" onclick="switchTab(4)"><span class="tab-num">05</span>Config</button>
+  <button class="tab-btn" onclick="switchTab(5)"><span class="tab-num">06</span>Health Server</button>
+  <button class="tab-btn" onclick="switchTab(6)"><span class="tab-num">07</span>Docker Config</button>
+</div>
+
+<div class="container">
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content active" id="tab-0">
+  <h2>Overview</h2>
+  <p>The pipeline engine is the core decision-making service. It runs a 5-minute loop that scans 5 symbols, scores signals with the adaptive DQS scorer, tracks signal state and trajectory, ranks and filters through 12 portfolio gates, and upserts approved signals to PostgreSQL. An embedded FastAPI health server on port 8200 exposes run status.</p>
+
+  <div class="grid-4">
+    <div class="metric-tile"><div class="metric-value" style="color:var(--accent)">5</div><div class="metric-label">Symbols</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--blue)">12</div><div class="metric-label">Gates</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--green)">300s</div><div class="metric-label">Loop Interval</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--orange)">58</div><div class="metric-label">Engine Files</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Symbols and Strategies</div>
+    <table>
+      <thead><tr><th>Symbol</th><th>Strategy</th><th>RSI Threshold</th><th>SL Mult</th><th>TP Mult</th><th>Risk %</th><th>Max Hours</th></tr></thead>
+      <tbody>
+        <tr><td>BTCUSDT</td><td>trend_following</td><td>42.0</td><td>2.5</td><td>7.5</td><td>0.05</td><td>12</td></tr>
+        <tr><td>ETHUSDT</td><td>mean_reversion</td><td>50.1</td><td>2.0</td><td>6.0</td><td>0.10</td><td>24</td></tr>
+        <tr><td>SOLUSDT</td><td>trend_following</td><td>49.3</td><td>2.5</td><td>7.5</td><td>0.05</td><td>12</td></tr>
+        <tr><td>XRPUSDT</td><td>mean_reversion</td><td>49.1</td><td>2.5</td><td>6.0</td><td>0.05</td><td>12</td></tr>
+        <tr><td>BNBUSDT</td><td>mean_reversion</td><td>43.1</td><td>2.0</td><td>5.0</td><td>0.05</td><td>48</td></tr>
+        <tr><td>DOGEUSDT</td><td colspan="6"><span class="badge badge-red">DISABLED</span> V7: WR=35%, net negative PnL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DQS Score Bands</div>
+    <table>
+      <thead><tr><th>Band</th><th>Range</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>SKIP</td><td>0 to 49</td><td>Not tracked. No signal generated.</td></tr>
+        <tr><td>FAIR</td><td>50 to 64</td><td>Tracked. Appears in watchlist. No auto-execute.</td></tr>
+        <tr><td>GOOD</td><td>65 to 74</td><td>Eligible for paper trade. Manual execute.</td></tr>
+        <tr><td>EXCELLENT</td><td>75+</td><td>Eligible for auto-execute (if toggle on).</td></tr>
+        <tr><td>VETO</td><td>85+</td><td>Kelly set to 0. DQS too high signals overfitting.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Docker Service</div>
+    Runs as <code>vlthr-pipeline</code> container. Built from <code>./pipeline/Dockerfile</code>. Default command: <code>python -m engine.run_pipeline --loop --interval 300</code>. Health port 8200 mapped to host 8201. Depends on PostgreSQL (healthy) and Redis (started).
+  </div>
+</div>
+
+<!-- TAB 1: ITERATION FLOW -->
+<div class="tab-content" id="tab-1">
+  <h2>Iteration Flow</h2>
+  <p>Each 5-minute iteration runs through these steps in sequence. The entire flow is orchestrated by <code>portfolio_orchestrator.py:run_iteration()</code>.</p>
+
+  <div class="flow-step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Pre-Flight Checks</div>
+      <div class="step-desc"><code>safety_layer.py</code> verifies data freshness, checks circuit breaker (3 critical errors in 1h = halt), validates account balance. Returns False to abort if any check fails.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Scan All Symbols</div>
+      <div class="step-desc">Load enriched Parquet data for each symbol. Apply V2 filters (daily bias, RSI momentum, BTC correlation). Generate raw signal candidates with entry/SL/TP from per-symbol params.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Score with DQS</div>
+      <div class="step-desc"><code>adaptive_scorer.py</code> computes Data Quality Score (0-100). Weighted average of technical (40%), structure (30%), context (30%) domains. Modifiers: ADX trend multiplier, RSI pullback bonus, liquidity bonus, session/symbol multipliers, contradiction penalty.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">ML Prediction (Shadow)</div>
+      <div class="step-desc"><code>pipeline_brain.py</code> runs River online classifier to predict favorable next-15m move. Shadow mode only until trust criteria met (30+ samples, 55% accuracy, Brier < 0.24, positive shadow PnL for 5 consecutive days).</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <div class="step-title">State and Trajectory</div>
+      <div class="step-desc"><code>signal_state_manager.py</code> updates signal_state (1 row per symbol) and appends to signal_state_log. Tracks DQS trajectory: 3 consecutive improvements = +5 bonus, 2 consecutive declines = -10 penalty and expire. Signals expire after 2 hours.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">6</div>
+    <div class="step-content">
+      <div class="step-title">Rank and Filter</div>
+      <div class="step-desc"><code>signal_ranker.py</code> filters to adjusted_score >= 50, sorts by score then symbol Sharpe, deduplicates to 1 signal per symbol.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">7</div>
+    <div class="step-content">
+      <div class="step-title">Crowding Detection (Treatment B)</div>
+      <div class="step-desc">Detect when 2+ symbols in same correlation cluster fire same direction with DQS within 5 points. Reduces Kelly by 50% for crowded signals.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">8</div>
+    <div class="step-content">
+      <div class="step-title">12-Gate Sequence</div>
+      <div class="step-desc">Each signal passes through 12 portfolio gates. See the Gates tab for full details. Any gate failure stops the signal.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">9</div>
+    <div class="step-content">
+      <div class="step-title">Upsert to Database</div>
+      <div class="step-desc">Approved signals upserted to <code>high_confidence_signals</code> table. Risk ledger updated. Trade count log updated.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">10</div>
+    <div class="step-content">
+      <div class="step-title">Portfolio Snapshot</div>
+      <div class="step-desc">Write point-in-time snapshot to <code>portfolio_snapshot</code>: balance, equity, margin, total open risk, active trades count, daily trades count, highest/lowest active DQS.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">11</div>
+    <div class="step-content">
+      <div class="step-title">Telegram Alert</div>
+      <div class="step-desc">If EXCELLENT signal passes all gates, send Telegram alert to trading channel. Also alerts on trade closures.</div>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="step-num">12</div>
+    <div class="step-content">
+      <div class="step-title">Post-Flight and Trace</div>
+      <div class="step-desc"><code>safety_layer.py</code> runs post-flight invariants (risk bounds, drawdown, signal count spike). <code>pipeline_trace.py</code> writes per-node trace rows. <code>pipeline_heartbeat.py</code> writes heartbeat row. Health server updates in-memory state.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: 12 GATES -->
+<div class="tab-content" id="tab-2">
+  <h2>12-Gate Sequence</h2>
+  <p>Every signal must pass all 12 gates in order. One failure stops the signal. Gates are implemented in <code>portfolio_orchestrator.py</code> and <code>portfolio_gates.py</code>.</p>
+
+  <div class="card">
+    <div class="card-title">Gate Sequence</div>
+    <table>
+      <thead><tr><th>Gate</th><th>Name</th><th>Check</th><th>Pass Rate (live)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Pre-flight</td><td>Data freshness, circuit breaker, balance sanity</td><td>~95%</td></tr>
+        <tr><td><strong>2</strong></td><td>Scan / V2 Filters</td><td>Daily bias, RSI momentum, BTC correlation, regime</td><td>~40%</td></tr>
+        <tr><td><strong>3</strong></td><td>Ranker</td><td>Adjusted DQS >= 50</td><td>~60%</td></tr>
+        <tr><td><strong>4a</strong></td><td>V7 Kelly</td><td>DQS >= 85 = Kelly 0 (veto). Calibration gate >= 0.40</td><td>~90%</td></tr>
+        <tr><td><strong>4b</strong></td><td>Disabled Symbols</td><td>Symbol not in DISABLED_SYMBOLS (DOGEUSDT banned)</td><td>~100%</td></tr>
+        <tr><td><strong>4c</strong></td><td>Regime</td><td>Regime detection: trend or mean_reversion matches symbol strategy</td><td>~70%</td></tr>
+        <tr><td><strong>5</strong></td><td>Data Quality</td><td>DQ score >= 60 (freshness 40% + completeness 40% + outliers 20%)</td><td>~85%</td></tr>
+        <tr><td><strong>6</strong></td><td>Correlation Guard</td><td>Max 5 open positions across all symbols (treated as one cluster)</td><td>~95%</td></tr>
+        <tr><td><strong>7</strong></td><td>Trade Count</td><td>Max 8 active trades, max 6/day, max 2 per session</td><td>~90%</td></tr>
+        <tr><td><strong>8</strong></td><td>Directional</td><td>Signal direction matches 4h trend direction</td><td>~55%</td></tr>
+        <tr><td><strong>9</strong></td><td>Risk Budget</td><td>Total open risk <= 10% of account balance. Crowding Kelly reduction applied here.</td><td>~92%</td></tr>
+        <tr><td><strong>10</strong></td><td>Calibration</td><td>Calibrated probability >= 0.40 (softened from 0.48 due to small sample)</td><td>~88%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">V2 Filters (Gate 2 Detail)</div>
+    <p>Applied after DQS scoring but before trade entry. Implemented in <code>v2_filters.py</code>.</p>
+    <ul>
+      <li><strong>Daily bias:</strong> EMA50 + RSI on daily bars. Rejects counter-trend signals.</li>
+      <li><strong>RSI momentum:</strong> For trend_following only. Rejects SHORT when RSI rising, LONG when RSI falling. Mean_reversion bypasses this (rising RSI into overbought IS the short signal).</li>
+      <li><strong>Volume confirmation:</strong> Requires volume above recent average.</li>
+      <li><strong>BTC correlation:</strong> XRP signals filtered against BTC momentum.</li>
+      <li><strong>TP scaling:</strong> Take-profit scaled by ATR percentile.</li>
+    </ul>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Calibration Gate</div>
+    Threshold softened from 0.48 to 0.40 because only 35 calibration samples exist. The 0.48 threshold was too restrictive with unreliable estimates. Will tighten as more trade history accumulates.
+  </div>
+</div>
+
+<!-- TAB 3: MODULES -->
+<div class="tab-content" id="tab-3">
+  <h2>Engine Modules</h2>
+  <p>The pipeline engine consists of 58 files in <code>pipeline/engine/</code>. Here are the core modules.</p>
+
+  <div class="card">
+    <div class="card-title">Core Orchestration</div>
+    <table>
+      <thead><tr><th>Module</th><th>Size</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td>run_pipeline.py</td><td>6 KB</td><td>Entry point. Parses CLI args, starts health server, runs loop.</td></tr>
+        <tr><td>pipeline_flow.py</td><td>4 KB</td><td>Prefect flow wrapper. Degrades to plain function if Prefect disabled.</td></tr>
+        <tr><td>portfolio_orchestrator.py</td><td>86 KB</td><td>Core iteration logic. 1762 lines. Runs all 12 gates, upserts, snapshots.</td></tr>
+        <tr><td>portfolio_config.py</td><td>23 KB</td><td>Single source of truth for all constants. Symbols, params, DQS thresholds, gates.</td></tr>
+        <tr><td>portfolio_gates.py</td><td>7 KB</td><td>RiskBudgetLedger, TradeCountGuard, CorrelationGuard classes.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Scoring and Signals</div>
+    <table>
+      <thead><tr><th>Module</th><th>Size</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td>adaptive_scorer.py</td><td>25 KB</td><td>Weighted-max DQS with regime awareness. Learns from calibration.json.</td></tr>
+        <tr><td>signal_state_manager.py</td><td>15 KB</td><td>Signal state machine. Tracks trajectory, boost/penalty, expiry.</td></tr>
+        <tr><td>signal_ranker.py</td><td>2.5 KB</td><td>Filters by min score, sorts by DQS then Sharpe, deduplicates per symbol.</td></tr>
+        <tr><td>v2_filters.py</td><td>9 KB</td><td>V2 backtest-validated filters: daily bias, momentum, BTC correlation.</td></tr>
+        <tr><td>calibration_engine.py</td><td>12 KB</td><td>Learns optimal multipliers from trade history. Produces calibration.json.</td></tr>
+        <tr><td>calibration_lookup.py</td><td>3.5 KB</td><td>Runtime lookup of calibrated probabilities for the calibration gate.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Safety and Observability</div>
+    <table>
+      <thead><tr><th>Module</th><th>Size</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td>safety_layer.py</td><td>12 KB</td><td>Pre-flight, post-flight, circuit breaker, error log, invariant checks.</td></tr>
+        <tr><td>pipeline_trace.py</td><td>5 KB</td><td>Per-node trace logger. Writes to pipeline_trace table.</td></tr>
+        <tr><td>pipeline_heartbeat.py</td><td>3 KB</td><td>Writes heartbeat row to pipeline_heartbeat table each run.</td></tr>
+        <tr><td>pipeline_health_server.py</td><td>6 KB</td><td>Embedded FastAPI on port 8200. Exposes /health, /last-run, /metrics.</td></tr>
+        <tr><td>trade_debugger.py</td><td>4 KB</td><td>Debug context snapshots for trade events.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ML and Shadow</div>
+    <table>
+      <thead><tr><th>Module</th><th>Size</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td>pipeline_brain.py</td><td>15 KB</td><td>Online ML predictor (River). Shadow mode until trust criteria met.</td></tr>
+        <tr><td>shadow_engines.py</td><td>22 KB</td><td>Shadow-mode decision system. Logs alternative decisions for validation.</td></tr>
+        <tr><td>dynamic_sl.py</td><td>2.5 KB</td><td>Dynamic stop-loss: break-even, time decay, ATR expansion rules.</td></tr>
+        <tr><td>dqs_calibration.py</td><td>5 KB</td><td>DQS calibration utilities.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Validation and Testing</div>
+    <table>
+      <thead><tr><th>Module</th><th>Size</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td>validate_phase1.py</td><td>26 KB</td><td>Phase 1 validation suite. 6-gate backtest validation.</td></tr>
+        <tr><td>validate_phases.py</td><td>8 KB</td><td>Multi-phase validation runner.</td></tr>
+        <tr><td>replay_runner.py</td><td>16 KB</td><td>Historical replay mode. 30-day simulation.</td></tr>
+        <tr><td>regime_backtest.py</td><td>21 KB</td><td>Regime-specific backtest logic.</td></tr>
+        <tr><td>freqtrade_validator.py</td><td>14 KB</td><td>Validates signals against Freqtrade format.</td></tr>
+        <tr><td>test_risk_logic.py</td><td>8 KB</td><td>Unit tests for risk calculations.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 4: CONFIG -->
+<div class="tab-content" id="tab-4">
+  <h2>Configuration</h2>
+  <p>All constants live in <code>portfolio_config.py</code>. No magic numbers in business logic.</p>
+
+  <div class="card">
+    <div class="card-title">Portfolio Limits</div>
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>max_portfolio_risk_pct</td><td>10.0%</td><td>Max total open risk as % of account balance</td></tr>
+        <tr><td>max_active_trades</td><td>8</td><td>Max simultaneous open positions</td></tr>
+        <tr><td>max_daily_trades</td><td>6</td><td>Max trades per calendar day</td></tr>
+        <tr><td>max_trades_per_session</td><td>2</td><td>Max trades per trading session</td></tr>
+        <tr><td>leverage</td><td>4x</td><td>Default leverage</td></tr>
+        <tr><td>taker_fee_pct</td><td>0.055%</td><td>Per-side taker fee</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Signal Lifecycle</div>
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>refresh_interval_min</td><td>5</td><td>How often the pipeline re-evaluates signals</td></tr>
+        <tr><td>max_age_hours</td><td>2</td><td>Signal expires after 2 hours from first_seen</td></tr>
+        <tr><td>trajectory_improvement_threshold</td><td>+1</td><td>DQS delta to count as improvement</td></tr>
+        <tr><td>trajectory_decline_threshold</td><td>-1</td><td>DQS delta to count as decline</td></tr>
+        <tr><td>boost_bonus</td><td>+5</td><td>Bonus for 3 consecutive improvements</td></tr>
+        <tr><td>decline_penalty</td><td>-10</td><td>Penalty for 2 consecutive declines (then expired)</td></tr>
+        <tr><td>grace_period_minutes</td><td>45</td><td>Tolerate 3 missed scans before episode reset</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Treatment B (Crowding + DQ Gate)</div>
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>CORRELATION_CLUSTERS</td><td>BTC/ETH/SOL (major), XRP/BNB/DOGE (alt)</td></tr>
+        <tr><td>CROWDING_DQS_RANGE</td><td>5 (signals within 5 DQS points = crowded)</td></tr>
+        <tr><td>CROWDING_KELLY_REDUCTION</td><td>0.50 (50% Kelly cut for crowded signals)</td></tr>
+        <tr><td>DATA_QUALITY_MIN_SCORE</td><td>60.0 (min DQ score to pass gate)</td></tr>
+        <tr><td>DQ formula</td><td>freshness x 0.40 + completeness x 0.40 + outliers x 0.20</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Calibration Gate</div>
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>min_calibrated_prob_to_open</td><td>0.40 (softened from 0.48)</td></tr>
+        <tr><td>min_calibrated_prob_to_pending</td><td>0.35</td></tr>
+        <tr><td>v7_config.entry_filter_threshold</td><td>0.40</td></tr>
+        <tr><td>Calibration source</td><td>calibration.json (regenerated by calibration_engine.py)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Timeframes and Sessions</div>
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>EXECUTION_TF</td><td>15m</td></tr>
+        <tr><td>CONTEXT_TF</td><td>4h</td></tr>
+        <tr><td>ACTIVE_SESSIONS</td><td>london, ny_open, ny_late</td></tr>
+        <tr><td>bar_max_age_min</td><td>20 (for 1m data)</td></tr>
+        <tr><td>freshness_threshold</td><td>45 min (3x bar interval for 15m)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 5: HEALTH SERVER -->
+<div class="tab-content" id="tab-5">
+  <h2>Health Server</h2>
+  <p>An embedded FastAPI server runs in a background thread on port 8200. It provides health status for Docker and the dashboard.</p>
+
+  <div class="card">
+    <div class="card-title">Endpoints</div>
+    <table>
+      <thead><tr><th>Path</th><th>Method</th><th>Returns</th></tr></thead>
+      <tbody>
+        <tr><td>/health</td><td>GET</td><td>{ status, uptime, loop_interval_sec }</td></tr>
+        <tr><td>/last-run</td><td>GET</td><td>{ status, run_time, signals_scanned, signals_approved, duration_ms, abort_reason, node_summary }</td></tr>
+        <tr><td>/metrics</td><td>GET</td><td>Prometheus-format metrics</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">State Management</div>
+    <p>Health state is stored in a thread-safe dict protected by a Lock. The main pipeline loop calls <code>update_last_run()</code> after each iteration. The FastAPI server reads from this dict on each request.</p>
+    <pre><code>_last_run = {
+    "status": "unknown",
+    "run_time": None,
+    "signals_scanned": 0,
+    "signals_approved": 0,
+    "duration_ms": 0,
+    "abort_reason": None,
+    "loop_interval_sec": 300,
+}</code></pre>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Docker Health Check</div>
+    Docker healthcheck runs <code>python -c "urllib.request.urlopen('http://localhost:8200/health')"</code> every 30 seconds. Start period: 60 seconds. Retries: 3.
+  </div>
+</div>
+
+<!-- TAB 6: DOCKER CONFIG -->
+<div class="tab-content" id="tab-6">
+  <h2>Docker Configuration</h2>
+
+  <div class="card">
+    <div class="card-title">Service Definition</div>
+    <pre><code>pipeline:
+  build:
+    context: ./pipeline
+    dockerfile: Dockerfile
+  container_name: vlthr-pipeline
+  restart: unless-stopped
+  env_file:
+    - .env
+  environment:
+    - REDIS_URL=redis://vlthr-dashboard-redis:6379
+    - PYTHONUNBUFFERED=1
+    - PIPELINE_HEALTH_PORT=8200
+    - DISABLE_PREFECT=true
+    - PARQUET_DATA_ROOT=/app/data
+    - DB_URL=postgresql://postgres:${POSTGRES_PASSWORD:-your_postgres_password}@vlthr-postgres:5432/postgres
+  ports:
+    - "8201:8200"
+  volumes:
+    - ./pipeline/engine:/app/engine:ro
+    - ./departments:/app/departments:ro
+    - ./data:/app/data:ro
+    - ./.env:/app/.env:ro
+    - ./logs/pipeline:/app/logs
+  command: ["python", "-m", "engine.run_pipeline", "--loop", "--interval", "300"]
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_started
+  networks:
+    - vlthr-net
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8200/health').status==200 else 1)"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 60s</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Volume Mounts</div>
+    <table>
+      <thead><tr><th>Host Path</th><th>Container Path</th><th>Mode</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>./pipeline/engine</td><td>/app/engine</td><td>ro</td><td>Pipeline Python source</td></tr>
+        <tr><td>./departments</td><td>/app/departments</td><td>ro</td><td>Strategy research modules (indicators, signals)</td></tr>
+        <tr><td>./data</td><td>/app/data</td><td>ro</td><td>Parquet data store (read-only)</td></tr>
+        <tr><td>./.env</td><td>/app/.env</td><td>ro</td><td>Environment variables</td></tr>
+        <tr><td>./logs/pipeline</td><td>/app/logs</td><td>rw</td><td>Pipeline log output</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Notable Choices</div>
+    <ul>
+      <li><strong>Prefect disabled:</strong> <code>DISABLE_PREFECT=true</code>. The Prefect flow wrapper is available but disabled to reduce complexity. The pipeline runs as a plain Python loop.</li>
+      <li><strong>Data read-only:</strong> The pipeline never writes to Parquet. It only reads enriched data produced by the data-ingestion service.</li>
+      <li><strong>Engine code read-only:</strong> Source mounted read-only. Changes require container restart.</li>
+      <li><strong>Logs writable:</strong> Log directory is writable for runtime log output.</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  VLTHR Pipeline Engine Documentation · Generated Jul 2026 · <a href="../docker-compose.yml" style="color:var(--accent)">docker-compose.yml</a>
+</div>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.tab-content').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

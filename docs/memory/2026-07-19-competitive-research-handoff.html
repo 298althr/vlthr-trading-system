@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>VLTHR Competitive Research and Handoff</title>
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/bb5de19d87c09a95216dc6ccd96e37c6?family=Nimbus+Sans+TW01" />
+  <style>
+    :root {
+      --font-sans: 'Nimbus Sans TW01', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+      --bg-body: #0b0b0f; --bg-phone: #141418; --bg-card: #1c1c22; --bg-elevated: #28282f;
+      --border-subtle: rgba(255,255,255,0.06); --border-default: rgba(255,255,255,0.10); --border-strong: rgba(255,255,255,0.16);
+      --text-primary: #f5f5f7; --text-secondary: #a1a1aa; --text-tertiary: #6b6b76; --text-muted: #4a4a55;
+      --accent-green: #28c840; --accent-red: #ff5f57; --accent-amber: #febc2e; --accent-blue: #5b8def; --accent-purple: #a78bfa; --accent-cyan: #22d3ee;
+      --dash-bg: #1a1a1c; --dash-titlebar: #242427;
+      --traffic-red: #ff5f57; --traffic-amber: #febc2e; --traffic-green: #28c840;
+      --topbar-height: 56px; --bottom-tabs-height: 64px; --radius-pill: 9999px; --easing: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-sans); background: var(--bg-body); display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+    .phone { width: 100%; max-width: 430px; height: 100dvh; max-height: 932px; background: var(--bg-phone); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+    @media (min-width: 768px) { .phone { height: 90vh; border-radius: 44px; border: 12px solid #050507; box-shadow: 0 24px 80px rgba(0,0,0,0.6); } }
+    .landscape { display: none; position: fixed; inset: 0; z-index: 1000; background: var(--bg-body); color: #fff; align-items: center; justify-content: center; text-align: center; padding: 24px; font-size: 18px; }
+    @media (orientation: landscape) and (max-height: 500px) { .landscape { display: flex; } .phone { display: none; } }
+    .icon { flex-shrink: 0; color: currentColor; }
+    .topbar { flex-shrink: 0; height: var(--topbar-height); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: rgba(20,20,24,0.88); backdrop-filter: blur(20px) saturate(1.8); border-bottom: 1px solid var(--border-subtle); z-index: 50; animation: fade-down 0.7s var(--easing) both; }
+    .brand { display: flex; align-items: center; gap: 8px; color: var(--text-primary); text-decoration: none; font-size: 17px; font-weight: 500; letter-spacing: -0.02em; }
+    .logo { width: 22px; height: 22px; color: var(--text-primary); }
+    .hamburger { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: var(--text-primary); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .hamburger:hover { background: rgba(255,255,255,0.08); }
+    .hamburger[aria-expanded="true"] .icon-menu { display: none; }
+    .hamburger[aria-expanded="false"] .icon-close { display: none; }
+    .mobile-menu { position: absolute; left: 16px; right: 16px; top: var(--topbar-height); z-index: 40; background: rgba(28,28,34,0.92); backdrop-filter: blur(24px) saturate(1.8); border: 1px solid var(--border-default); border-radius: 20px; padding: 8px 0; transform-origin: top center; transform: scaleY(0); opacity: 0; pointer-events: none; transition: transform 0.25s var(--easing), opacity 0.2s ease; }
+    .mobile-menu.open { transform: scaleY(1); opacity: 1; pointer-events: auto; }
+    .mobile-menu a, .mobile-menu button { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 12px 20px; color: var(--text-secondary); text-decoration: none; font-size: 15px; border: none; background: transparent; border-bottom: 1px solid var(--border-subtle); cursor: pointer; }
+    .mobile-menu a:last-of-type, .mobile-menu button:last-child { border-bottom: none; }
+    .menu-cta { margin: 10px 20px 0; width: calc(100% - 40px); justify-content: center; border-radius: var(--radius-pill); background: var(--text-primary); color: var(--bg-phone); font-weight: 500; padding: 10px; }
+    .scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; position: relative; scroll-behavior: smooth; }
+    .tab-panel { display: none; animation: tab-in 0.35s var(--easing); }
+    .tab-panel.active { display: block; }
+    .page-pad { padding: 20px; }
+    .hero { position: relative; min-height: 340px; background: linear-gradient(160deg, #1a1a22 0%, #0e0e12 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34,211,238,0.12) 0%, transparent 60%); pointer-events: none; }
+    .hero-content { position: relative; z-index: 20; width: 100%; max-width: 390px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,211,238,0.12); color: var(--accent-cyan); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: var(--radius-pill); margin-bottom: 16px; border: 1px solid rgba(34,211,238,0.2); opacity: 0; animation: fade-up 0.8s var(--easing) both; }
+    .headline { font-weight: 400; line-height: 1.05; letter-spacing: -0.04em; color: var(--text-primary); font-size: clamp(34px, 10vw, 46px); }
+    .headline .line { opacity: 0; animation: fade-up 0.9s var(--easing) both; }
+    .headline .line.delay-1 { animation-delay: 100ms; }
+    .hero-description { margin-top: 18px; color: var(--text-secondary); font-size: 15px; line-height: 1.55; max-width: 320px; margin-left: auto; margin-right: auto; opacity: 0; animation: fade-up 0.9s var(--easing) 0.22s both; }
+    .cta-row { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; opacity: 0; animation: fade-up 0.9s var(--easing) 0.34s both; }
+    .btn-primary, .btn-secondary { font-family: inherit; font-size: 14px; font-weight: 500; padding: 11px 24px; border-radius: var(--radius-pill); border: none; cursor: pointer; transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease; }
+    .btn-primary { background: var(--text-primary); color: var(--bg-phone); }
+    .btn-primary:hover { background: #e0e0e4; box-shadow: 0 6px 18px rgba(255,255,255,0.1); }
+    .btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-strong); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.06); }
+    .dashboard-wrap { width: 92%; margin: -40px auto 24px; position: relative; z-index: 15; opacity: 0; animation: hero-rise 1.1s var(--easing) 0.46s both; }
+    @media (min-width: 768px) { .dashboard-wrap { margin-top: -56px; } }
+    .dash-chrome { border-radius: 16px 16px 0 0; overflow: hidden; background: var(--dash-bg); box-shadow: 0 -20px 80px rgba(0,0,0,0.5); border: 1px solid var(--border-default); color: #fff; }
+    .dash-titlebar { background: var(--dash-titlebar); border-bottom: 1px solid var(--border-subtle); padding: 8px 12px; display: flex; align-items: center; gap: 8px; }
+    .traffic-lights { display: flex; gap: 6px; }
+    .traffic-lights span { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-url { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; background: #1a1a1c; border-radius: 6px; padding: 4px 10px; color: rgba(255,255,255,0.55); font-size: 10px; }
+    .dash-actions { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.4); }
+    .dash-body { display: flex; min-height: 200px; }
+    .dash-body.wide { display: block; padding: 16px; }
+    .status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .status-card { background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 14px 8px; text-align: center; }
+    .status-card .value { font-size: 22px; font-weight: 500; color: #fff; letter-spacing: -0.02em; }
+    .status-card .label { font-size: 9px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .status-ok { color: var(--accent-green); } .status-warn { color: var(--accent-amber); } .status-critical { color: var(--accent-red); } .status-info { color: var(--accent-cyan); }
+    .page-title { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; color: var(--text-primary); margin-bottom: 16px; }
+    .section-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5; }
+    .accordion { border: 1px solid var(--border-default); border-radius: 16px; overflow: hidden; background: var(--bg-card); margin-bottom: 10px; }
+    .accordion summary { list-style: none; display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; font-weight: 500; color: var(--text-primary); gap: 8px; }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary .chevron { transition: transform 0.25s var(--easing); color: var(--text-tertiary); flex-shrink: 0; }
+    .accordion[open] summary .chevron { transform: rotate(180deg); }
+    .accordion-body { padding: 0 16px 16px; color: var(--text-secondary); font-size: 14px; line-height: 1.55; }
+    .accordion-body p, .accordion-body ul { margin-bottom: 10px; }
+    .accordion-body ul { padding-left: 18px; }
+    .accordion-body li { margin-bottom: 6px; }
+    .accordion-body code { font-family: var(--font-mono); font-size: 12px; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-blue); }
+    .accordion-body strong { color: var(--text-primary); }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+    .metric-card { border: 1px solid var(--border-default); border-radius: 12px; padding: 12px; background: var(--bg-card); }
+    .metric-card .value { font-size: 18px; font-weight: 500; color: var(--text-primary); }
+    .metric-card .label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
+    .param-list { display: flex; flex-direction: column; gap: 8px; }
+    .param-row { display: flex; justify-content: space-between; font-size: 13px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
+    .param-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .param-label { color: var(--text-secondary); }
+    .param-value { color: var(--text-primary); font-weight: 500; }
+    .prod-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    .prod-table th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); padding: 8px 6px; border-bottom: 1px solid var(--border-default); }
+    .prod-table td { padding: 8px 6px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+    .prod-table tr:last-child td { border-bottom: none; }
+    .pnl-pos { color: var(--accent-green); font-weight: 500; }
+    .pnl-neg { color: var(--accent-red); font-weight: 500; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill); letter-spacing: 0.04em; flex-shrink: 0; }
+    .badge-critical { background: rgba(255,95,87,0.15); color: var(--accent-red); border: 1px solid rgba(255,95,87,0.25); }
+    .badge-major { background: rgba(254,188,46,0.15); color: var(--accent-amber); border: 1px solid rgba(254,188,46,0.25); }
+    .badge-minor { background: rgba(91,141,239,0.15); color: var(--accent-blue); border: 1px solid rgba(91,141,239,0.25); }
+    .badge-ok { background: rgba(40,200,64,0.15); color: var(--accent-green); border: 1px solid rgba(40,200,64,0.25); }
+    .badge-info { background: rgba(34,211,238,0.15); color: var(--accent-cyan); border: 1px solid rgba(34,211,238,0.25); }
+    .code-block { background: #0e0e12; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 14px; margin: 10px 0; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--text-secondary); overflow-x: auto; white-space: pre; }
+    .callout { border-radius: 12px; padding: 14px; margin: 10px 0; font-size: 13px; line-height: 1.5; }
+    .callout-warn { background: rgba(254,188,46,0.08); border: 1px solid rgba(254,188,46,0.2); color: var(--accent-amber); }
+    .callout-danger { background: rgba(255,95,87,0.08); border: 1px solid rgba(255,95,87,0.2); color: var(--accent-red); }
+    .callout-info { background: rgba(91,141,239,0.08); border: 1px solid rgba(91,141,239,0.2); color: var(--accent-blue); }
+    .callout-cyan { background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.2); color: var(--accent-cyan); }
+    .callout strong { color: inherit; }
+    .priority-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border-subtle); }
+    .priority-item:last-child { border-bottom: none; }
+    .priority-num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border-default); }
+    .priority-num.urgent { background: rgba(255,95,87,0.15); color: var(--accent-red); border-color: rgba(255,95,87,0.3); }
+    .priority-body { flex: 1; }
+    .priority-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+    .priority-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .bottom-tabs { flex-shrink: 0; height: var(--bottom-tabs-height); padding-bottom: env(safe-area-inset-bottom, 0px); display: flex; justify-content: space-around; align-items: center; background: rgba(20,20,24,0.92); backdrop-filter: blur(20px) saturate(1.8); border-top: 1px solid var(--border-subtle); z-index: 50; }
+    .tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; border: none; background: transparent; color: var(--text-tertiary); font-size: 9px; font-weight: 600; letter-spacing: 0.04em; padding: 8px 0; cursor: pointer; position: relative; font-family: inherit; }
+    .tab-btn svg { width: 20px; height: 20px; transition: transform 0.2s var(--easing); }
+    .tab-btn.active { color: var(--text-primary); }
+    .tab-btn.active svg { transform: translateY(-2px); }
+    .tab-btn::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; border-radius: 50%; background: var(--text-primary); opacity: 0; transition: opacity 0.2s ease; }
+    .tab-btn.active::after { opacity: 1; }
+    .app-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; border: none; padding: 0; border-radius: 24px; background: transparent; max-width: 340px; width: 88%; }
+    .app-modal::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .modal-card { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 24px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .modal-title { font-size: 20px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+    .modal-text { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; }
+    .modal-list { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+    .modal-list li { display: flex; gap: 8px; }
+    .modal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-cyan); margin-top: 7px; flex-shrink: 0; }
+    .modal-close { margin-top: 16px; width: 100%; border: none; background: transparent; color: var(--text-secondary); font-size: 14px; cursor: pointer; padding: 10px; font-family: inherit; }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(24px); filter: blur(6px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+    @keyframes fade-down { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hero-rise { from { opacity: 0; transform: translateY(64px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes tab-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="landscape"><p>Please rotate your device to portrait mode.</p></div>
+  <svg style="display:none;" aria-hidden="true">
+    <symbol id="icon-logo" viewBox="0 0 256 256"><path d="M 144 256 L 27.598 256 L 144 139.598 Z M 256 207.5 L 200 256 L 200 56 L 0 56 L 48 0 L 256 0 Z M0 204.402 L0 112 L92.402 112 Z" fill="currentColor"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+    <symbol id="icon-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+    <symbol id="icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></symbol>
+    <symbol id="icon-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+    <symbol id="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="icon-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+    <symbol id="icon-rotate-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36l2.12 6.36"/></symbol>
+    <symbol id="icon-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+  </svg>
+  <div class="phone" role="application" aria-label="VLTHR Competitive Research">
+    <header class="topbar">
+      <a href="#" class="brand" aria-label="VLTHR home">
+        <svg class="icon logo" aria-hidden="true"><use href="#icon-logo"/></svg>
+        <span>VLTHR</span>
+      </a>
+      <button class="hamburger" id="menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg class="icon icon-menu" width="20" height="20" aria-hidden="true"><use href="#icon-menu"/></svg>
+        <svg class="icon icon-close" width="20" height="20" aria-hidden="true"><use href="#icon-x"/></svg>
+      </button>
+    </header>
+    <nav id="mobile-menu" class="mobile-menu" aria-hidden="true" aria-label="Mobile navigation">
+      <a href="#">Landscape</a>
+      <a href="#">Gap analysis</a>
+      <a href="#">Bybit API</a>
+      <a href="#">Handoff</a>
+      <button class="menu-cta" data-open-modal>Next steps</button>
+    </nav>
+    <main class="scroll">
+      <!-- ═══════════════════════════════════════════════════════════════════
+           HOME / SUMMARY
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-home" class="tab-panel active" aria-label="Summary">
+        <div class="hero">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <svg width="12" height="12" aria-hidden="true"><use href="#icon-globe"/></svg>
+              Competitive Research
+            </div>
+            <h1 class="headline">
+              <div class="line">Know the.</div>
+              <div class="line delay-1">Field.</div>
+            </h1>
+            <p class="hero-description">
+              8 algorithmic trading labs and frameworks using Bybit. Their infrastructure, pipelines, and scaling methods. What VLTHR must do to overtake them.
+            </p>
+            <div class="cta-row">
+              <button class="btn-primary" data-tab="panel-handoff">Next steps</button>
+              <button class="btn-secondary" data-tab="panel-landscape">Landscape</button>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-wrap" aria-label="Research summary">
+          <div class="dash-chrome">
+            <div class="dash-titlebar">
+              <div class="traffic-lights" aria-hidden="true">
+                <span style="background:var(--traffic-red)"></span>
+                <span style="background:var(--traffic-amber)"></span>
+                <span style="background:var(--traffic-green)"></span>
+              </div>
+              <div class="dash-url">
+                <svg class="icon" width="12" height="12" aria-hidden="true"><use href="#icon-monitor"/></svg>
+                vlthrlab.app/research
+              </div>
+              <div class="dash-actions">
+                <svg class="icon" width="14" height="14" aria-hidden="true"><use href="#icon-rotate-cw"/></svg>
+                <svg class="icon" width="14" height="14" aria-hidden="true"><use href="#icon-share"/></svg>
+              </div>
+            </div>
+            <div class="dash-body wide">
+              <div class="status-grid">
+                <div class="status-card"><div class="value status-info">8</div><div class="label">Labs analyzed</div></div>
+                <div class="status-card"><div class="value status-warn">5</div><div class="label">Use ML models</div></div>
+                <div class="status-card"><div class="value status-ok">3</div><div class="label">Use Bybit Demo</div></div>
+                <div class="status-card"><div class="value status-critical">0</div><div class="label">Have feedback loop</div></div>
+                <div class="status-card"><div class="value status-warn">2</div><div class="label">Event-driven (Kafka)</div></div>
+                <div class="status-card"><div class="value status-info">6</div><div class="label">Docker deployed</div></div>
+                <div class="status-card"><div class="value pnl-neg">12</div><div class="label">VLTHR gates</div></div>
+                <div class="status-card"><div class="value status-critical">0</div><div class="label">WS real-time</div></div>
+              </div>
+              <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 8px;">Research date: Jul 19, 2026</p>
+            </div>
+          </div>
+        </div>
+        <div class="page-pad">
+          <h2 class="page-title">Where VLTHR stands</h2>
+          <p class="section-sub">VLTHR has a 12-gate pipeline, DQS scoring, Kelly bands, and calibration. Most competitors do not. But they beat us on execution realism, data infrastructure, and ML integration.</p>
+          <div class="priority-item">
+            <div class="priority-num urgent">1</div>
+            <div class="priority-body">
+              <div class="priority-title">Execution realism <span class="badge badge-critical">GAP</span></div>
+              <div class="priority-desc">VLTHR simulates internally. Astraios, yongzhe2160, and Autarch use Bybit Demo API or testnet for 1:1 simulation. We need the same.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num urgent">2</div>
+            <div class="priority-body">
+              <div class="priority-title">Real-time data <span class="badge badge-critical">GAP</span></div>
+              <div class="priority-desc">VLTHR polls REST every 5 min. Bybit WS pushes orderbook at 10ms, klines at 1-60s. Every competitor uses WebSocket.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num urgent">3</div>
+            <div class="priority-body">
+              <div class="priority-title">ML feedback loop <span class="badge badge-major">GAP</span></div>
+              <div class="priority-desc">Astraios runs transformer + LightGBM ensemble with metalabel gate. PurpleSky uses LSTM + GBM + gating network. VLTHR has PipelineBrain but it is disabled.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num">4</div>
+            <div class="priority-body">
+              <div class="priority-title">Event-driven architecture <span class="badge badge-major">GAP</span></div>
+              <div class="priority-desc">Cryptex and AxiomX use Kafka for decoupled pipeline stages. VLTHR uses a monolithic orchestrator. Kafka would let us scale horizontally.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num">5</div>
+            <div class="priority-body">
+              <div class="priority-title">Statistical validation <span class="badge badge-major">GAP</span></div>
+              <div class="priority-desc">yongzhe2160 uses Newey-West HAC significance tests and fold-stability t-tests before going live. VLTHR has 6 gates but no statistical significance testing.</div>
+            </div>
+          </div>
+          <div class="priority-item">
+            <div class="priority-num">6</div>
+            <div class="priority-body">
+              <div class="priority-title">VLTHR advantages <span class="badge badge-ok">EDGE</span></div>
+              <div class="priority-desc">12-gate pipeline, DQS composite scoring, Kelly V7 bands with MR boost, crowding detection, calibration gate. No competitor has this many pre-trade gates.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           LANDSCAPE
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-landscape" class="tab-panel" aria-label="Landscape">
+        <div class="page-pad">
+          <h2 class="page-title">The Landscape</h2>
+          <p class="section-sub">8 labs and frameworks running algorithmic systems with Bybit. Ordered by relevance to VLTHR.</p>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-info">ML</span> Astraios
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> Quantitative ML platform for crypto derivatives. Multi-timeframe transformer + LightGBM ensemble across 27 USDT perps.</p>
+              <p><strong>Infrastructure:</strong></p>
+              <ul>
+                <li>4-branch CNN front-end into 4-layer transformer encoder, d_model=128, seq_len=64, 105 features</li>
+                <li>LightGBM baseline trained on same CV splits. Predictions averaged at inference.</li>
+                <li>Metalabel confidence gate: binary classifier on encoder embeddings. Low-confidence calls surfaced but skipped.</li>
+                <li>AWS SageMaker training on ml.g5.12xlarge (4x NVIDIA A10G)</li>
+                <li>S3 model registry with hot-swap activation</li>
+                <li>FastAPI + asyncpg backend, PostgreSQL + Alembic, JWT auth</li>
+                <li>React 19 + Vite 6 dashboard with Lightweight Charts</li>
+              </ul>
+              <p><strong>Execution:</strong> Bybit Demo (default), Bybit mainnet (opt-in), Drift Protocol on Solana. Market orders with TP/SL, leverage, per-account daily loss limit.</p>
+              <p><strong>Key advantage:</strong> Model must beat active model on dual CV-mean + PBO gate AND prove itself on Bybit demo before mainnet. Two-stage validation.</p>
+              <p><strong>Relevance to VLTHR:</strong> Highest. Same exchange, same asset class, ML-driven, demo-first validation. Their metalabel gate is what our PipelineBrain should become.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-minor">Research</span> yongzhe2160/trading-engine
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> Research-grade quantitative trading system for Bybit USDT perps. TSMOM strategy with statistical validation pipeline.</p>
+              <p><strong>Infrastructure:</strong></p>
+              <ul>
+                <li>Event-driven backtester with real costs: taker 5.5 bps, maker 2.0 bps, funding on held notional at each 8h settlement</li>
+                <li>Equity marked-to-market every bar so drawdown reflects open-position risk</li>
+                <li>Newey-West (HAC) return-level significance AND fold-stability t-test, net of funding</li>
+                <li>Programmatic go/no-go gate before live deployment</li>
+                <li>Live loop with position-state persistence, exchange reconciliation, circuit breakers</li>
+                <li>Daily-rebalance daemon with kill-switch file and liveness heartbeat</li>
+                <li>FastAPI dashboard with EMA backtest, live forward tester, TSMOM signal tab</li>
+              </ul>
+              <p><strong>Key advantage:</strong> Statistical rigor. A strategy does not ship because it looks good on one split. It ships only if it clears HAC significance and fold-stability, net of funding.</p>
+              <p><strong>Relevance to VLTHR:</strong> High. Their validation methodology is what our PIVP gate should become. Their funding cost tracking is what our reconciliation gap needs.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-major">Framework</span> Directional Scalper
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> CCXT-based multi-exchange algorithmic trading framework. 217 stars, 20 contributors, 25 releases. Most mature Bybit-focused open source project.</p>
+              <p><strong>Infrastructure:</strong></p>
+              <ul>
+                <li>Multi-bot auto symbol rotator: runs multiple symbols concurrently</li>
+                <li>Strategies: linear grid, DBSCAN-based grid, hedge MFIRSI maker, trend orderbook</li>
+                <li>Wallet exposure limits, auto-reduce cooldown, failsafe thresholds</li>
+                <li>External API scraper for volume data (quantumvoid.org)</li>
+                <li>Docker Compose deployment</li>
+              </ul>
+              <p><strong>Key advantage:</strong> Battle-tested at scale. 217 stars, 20 contributors, 25 releases. Multi-symbol concurrent execution with auto-rotation.</p>
+              <p><strong>Relevance to VLTHR:</strong> Medium. Different strategy class (grid/scalping vs trend/MR), but their multi-symbol concurrent execution pattern and auto-reduce logic are directly applicable.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-info">ML</span> PurpleSky
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> Hybrid ML trading system for Bybit. LightGBM + LSTM + Gating Network with meta-labeling.</p>
+              <p><strong>Architecture:</strong></p>
+              <ul>
+                <li>LightGBM (Model B): predicts trade success from immediate features</li>
+                <li>LSTM (Model C): analyzes 60-bar sequences for temporal patterns</li>
+                <li>Gating Network (Model D): arbitrator that weights GBM vs LSTM based on market regime</li>
+                <li>Directional Confirmation (Model A): high-threshold trend filter</li>
+                <li>50-level orderbook snapshots, taker flow, Liquidity Elasticity, Price-Liquidity Divergence, Wall Integrity</li>
+              </ul>
+              <p><strong>Key advantage:</strong> Mixture of Experts. The gating network dynamically weights models based on regime. More sophisticated than a static ensemble.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-minor">Framework</span> dgbit (Cryptuon)
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> Backtest-to-live framework for Bybit. Python package + FastAPI + NNG service bus + Vue 3 dashboard.</p>
+              <p><strong>Key design:</strong> Single-exchange scope keeps backtest and live behavior in agreement. One interface for research, simulation, and execution. NNG (nanomsg) service bus for high-frequency operations.</p>
+              <p><strong>Agent-ready:</strong> REST API + WebSocket event stream (job.*, trade.*, signal.generated) designed for autonomous agent control. A scheduler, CI job, or agent can POST a backtest, poll for results, request a signal, place an order, and subscribe to events.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-major">Infra</span> Cryptex
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> Multi-tenant crypto algorithmic trading platform. Kafka pipeline (Python) + OMS/EMS microservices (C# .NET 8) + TimescaleDB.</p>
+              <p><strong>Architecture:</strong></p>
+              <div class="code-block">Binance WS -> Exchange Connector -> Candle Aggregator
+  -> Signal Pipeline (ML/LLM) -> Signal Router
+  -> OMS -> EMS -> Exchange REST
+  -> Order Fills -> OMS</div>
+              <p><strong>Kafka topics:</strong> market-data-raw, market-data-candles, trade-signals, order-requests, validated-orders, order-fills. Each stage is a separate consumer/producer.</p>
+              <p><strong>Key advantage:</strong> Decoupled event-driven architecture. Each pipeline stage scales independently. Pluggable signal sources (ML, LLM, or both).</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-minor">Infra</span> Muninn
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> Event-native research infrastructure for deterministic replay. Java/Spring Boot.</p>
+              <p><strong>Core claim:</strong> Any value the system emits live can be reproduced byte-for-byte by replaying the same events later. One feature engine, not two pipelines. The engine does not know whether it is reading from a live broker or from history.</p>
+              <p><strong>Key advantage:</strong> Solves the research/production divergence problem. Backtests pass, deployments fail, and nobody can reproduce what happened yesterday. Muninn closes that gap with one immutable event log as source of truth.</p>
+              <p><strong>Relevance to VLTHR:</strong> High conceptually. Our backtest uses historical Parquet, our live pipeline uses REST polling. They diverge. Muninn's approach of one computation path for both is the gold standard.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-minor">Live</span> Autarch
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>What:</strong> Bybit USDT Perp auto-trade workbench. Dual-plane architecture: AI-driven strategy evolution + deterministic execution.</p>
+              <p><strong>Design:</strong> Evolution Plane generates, backtests, and swaps strategies. Execution Plane runs deterministic Python with asyncio coroutines per pair, hard-caps concurrent positions, mandatory TP/SL. Fire-and-forget orders managed by Bybit's native TP/SL.</p>
+              <p><strong>Key advantage:</strong> Clean separation of strategy evolution from execution. The runner is purely mathematical during live trading, no LLM calls. AI handles the slower task of strategy generation.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           GAP ANALYSIS
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-gaps" class="tab-panel" aria-label="Gap Analysis">
+        <div class="page-pad">
+          <h2 class="page-title">Gap Analysis</h2>
+          <p class="section-sub">What competitors do that VLTHR does not. Each gap has a concrete fix.</p>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-critical">CRITICAL</span> No Bybit Demo API integration
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Who has it:</strong> Astraios, yongzhe2160, Autarch. All three use Bybit Demo API or testnet for paper trading.</p>
+              <p><strong>What Bybit offers:</strong></p>
+              <ul>
+                <li><code>api-demo.bybit.com</code> REST endpoint with isolated demo account</li>
+                <li><code>wss://stream-demo.bybit.com</code> for private WS streams (orders, executions, positions, wallet)</li>
+                <li>Public market data is identical to mainnet via <code>wss://stream.bybit.com</code></li>
+                <li><code>POST /v5/account/demo-apply-money</code> to programmatically fund the demo account</li>
+                <li>Same V5 API surface, same order types, same position management</li>
+                <li>Orders persist 7 days, default rate limit (not upgradable)</li>
+              </ul>
+              <div class="callout callout-danger">
+                <strong>VLTHR today:</strong> Simulates trades entirely inside Postgres. No exchange interaction. No slippage, no funding, no real order book. Backtest and live diverge silently.
+              </div>
+              <p><strong>Fix:</strong> Create a Bybit Demo account. Generate demo API keys. Route paper trades through the real Bybit V5 API instead of internal simulation. Same code path as mainnet, isolated account.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-critical">CRITICAL</span> REST polling instead of WebSocket
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Who has it:</strong> Every competitor. Astraios, Directional Scalper, PurpleSky, dgbit, Cryptex, Autarch all use WebSocket for real-time data.</p>
+              <p><strong>What Bybit WS offers:</strong></p>
+              <table class="prod-table">
+                <thead><tr><th>Stream</th><th>Frequency</th><th>Use</th></tr></thead>
+                <tbody>
+                  <tr><td>orderbook.1</td><td>10ms</td><td>Top-of-book for entry/exit precision</td></tr>
+                  <tr><td>orderbook.50</td><td>20ms</td><td>Depth analysis, slippage estimation</td></tr>
+                  <tr><td>kline.{interval}</td><td>1-60s</td><td>Live candlestick, confirm=true on close</td></tr>
+                  <tr><td>publicTrade</td><td>Real-time</td><td>Taker flow, volume analysis</td></tr>
+                  <tr><td>tickers</td><td>Real-time</td><td>Last price, funding rate, 24h volume</td></tr>
+                  <tr><td>position (private)</td><td>Real-time</td><td>Position updates, size, PnL</td></tr>
+                  <tr><td>execution (private)</td><td>Real-time</td><td>Fill confirmations, fees, execPrice</td></tr>
+                  <tr><td>order (private)</td><td>Real-time</td><td>Order status changes</td></tr>
+                  <tr><td>wallet (private)</td><td>Real-time</td><td>Balance changes</td></tr>
+                </tbody>
+              </table>
+              <div class="callout callout-danger">
+                <strong>VLTHR today:</strong> Polls REST every 5 minutes. 300-second latency window. Bybit WS orderbook pushes at 10ms. We are 30,000x slower than the exchange's real-time feed.
+              </div>
+              <p><strong>Fix:</strong> Add a WebSocket service that subscribes to kline (15m), tickers, and orderbook.50 for all active symbols. Feed into the pipeline as bars close. Keep REST as fallback. Use private WS for position/execution/wallet when Demo API is integrated.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              <span class="badge badge-major">MAJOR</span> No ML model in production
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Who has it:</strong> Astraios (transformer + LightGBM + metalabel), PurpleSky (LSTM + GBM + gating), MarketRegimeNet (4-model ensemble + Kelly sizing), ProfitPilot (PyTorch + XGBoost + LightGBM).</p>
+              <p><strong>What VLTHR has:</strong> PipelineBrain class exists. <code>BRAIN_ENABLED = False</code>. River online classifier. Trust criteria: 30+ predictions, accuracy above random, Brier score threshold. Never reached trust threshold because it only learns from live shadow trades one at a time.</p>
+              <div class="callout callout-warn">
+                <strong>The gap:</strong> Astraios backfills historical data to train models before going live. VLTHR waits for live samples to accumulate. Astraios has 430K labeled samples. VLTHR has 25 closed trades.
+              </div>
+              <p><strong>Fix:</strong></p>
+              <ul>
+                <li>Backfill PipelineBrain with historical Parquet data. Generate predictions for past signals, resolve against actual outcomes. Accumulate 500+ samples in hours, not months.</li>
+                <li>Add a metalabel gate (like Astraios): binary classifier that predicts "will this signal be correct?" Low-confidence signals are surfaced but not traded.</li>
+                <li>Consider adding LightGBM as a baseline model alongside the River classifier. LightGBM is what 4 of 5 ML competitors use.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-major">MAJOR</span> No statistical significance testing
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Who has it:</strong> yongzhe2160. Newey-West HAC significance test + fold-stability t-test, net of funding. Programmatic go/no-go gate.</p>
+              <p><strong>What VLTHR has:</strong> 6 backtest gates (win rate, profit factor, expectancy, max drawdown, Sharpe, calibration). All threshold-based, none statistical.</p>
+              <p><strong>Fix:</strong> Add HAC (Heteroskedasticity and Autocorrelation Consistent) significance test to the backtest gate suite. A strategy that passes all 6 threshold gates but fails HAC significance should not ship. Add bootstrap confidence intervals for win rate and expectancy.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-major">MAJOR</span> Monolithic orchestrator
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Who has it:</strong> Cryptex (Kafka + microservices), AxiomX (Go + Kafka + K8s), crypto-oms-aws (.NET + Kafka + EKS).</p>
+              <p><strong>What VLTHR has:</strong> Single <code>portfolio_orchestrator.py</code> that does data fetch, signal scan, gate evaluation, position sizing, and trade creation in one process.</p>
+              <p><strong>Fix (phased):</strong></p>
+              <ul>
+                <li>Phase 1: Extract data ingestion, signal generation, and execution into separate Docker services communicating via Redis pub/sub (already have Redis).</li>
+                <li>Phase 2: Introduce Kafka or Redpanda for durable event log. Each pipeline stage becomes a consumer/producer. Enables deterministic replay (Muninn pattern).</li>
+                <li>Phase 3: Scale signal generation horizontally. Run multiple symbols in parallel consumers.</li>
+              </ul>
+              <div class="callout callout-info">
+                <strong>Not urgent.</strong> The monolith works at 5 symbols. It breaks at 50. Fix risk sizing and Demo API first. Architecture migration is Phase 3.
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              <span class="badge badge-ok">EDGE</span> VLTHR advantages over competitors
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>12-gate pipeline:</strong> No competitor has more than 3-4 pre-trade gates. VLTHR has pre-flight, V2 filters, ranker, V7 Kelly, disabled symbols, regime, DQ, correlation, trade count, directional, risk budget, calibration. 12 gates.</p>
+              <p><strong>DQS composite scoring:</strong> Multi-factor quality score that drives Kelly multiplier. Astraios uses a metalabel gate but not a composite quality score. PurpleSky uses a gating network but not a pre-trade quality gate.</p>
+              <p><strong>Kelly V7 bands with MR boost:</strong> Kelly multiplier scales with DQS, with 3x boost for mean-reversion. No competitor has DQS-gated Kelly sizing.</p>
+              <p><strong>Crowding detection:</strong> Correlation cluster detection with Kelly reduction when 2+ symbols in same cluster fire same direction. Unique to VLTHR.</p>
+              <p><strong>Calibration gate:</strong> Calibrated probability threshold before trade approval. No competitor has calibration-aware gating.</p>
+              <p><strong>Dynamic SL:</strong> 3-rule dynamic stop-loss system. Most competitors use static SL or ATR-based SL only.</p>
+              <div class="callout callout-cyan">
+                <strong>Bottom line:</strong> VLTHR's gate system is more advanced than any competitor. The problem is not the gates. It is the execution layer underneath them.
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           BYBIT API
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-bybit" class="tab-panel" aria-label="Bybit API">
+        <div class="page-pad">
+          <h2 class="page-title">Bybit V5 API</h2>
+          <p class="section-sub">What Bybit offers for 1:1 simulation and real-time trading. This is the foundation for closing the execution realism gap.</p>
+
+          <details class="accordion" open>
+            <summary>
+              Demo Trading Service
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Bybit V5 API supports a demo trading account that mirrors mainnet functionality. This is not testnet. It is a separate isolated account on the mainnet infrastructure.</p>
+              <p><strong>Endpoints:</strong></p>
+              <ul>
+                <li>REST: <code>https://api-demo.bybit.com</code></li>
+                <li>WebSocket (private): <code>wss://stream-demo.bybit.com</code></li>
+                <li>WebSocket (public): <code>wss://stream.bybit.com</code> (same as mainnet)</li>
+              </ul>
+              <p><strong>Setup steps:</strong></p>
+              <ul>
+                <li>Log in to mainnet Bybit account</li>
+                <li>Switch to Demo Trading mode</li>
+                <li>Generate API key and secret from the demo account</li>
+                <li>Use <code>POST /v5/user/create-demo-member</code> to programmatically create a demo sub-account</li>
+                <li>Use <code>POST /v5/account/demo-apply-money</code> to fund with virtual USDT (up to 100,000 per request)</li>
+              </ul>
+              <div class="callout callout-warn">
+                <strong>Limitations:</strong> Orders persist 7 days only. Default rate limit, not upgradable. Not every API endpoint is available in demo mode. WS Trade is not supported on demo.
+              </div>
+              <p><strong>What this means for VLTHR:</strong> We can route paper trades through the real Bybit matching engine. Real slippage, real funding, real order rejection. Same code path as mainnet. One config flag to switch from demo to live.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              WebSocket Streams
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Bybit V5 WebSocket provides real-time market data and private account streams.</p>
+              <p><strong>Public streams (no auth):</strong></p>
+              <table class="prod-table">
+                <thead><tr><th>Topic</th><th>Push freq</th><th>VLTHR use</th></tr></thead>
+                <tbody>
+                  <tr><td>orderbook.1.{symbol}</td><td>10ms</td><td>Entry/exit price precision</td></tr>
+                  <tr><td>orderbook.50.{symbol}</td><td>20ms</td><td>Slippage estimation, depth</td></tr>
+                  <tr><td>kline.15.{symbol}</td><td>1-60s</td><td>Bar close detection, signal trigger</td></tr>
+                  <tr><td>publicTrade.{symbol}</td><td>Real-time</td><td>Taker flow, volume microstructure</td></tr>
+                  <tr><td>tickers.{symbol}</td><td>Real-time</td><td>Funding rate, 24h volume, last price</td></tr>
+                  <tr><td>liquidation.{symbol}</td><td>Real-time</td><td>Liquidation cascade detection</td></tr>
+                </tbody>
+              </table>
+              <p><strong>Private streams (auth required):</strong></p>
+              <table class="prod-table">
+                <thead><tr><th>Topic</th><th>Push freq</th><th>VLTHR use</th></tr></thead>
+                <tbody>
+                  <tr><td>order</td><td>Real-time</td><td>Order status, fill confirmation</td></tr>
+                  <tr><td>execution</td><td>Real-time</td><td>Fill price, fee, execPnl, isMaker</td></tr>
+                  <tr><td>position</td><td>Real-time</td><td>Position size, unrealized PnL, SL/TP</td></tr>
+                  <tr><td>wallet</td><td>Real-time</td><td>Balance changes, margin updates</td></tr>
+                </tbody>
+              </table>
+              <p><strong>Connection management:</strong> Bybit WS supports automatic reconnection. On reconnect, resubscribe to all topics. For orderbook, a new snapshot is sent on reconnect. Use <code>u</code> field to detect service restarts (u=1 means reset local book).</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              REST API Endpoints
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Key V5 REST endpoints for VLTHR integration:</p>
+              <table class="prod-table">
+                <thead><tr><th>Endpoint</th><th>Method</th><th>Use</th></tr></thead>
+                <tbody>
+                  <tr><td>/v5/order/create</td><td>POST</td><td>Place market/limit order</td></tr>
+                  <tr><td>/v5/order/cancel</td><td>POST</td><td>Cancel order</td></tr>
+                  <tr><td>/v5/order/realtime</td><td>GET</td><td>Open orders</td></tr>
+                  <tr><td>/v5/position/list</td><td>GET</td><td>Open positions</td></tr>
+                  <tr><td>/v5/position/trading-stop</td><td>POST</td><td>Set SL/TP on position</td></tr>
+                  <tr><td>/v5/account/wallet-balance</td><td>GET</td><td>Account balance, margin</td></tr>
+                  <tr><td>/v5/market/kline</td><td>GET</td><td>Historical OHLCV</td></tr>
+                  <tr><td>/v5/market/tickers</td><td>GET</td><td>Current price, funding rate</td></tr>
+                  <tr><td>/v5/market/orderbook</td><td>GET</td><td>Snapshot orderbook</td></tr>
+                  <tr><td>/v5/market/instruments-info</td><td>GET</td><td>Symbol metadata, min qty, tick size</td></tr>
+                </tbody>
+              </table>
+              <p><strong>Auth:</strong> HMAC-SHA256 over <code>timestamp + api_key + recv_window + payload</code>. Headers: <code>X-BAPI-API-KEY</code>, <code>X-BAPI-TIMESTAMP</code>, <code>X-BAPI-RECV-WINDOW</code>, <code>X-BAPI-SIGN</code>.</p>
+              <p><strong>Official SDKs:</strong> Python (pybit), Go, Java, .NET, Node.js (community: tiagosiebler/bybit-api).</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              1:1 Simulation Architecture
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Target architecture for VLTHR paper trading using Bybit Demo API:</p>
+              <div class="code-block">  ┌─────────────────────────────────────────────────┐
+  │              VLTHR Pipeline                       │
+  │                                                   │
+  │  Data Ingestion (WS) ──> Signal Engine            │
+  │       │                      │                    │
+  │  Bybit WS kline.15      12-Gate Pipeline          │
+  │  Bybit WS tickers        DQS + Kelly + Gates      │
+  │  Bybit WS orderbook.50        │                   │
+  │       │                      │                    │
+  │       ▼                      ▼                    │
+  │  Redis Cache            Execution Layer           │
+  │  (latest bars)          │                         │
+  │                         ├──> Bybit Demo API       │
+  │                         │    POST /v5/order/create│
+  │                         │    POST /v5/position/   │
+  │                         │         trading-stop    │
+  │                         │                         │
+  │                         ├──> WS Private Stream    │
+  │                         │    execution, position, │
+  │                         │    wallet, order        │
+  │                         │                         │
+  │                         └──> Reconciliation       │
+  │                              Compare local state  │
+  │                              vs Bybit state       │
+  └─────────────────────────────────────────────────┘</div>
+              <div class="callout callout-cyan">
+                <strong>Key principle:</strong> The pipeline does not change. Only the execution layer changes. Instead of writing to Postgres <code>paper_trades</code> table, it calls Bybit Demo API. Same gates, same DQS, same Kelly. The exchange becomes the source of truth for fills, fees, and PnL.
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           HANDOFF
+           ═══════════════════════════════════════════════════════════════════ -->
+      <section id="panel-handoff" class="tab-panel" aria-label="Handoff">
+        <div class="page-pad">
+          <h2 class="page-title">Next Agent Handoff</h2>
+          <p class="section-sub">Status, decisions, open items, and instructions for the next agent. Read per CCP Section 5 before touching anything.</p>
+
+          <div class="callout callout-cyan">
+            <strong>GATE STATUS: BLOCKED</strong><br>
+            Improvement plan (Gap 1-7) is pending approval. Risk sizing bug (Gap 1) is the blocker. No code changes until plan is approved and risk sizing is fixed.
+          </div>
+
+          <details class="accordion" open>
+            <summary>
+              Phase 1: Fix risk sizing (BLOCKER)
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>File:</strong> <code>pipeline/engine/portfolio_config.py</code></p>
+              <p><strong>Function:</strong> <code>cap_position_size()</code></p>
+              <p><strong>Bug:</strong> <code>CAPITAL_PER_SYMBOL = $2,000</code> caps notional, overriding <code>risk_pct</code>. At 1% risk on $10K account, expected risk is $100. Actual risk is $6 (33x undersized).</p>
+              <p><strong>Fix:</strong> Remove <code>CAPITAL_PER_SYMBOL</code> from <code>cap_position_size()</code>. Keep <code>SYMBOL_ALLOC_CAP = 0.25</code> (25% max per symbol). Let <code>risk_pct</code> and Kelly multiplier control sizing.</p>
+              <p><strong>Verify:</strong> Run backtest with fix. Confirm position sizes match <code>account_balance * (risk_pct / 100) * kelly_mult / sl_distance</code>. Run PIVP gate.</p>
+              <p><strong>Do not touch:</strong> Kelly V7 bands, DQS scoring, V2 filters, crowding detection, DQ gate. These are working correctly.</p>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Phase 2: Bybit Demo API integration
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Goal:</strong> Route paper trades through Bybit Demo API instead of internal Postgres simulation. 1:1 real-time production simulation.</p>
+              <p><strong>Steps:</strong></p>
+              <ul>
+                <li>Create Bybit mainnet account (if not already)</li>
+                <li>Switch to Demo Trading mode, generate API key and secret</li>
+                <li>Use <code>POST /v5/account/demo-apply-money</code> to fund with 10,000 USDT (matching our paper balance)</li>
+                <li>Install <code>pybit</code> (official Bybit Python SDK) in pipeline requirements</li>
+                <li>Create <code>pipeline/engine/bybit_executor.py</code>: wraps Bybit V5 REST for order creation, position management, SL/TP setting</li>
+                <li>Modify <code>portfolio_orchestrator.py</code>: replace internal paper trade creation with <code>bybit_executor</code> calls</li>
+                <li>Add <code>BYBIT_DEMO_API_KEY</code> and <code>BYBIT_DEMO_API_SECRET</code> to <code>.env</code></li>
+                <li>Add config flag <code>EXECUTION_MODE = "demo"</code> in <code>portfolio_config.py</code> (values: "internal", "demo", "mainnet")</li>
+              </ul>
+              <p><strong>Reconciliation:</strong> Every 5 minutes, poll <code>GET /v5/position/list</code> and <code>GET /v5/account/wallet-balance</code>. Compare with local state. Log discrepancies. This closes Gap 4 (reconciliation).</p>
+              <p><strong>Verify:</strong> Place a market order on Demo API. Confirm fill. Confirm position appears in Bybit UI. Confirm PnL updates. Run PIVP gate.</p>
+              <div class="callout callout-danger">
+                <strong>Domain risk:</strong> Look-ahead bias. Do not read position data from Bybit before making trading decisions. The pipeline must use its own signal data, not exchange position data, for gate evaluation.
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Phase 3: WebSocket data service
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Goal:</strong> Replace REST polling with WebSocket subscriptions for real-time market data.</p>
+              <p><strong>Steps:</strong></p>
+              <ul>
+                <li>Create <code>data-ingestion/bybit_ws.py</code>: WebSocket client subscribing to <code>kline.15.{symbol}</code> for all active symbols</li>
+                <li>On <code>confirm=true</code> (bar close), push bar to Redis and trigger pipeline scan</li>
+                <li>Subscribe to <code>tickers.{symbol}</code> for funding rate and 24h volume</li>
+                <li>Subscribe to <code>orderbook.50.{symbol}</code> for slippage estimation (optional, Phase 3b)</li>
+                <li>Add private WS subscriptions (<code>execution</code>, <code>position</code>, <code>wallet</code>) when Demo API is integrated</li>
+                <li>Keep REST polling as fallback. If WS disconnects for more than 60s, fall back to REST.</li>
+              </ul>
+              <p><strong>Docker:</strong> Add <code>bybit-ws</code> service to <code>docker-compose.yml</code>. Depends on Redis. Restarts on failure.</p>
+              <p><strong>Verify:</strong> Confirm WS connects and receives kline data. Confirm bar close triggers pipeline scan. Confirm latency from bar close to signal generation is under 5 seconds (vs current 300 seconds). Run PIVP gate.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Phase 4: Backtest with Bybit Demo API
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Goal:</strong> Run a backtest that uses the same Bybit Demo API execution path as live. This is the "1:1 real-time production simulation" the user requested.</p>
+              <p><strong>Method:</strong></p>
+              <ul>
+                <li>Run the live pipeline in demo mode for 7-30 days. Every signal that passes all 12 gates gets executed on Bybit Demo API.</li>
+                <li>Track: fill price vs signal price (slippage), funding paid/received, fee costs, rejection rate, actual PnL vs expected PnL.</li>
+                <li>Compare demo API results against internal simulation results for the same period. Measure divergence.</li>
+                <li>If divergence is small (under 5% on PnL), internal simulation is validated. If large, internal simulation needs correction.</li>
+              </ul>
+              <p><strong>Success criteria:</strong></p>
+              <ul>
+                <li>At least 20 trades executed on Demo API</li>
+                <li>Fill rate above 95%</li>
+                <li>Slippage under 10 bps average</li>
+                <li>Demo PnL within 10% of internal simulation PnL</li>
+                <li>All 12 gates functioning on real exchange data</li>
+              </ul>
+              <p><strong>PIVP gate:</strong> Run after 7 days of demo trading. If any Blocker or Critical issue, halt and fix before continuing.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Phase 5: PipelineBrain backfill and ML integration
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Goal:</strong> Enable PipelineBrain with historical backfill. Add metalabel gate.</p>
+              <p><strong>Steps:</strong></p>
+              <ul>
+                <li>Load historical Parquet data for all symbols (Jun 2025 - Jul 2026)</li>
+                <li>For each historical bar, run the signal engine and generate PipelineBrain predictions</li>
+                <li>Resolve predictions against actual outcomes (did price move favorably within 15 bars?)</li>
+                <li>Accumulate 500+ labeled predictions</li>
+                <li>Check trust criteria: 500+ predictions, accuracy above random, Brier score below threshold</li>
+                <li>If trust criteria pass, set <code>BRAIN_ENABLED = True</code></li>
+                <li>Add metalabel gate: train a binary classifier on (signal features, brain prediction, DQS, Kelly) to predict "will this signal be profitable?"</li>
+                <li>Low metalabel confidence signals are surfaced but not traded</li>
+              </ul>
+              <p><strong>Consider:</strong> Add LightGBM as a baseline model. 4 of 5 ML competitors use it. It is fast, handles tabular features well, and provides feature importance.</p>
+              <div class="callout callout-info">
+                <strong>Not a blocker.</strong> Pipeline works without brain. But every ML competitor has this. We cannot overtake them without it.
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Do not touch list
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li><strong>Kelly V7 bands</strong> in <code>portfolio_config.py</code>. Working correctly.</li>
+                <li><strong>DQS scoring</strong> in <code>portfolio_config.py</code>. Working correctly.</li>
+                <li><strong>V2 filters</strong> in <code>v2_filters.py</code>. Fixed in previous session. Mean-reversion bypass is correct.</li>
+                <li><strong>Crowding detection</strong> in <code>portfolio_orchestrator.py</code>. Working correctly.</li>
+                <li><strong>DQ gate</strong> in <code>portfolio_orchestrator.py</code>. Working correctly.</li>
+                <li><strong>Calibration gate</strong> in <code>calibration.json</code>. Threshold softened to 0.40. Do not raise back to 0.48.</li>
+                <li><strong>Scan cadence</strong> 5 minutes (300s). Do not revert to 15 minutes.</li>
+                <li><strong>Dynamic SL</strong> 3-rule system. Working correctly.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Evidence and references
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Improvement plan:</strong> <code>docs/memory/2026-07-19-improvement-plan.html</code></p>
+              <p><strong>Backtest methodology:</strong> <code>backtest/backtest_methodology.html</code></p>
+              <p><strong>Portfolio config:</strong> <code>pipeline/engine/portfolio_config.py</code></p>
+              <p><strong>Orchestrator:</strong> <code>pipeline/engine/portfolio_orchestrator.py</code></p>
+              <p><strong>Pipeline brain:</strong> <code>pipeline/engine/pipeline_brain.py</code></p>
+              <p><strong>Docker compose:</strong> <code>docker-compose.yml</code></p>
+              <p><strong>Bybit V5 API docs:</strong> <code>https://bybit-exchange.github.io/docs/v5/guide</code></p>
+              <p><strong>Bybit Demo Trading:</strong> <code>https://bybit-exchange.github.io/docs/v5/demo</code></p>
+              <p><strong>Bybit WS Orderbook:</strong> <code>https://bybit-exchange.github.io/docs/v5/websocket/public/orderbook</code></p>
+              <p><strong>Bybit WS Execution:</strong> <code>https://bybit-exchange.github.io/docs/v5/websocket/private/execution</code></p>
+              <p><strong>pybit SDK:</strong> <code>pip install pybit</code></p>
+              <hr style="border: none; border-top: 1px solid var(--border-subtle); margin: 12px 0;">
+              <p><strong>Competitor references:</strong></p>
+              <ul>
+                <li>Astraios: <code>astraios.tech</code></li>
+                <li>yongzhe2160/trading-engine: <code>github.com/yongzhe2160cs/trading-engine</code></li>
+                <li>Directional Scalper: <code>github.com/donewiththedollar/directionalscalper</code></li>
+                <li>PurpleSky: <code>github.com/wizrdfab/PurpleSky</code></li>
+                <li>dgbit: <code>github.com/cryptuon/dgbit</code></li>
+                <li>Cryptex: <code>github.com/Vedanshu7/cryptex</code></li>
+                <li>Muninn: <code>github.com/lgreene03/muninn</code></li>
+                <li>Autarch: <code>github.com/KingGyuSuh/autarch</code></li>
+              </ul>
+            </div>
+          </details>
+
+          <div style="margin-top: 20px;">
+            <button class="btn-primary" data-open-modal style="width: 100%;">View next agent checklist</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <nav class="bottom-tabs" aria-label="Primary navigation">
+      <button class="tab-btn active" data-tab="panel-home" aria-selected="true" role="tab"><svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-home"/></svg><span>Summary</span></button>
+      <button class="tab-btn" data-tab="panel-landscape" aria-selected="false" role="tab"><svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-layers"/></svg><span>Field</span></button>
+      <button class="tab-btn" data-tab="panel-gaps" aria-selected="false" role="tab"><svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-zap"/></svg><span>Gaps</span></button>
+      <button class="tab-btn" data-tab="panel-bybit" aria-selected="false" role="tab"><svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-globe"/></svg><span>Bybit</span></button>
+      <button class="tab-btn" data-tab="panel-handoff" aria-selected="false" role="tab"><svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-clipboard"/></svg><span>Handoff</span></button>
+    </nav>
+    <dialog class="app-modal" id="modal" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <h3 class="modal-title" id="modal-title">Next agent checklist</h3>
+        <p class="modal-text">Before starting implementation, confirm:</p>
+        <ul class="modal-list">
+          <li>Fix risk sizing bug first (Gap 1 from improvement plan).</li>
+          <li>Create Bybit Demo account and generate API keys.</li>
+          <li>Route paper trades through Bybit V5 Demo API.</li>
+          <li>Add WebSocket service for real-time market data.</li>
+          <li>Backfill PipelineBrain with historical Parquet data.</li>
+          <li>Run PIVP gate after each phase. Do not advance until PASS.</li>
+        </ul>
+        <button class="modal-close" id="modal-close" type="button">Close</button>
+      </div>
+    </dialog>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.tab-panel');
+      const modal = document.getElementById('modal');
+      const modalClose = document.getElementById('modal-close');
+      const openModalBtns = document.querySelectorAll('[data-open-modal]');
+      function setMenu(open) { menuBtn.setAttribute('aria-expanded', String(open)); mobileMenu.classList.toggle('open', open); mobileMenu.setAttribute('aria-hidden', String(!open)); }
+      menuBtn.addEventListener('click', () => setMenu(!mobileMenu.classList.contains('open')));
+      mobileMenu.querySelectorAll('a, button').forEach(el => el.addEventListener('click', () => setMenu(false)));
+      function switchTab(targetId) {
+        tabBtns.forEach(btn => { const isActive = btn.dataset.tab === targetId; btn.classList.toggle('active', isActive); btn.setAttribute('aria-selected', String(isActive)); });
+        panels.forEach(panel => panel.classList.toggle('active', panel.id === targetId));
+        document.querySelector('.scroll').scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+      document.querySelectorAll('[data-tab]').forEach(el => { if (!el.classList.contains('tab-btn')) el.addEventListener('click', (e) => { e.preventDefault(); switchTab(el.dataset.tab); }); });
+      openModalBtns.forEach(btn => btn.addEventListener('click', () => modal.showModal()));
+      modalClose.addEventListener('click', () => modal.close());
+      modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+    });
+  </script>
+</body>
+</html>

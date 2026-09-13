@@ -1,0 +1,80 @@
+# VLTHR Trading System .gitignore
+
+# ── Secrets — NEVER commit ──────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+backend/.env
+**/.env
+**/.env.*
+
+# ── Data (612MB — distribute separately, not via git) ───────────────────────
+data/*
+!data/.gitkeep
+
+# ── Logs ────────────────────────────────────────────────────────────────────
+logs/**/*.log
+logs/**/*.log.*
+logs/**
+
+# ── Backups ─────────────────────────────────────────────────────────────────
+backups/*
+!backups/.gitkeep
+*.sql
+*.sql.gz
+
+# ── RAG chunks (contain copies of source, may include old secrets) ───────────
+rag_chunks/
+
+# ── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+*.egg
+
+# ── Node ────────────────────────────────────────────────────────────────────
+node_modules/
+dist/
+.npm/
+
+# ── Docker ──────────────────────────────────────────────────────────────────
+.docker/
+
+# ── Editor / IDE ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.suo
+.DS_Store
+Thumbs.db
+
+# ── Internal tooling (not for public repo) ──────────────────────────────────
+.devin/
+.windsurf/
+.codeium/
+
+# ── Garbage / temp files ────────────────────────────────────────────────────
+=0.3
+*.tmp
+*.bak
+
+# ── External tools (third-party source copies, not part of this project) ───
+external tools/
+
+# ── Business data (contains customer PII, must never be public) ──────────
+business_data/
+
+# ── Backtest v2 archives (contain local filesystem paths) ─────────────────
+backtest_v2/
+
+# ── Backtest output logs (contain local filesystem paths) ──────────────────
+backtest/stress_test_output.log
+
+# ── OS / misc ───────────────────────────────────────────────────────────────
+*.pid
+*.seed
+*.pid.lock
+.directory

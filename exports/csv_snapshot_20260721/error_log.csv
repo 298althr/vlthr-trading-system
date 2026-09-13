@@ -1,0 +1,940 @@
+id,source,error_type,message,stack_trace,symbol,run_time,is_critical,resolved,created_at,checksum
+1955,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 13:10:14.864167,f,t,2026-07-04 13:10:14.864762,
+1956,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 13:10:16.256017,f,t,2026-07-04 13:10:16.256293,
+1957,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 13:10:17.458119,f,t,2026-07-04 13:10:17.458283,
+1958,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 13:10:18.728722,f,t,2026-07-04 13:10:18.728885,
+1959,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 13:10:20.129168,f,t,2026-07-04 13:10:20.129335,
+1976,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 14:25:39.044111,f,t,2026-07-04 14:25:39.044996,
+1977,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 14:25:40.091637,f,t,2026-07-04 14:25:40.091844,
+1978,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 14:25:41.229263,f,t,2026-07-04 14:25:41.229434,
+1979,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 14:25:42.34664,f,t,2026-07-04 14:25:42.346806,
+1980,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 14:25:43.110582,f,t,2026-07-04 14:25:43.110727,
+2001,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 15:41:05.424777,f,t,2026-07-04 15:41:05.425333,
+2002,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 15:41:06.345116,f,t,2026-07-04 15:41:06.345284,
+2003,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 15:41:07.497843,f,t,2026-07-04 15:41:07.498026,
+2004,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 15:41:08.539208,f,t,2026-07-04 15:41:08.539378,
+2005,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 15:41:09.648908,f,t,2026-07-04 15:41:09.64909,
+2026,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 16:56:33.458878,f,t,2026-07-04 16:56:33.459504,
+2027,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 16:56:34.616326,f,t,2026-07-04 16:56:34.616494,
+2028,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 16:56:35.670261,f,t,2026-07-04 16:56:35.670425,
+2029,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 16:56:36.764175,f,t,2026-07-04 16:56:36.764342,
+2030,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 16:56:37.889161,f,t,2026-07-04 16:56:37.889341,
+1947,safety,CRITICAL,Data stale: last bar 40 min old,,,2026-07-04 11:25:10.27073,t,t,2026-07-04 11:25:10.271737,
+1949,safety,CRITICAL,Data stale: last bar 70 min old,,,2026-07-04 11:55:10.93408,t,t,2026-07-04 11:55:10.935112,
+1950,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-04 12:10:11.271371,f,t,2026-07-04 12:10:11.272849,
+1951,safety,CRITICAL,Data stale: last bar 85 min old,,,2026-07-04 12:10:11.295513,t,t,2026-07-04 12:10:11.295839,
+1952,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-04 12:25:11.60129,f,t,2026-07-04 12:25:11.602135,
+1953,safety,CRITICAL,Data stale: last bar 40 min old,,,2026-07-04 12:40:11.943495,t,t,2026-07-04 12:40:11.944519,
+1960,safety,CRITICAL,Data stale: last bar 40 min old,,,2026-07-04 13:25:20.309482,t,t,2026-07-04 13:25:20.309944,
+1981,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 14:40:44.508996,f,t,2026-07-04 14:40:44.509547,
+1982,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 14:40:45.570811,f,t,2026-07-04 14:40:45.570975,
+1983,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 14:40:46.34531,f,t,2026-07-04 14:40:46.345465,
+1984,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 14:40:47.193369,f,t,2026-07-04 14:40:47.193516,
+1985,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 14:40:48.111688,f,t,2026-07-04 14:40:48.112199,
+2006,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 15:56:10.987282,f,t,2026-07-04 15:56:10.98783,
+2007,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 15:56:12.097672,f,t,2026-07-04 15:56:12.097867,
+2008,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 15:56:13.215128,f,t,2026-07-04 15:56:13.215296,
+2009,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 15:56:14.08537,f,t,2026-07-04 15:56:14.087005,
+2010,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 15:56:15.019729,f,t,2026-07-04 15:56:15.019898,
+2031,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 17:11:39.317478,f,t,2026-07-04 17:11:39.318017,
+2032,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 17:11:40.412099,f,t,2026-07-04 17:11:40.412264,
+2033,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 17:11:41.447534,f,t,2026-07-04 17:11:41.447701,
+2034,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 17:11:42.577078,f,t,2026-07-04 17:11:42.577241,
+2035,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 17:11:43.610461,f,t,2026-07-04 17:11:43.610627,
+1948,safety,CRITICAL,Data stale: last bar 55 min old,,,2026-07-04 11:40:10.592936,t,t,2026-07-04 11:40:10.595097,
+1954,safety,CRITICAL,Data stale: last bar 55 min old,,,2026-07-04 12:55:12.183153,t,t,2026-07-04 12:55:12.183599,
+2086,safety,CRITICAL,"Drawdown halt triggered: equity=7922.18, balance=9924.58",,,2026-07-07 08:50:42.547815,t,t,2026-07-07 08:50:42.548166,
+2090,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for ETHUSDT,,,2026-07-08 00:18:37.586288,t,t,2026-07-08 00:18:37.586939,34d87dbe7c569e0a
+2094,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for ETHUSDT,,,2026-07-10 14:22:20.98217,t,t,2026-07-10 14:22:20.982688,a2d75e14f69fe87d
+1961,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 13:40:21.68959,f,t,2026-07-04 13:40:21.690205,
+1962,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 13:40:22.744391,f,t,2026-07-04 13:40:22.744565,
+1963,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 13:40:23.885895,f,t,2026-07-04 13:40:23.88608,
+1964,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 13:40:24.984396,f,t,2026-07-04 13:40:24.984999,
+1965,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 13:40:26.154865,f,t,2026-07-04 13:40:26.155042,
+1986,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 14:55:49.580062,f,t,2026-07-04 14:55:49.580573,
+1987,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 14:55:50.756411,f,t,2026-07-04 14:55:50.756587,
+1988,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 14:55:52.047218,f,t,2026-07-04 14:55:52.047391,
+1989,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 14:55:53.173742,f,t,2026-07-04 14:55:53.173912,
+1990,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 14:55:54.293339,f,t,2026-07-04 14:55:54.293511,
+2011,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 16:11:16.82213,f,t,2026-07-04 16:11:16.822942,
+2012,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 16:11:18.236045,f,t,2026-07-04 16:11:18.236426,
+2013,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 16:11:19.55048,f,t,2026-07-04 16:11:19.550657,
+2014,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 16:11:20.754413,f,t,2026-07-04 16:11:20.755021,
+2015,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 16:11:22.071282,f,t,2026-07-04 16:11:22.071476,
+2036,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 17:26:45.289781,f,t,2026-07-04 17:26:45.290797,
+2037,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 17:26:46.40242,f,t,2026-07-04 17:26:46.402596,
+2038,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 17:26:47.430575,f,t,2026-07-04 17:26:47.430744,
+2039,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 17:26:48.583554,f,t,2026-07-04 17:26:48.583712,
+2040,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 17:26:49.530182,f,t,2026-07-04 17:26:49.53035,
+2046,reprice_pending,WARNING,"get_sl_tp: LONG SL 82.17 >= entry 82.17 (atr=0.29428571428571565, mult=0)",,SOLUSDT,2026-07-04 19:29:47.424998,f,f,2026-07-04 19:29:47.505518,
+2087,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-07 09:05:42.641699,f,f,2026-07-07 09:05:42.643275,
+2088,safety,CRITICAL,"Drawdown halt triggered: equity=7922.18, balance=9924.58",,,2026-07-07 09:05:42.655696,t,t,2026-07-07 09:05:42.655939,
+2080,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for BTCUSDT,,,2026-07-04 19:35:47.456838,t,t,2026-07-04 19:35:47.457267,
+2081,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for XRPUSDT,,,2026-07-05 09:55:48.713073,t,t,2026-07-05 09:55:48.713425,
+2082,safety,CRITICAL,Data stale: last bar 1559 min old,,,2026-07-06 14:06:08.950047,t,t,2026-07-06 14:06:08.950644,
+2091,safety,CRITICAL,"Data stale: BTCUSDT (258m), ETHUSDT (258m), SOLUSDT (257m), XRPUSDT (257m), BNBUSDT (259m)",,,2026-07-08 17:42:21.035305,t,t,2026-07-08 17:42:21.039983,e8646ae66d432e44
+1966,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 13:55:27.578813,f,t,2026-07-04 13:55:27.580986,
+1967,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 13:55:28.62145,f,t,2026-07-04 13:55:28.621616,
+1968,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 13:55:29.764726,f,t,2026-07-04 13:55:29.764897,
+1969,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 13:55:30.885509,f,t,2026-07-04 13:55:30.885666,
+1970,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 13:55:31.790324,f,t,2026-07-04 13:55:31.790923,
+1991,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 15:10:55.38369,f,t,2026-07-04 15:10:55.384181,
+1992,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 15:10:56.280352,f,t,2026-07-04 15:10:56.2805,
+1993,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 15:10:57.05764,f,t,2026-07-04 15:10:57.057794,
+1994,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 15:10:57.909346,f,t,2026-07-04 15:10:57.909514,
+1995,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 15:10:58.750657,f,t,2026-07-04 15:10:58.750807,
+2016,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 16:26:23.57789,f,t,2026-07-04 16:26:23.578609,
+2017,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 16:26:24.624845,f,t,2026-07-04 16:26:24.625024,
+2018,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 16:26:25.480761,f,t,2026-07-04 16:26:25.480908,
+2019,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 16:26:26.217725,f,t,2026-07-04 16:26:26.217875,
+2020,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 16:26:27.154321,f,t,2026-07-04 16:26:27.154485,
+2041,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 17:41:50.598658,f,t,2026-07-04 17:41:50.599073,
+2042,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 17:41:51.475722,f,t,2026-07-04 17:41:51.475899,
+2043,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 17:41:52.4239,f,t,2026-07-04 17:41:52.424221,
+2044,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 17:41:53.522948,f,t,2026-07-04 17:41:53.523126,
+2045,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 17:41:54.656498,f,t,2026-07-04 17:41:54.656672,
+1946,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-04 11:10:09.931584,f,t,2026-07-04 11:10:09.932566,
+2047,reprice_pending,WARNING,"get_sl_tp: LONG SL 82.17 >= entry 82.17 (atr=0.29428571428571565, mult=0)",,SOLUSDT,2026-07-04 19:32:12.4038,f,f,2026-07-04 19:32:12.405013,
+2084,safety,CRITICAL,"Drawdown halt triggered: equity=7922.18, balance=9924.58",,,2026-07-07 08:20:42.334866,t,t,2026-07-07 08:20:42.335238,
+2083,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for XRPUSDT,,,2026-07-06 22:45:22.086576,t,t,2026-07-06 22:45:22.086956,
+2092,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for BTCUSDT,,,2026-07-09 13:53:24.492351,t,t,2026-07-09 13:53:24.492765,c0fb9574f141f125
+1763,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-03 22:26:46.417933,f,t,2026-07-03 22:26:46.418468,
+1764,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-03 22:26:47.574907,f,t,2026-07-03 22:26:47.575121,
+1765,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-03 22:26:48.659273,f,t,2026-07-03 22:26:48.659438,
+1766,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-03 22:26:49.744928,f,t,2026-07-03 22:26:49.745102,
+1767,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-03 22:26:50.777079,f,t,2026-07-03 22:26:50.777412,
+1768,safety,CRITICAL,Data stale: last bar 42 min old,,,2026-07-03 22:41:50.963054,t,t,2026-07-03 22:41:50.963507,
+1769,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-03 22:56:52.359711,f,t,2026-07-03 22:56:52.360258,
+1770,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-03 22:56:53.525477,f,t,2026-07-03 22:56:53.52565,
+1771,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-03 22:56:54.448157,f,t,2026-07-03 22:56:54.448738,
+1772,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-03 22:56:55.28975,f,t,2026-07-03 22:56:55.289925,
+1773,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-03 22:56:56.051972,f,t,2026-07-03 22:56:56.05212,
+1774,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-03 23:11:57.463636,f,t,2026-07-03 23:11:57.46418,
+1775,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-03 23:11:58.704674,f,t,2026-07-03 23:11:58.707012,
+1776,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-03 23:12:00.09402,f,t,2026-07-03 23:12:00.094227,
+1777,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-03 23:12:01.420081,f,t,2026-07-03 23:12:01.420248,
+1778,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-03 23:12:02.559447,f,t,2026-07-03 23:12:02.559609,
+1779,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-03 23:27:03.88937,f,t,2026-07-03 23:27:03.889891,
+1780,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-03 23:27:04.930236,f,t,2026-07-03 23:27:04.930398,
+1781,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-03 23:27:05.987431,f,t,2026-07-03 23:27:05.987596,
+1782,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-03 23:27:07.089927,f,t,2026-07-03 23:27:07.090154,
+1783,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-03 23:27:07.956523,f,t,2026-07-03 23:27:07.956678,
+1784,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-03 23:42:09.201071,f,t,2026-07-03 23:42:09.201539,
+1785,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-03 23:42:10.146413,f,t,2026-07-03 23:42:10.146556,
+1786,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-03 23:42:11.277577,f,t,2026-07-03 23:42:11.277751,
+1787,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-03 23:42:12.34477,f,t,2026-07-03 23:42:12.345053,
+1788,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-03 23:42:13.467983,f,t,2026-07-03 23:42:13.468145,
+1789,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-03 23:57:14.840035,f,t,2026-07-03 23:57:14.840632,
+1790,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-03 23:57:15.811431,f,t,2026-07-03 23:57:15.811587,
+1791,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-03 23:57:16.899595,f,t,2026-07-03 23:57:16.89978,
+1792,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-03 23:57:17.703826,f,t,2026-07-03 23:57:17.703993,
+1793,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-03 23:57:18.585741,f,t,2026-07-03 23:57:18.585898,
+1794,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 00:12:20.058665,f,t,2026-07-04 00:12:20.059194,
+1795,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 00:12:21.149497,f,t,2026-07-04 00:12:21.14966,
+1796,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 00:12:22.315338,f,t,2026-07-04 00:12:22.315509,
+1797,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 00:12:23.31265,f,t,2026-07-04 00:12:23.312803,
+1798,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 00:12:24.160173,f,t,2026-07-04 00:12:24.160323,
+1799,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 00:27:25.535465,f,t,2026-07-04 00:27:25.535998,
+1800,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 00:27:26.635478,f,t,2026-07-04 00:27:26.635649,
+1801,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 00:27:27.770658,f,t,2026-07-04 00:27:27.770833,
+1802,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 00:27:28.862185,f,t,2026-07-04 00:27:28.862351,
+1803,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 00:27:30.015765,f,t,2026-07-04 00:27:30.015977,
+1804,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 00:42:32.002434,f,t,2026-07-04 00:42:32.002954,
+1805,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 00:42:33.494409,f,t,2026-07-04 00:42:33.494619,
+1806,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 00:42:35.647428,f,t,2026-07-04 00:42:35.649827,
+1807,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 00:42:37.307411,f,t,2026-07-04 00:42:37.307583,
+1808,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 00:42:38.830814,f,t,2026-07-04 00:42:38.83199,
+1809,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 00:57:40.937215,f,t,2026-07-04 00:57:40.937663,
+1810,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 00:57:42.330619,f,t,2026-07-04 00:57:42.330827,
+1811,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 00:57:43.7206,f,t,2026-07-04 00:57:43.720773,
+1812,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 00:57:45.105501,f,t,2026-07-04 00:57:45.105686,
+1813,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 00:57:46.472269,f,t,2026-07-04 00:57:46.472435,
+1814,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 01:12:48.274556,f,t,2026-07-04 01:12:48.275121,
+1815,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 01:12:49.373396,f,t,2026-07-04 01:12:49.373562,
+1816,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 01:12:50.490722,f,t,2026-07-04 01:12:50.490893,
+1817,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 01:12:51.716357,f,t,2026-07-04 01:12:51.716527,
+1818,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 01:12:52.828202,f,t,2026-07-04 01:12:52.828377,
+1819,safety,CRITICAL,Data stale: last bar 67 min old,,,2026-07-04 02:22:04.735519,t,t,2026-07-04 02:22:04.73595,
+1820,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 02:37:06.235436,f,t,2026-07-04 02:37:06.237249,
+1821,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 02:37:07.476769,f,t,2026-07-04 02:37:07.476952,
+1822,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 02:37:08.558215,f,t,2026-07-04 02:37:08.558387,
+1823,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 02:37:09.723741,f,t,2026-07-04 02:37:09.723921,
+1824,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 02:37:10.82158,f,t,2026-07-04 02:37:10.821755,
+1825,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 02:52:12.288758,f,t,2026-07-04 02:52:12.289304,
+1826,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 02:52:13.514435,f,t,2026-07-04 02:52:13.514614,
+1827,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 02:52:14.4486,f,t,2026-07-04 02:52:14.448768,
+1828,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 02:52:15.53593,f,t,2026-07-04 02:52:15.536115,
+1829,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 02:52:16.418054,f,t,2026-07-04 02:52:16.418193,
+1830,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 03:07:19.161218,f,t,2026-07-04 03:07:19.16183,
+1831,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 03:07:20.647903,f,t,2026-07-04 03:07:20.648093,
+1832,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 03:07:21.874612,f,t,2026-07-04 03:07:21.874784,
+1833,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 03:07:23.656907,f,t,2026-07-04 03:07:23.657093,
+1834,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 03:07:25.605684,f,t,2026-07-04 03:07:25.606166,
+1835,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 03:22:26.967977,f,t,2026-07-04 03:22:26.968438,
+1836,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 03:22:28.075126,f,t,2026-07-04 03:22:28.075296,
+1837,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 03:22:29.100534,f,t,2026-07-04 03:22:29.100707,
+1838,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 03:22:30.204756,f,t,2026-07-04 03:22:30.204936,
+1839,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 03:22:31.309452,f,t,2026-07-04 03:22:31.309621,
+1840,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 03:37:32.634685,f,t,2026-07-04 03:37:32.635239,
+1841,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 03:37:33.763893,f,t,2026-07-04 03:37:33.764061,
+1842,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 03:37:34.777695,f,t,2026-07-04 03:37:34.777864,
+1843,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 03:37:35.841607,f,t,2026-07-04 03:37:35.84177,
+1844,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 03:37:36.971714,f,t,2026-07-04 03:37:36.973005,
+1845,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 03:52:38.299117,f,t,2026-07-04 03:52:38.299621,
+1846,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 03:52:39.417231,f,t,2026-07-04 03:52:39.417399,
+1847,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 03:52:40.314034,f,t,2026-07-04 03:52:40.314186,
+1848,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 03:52:41.377533,f,t,2026-07-04 03:52:41.377716,
+1849,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 03:52:42.396239,f,t,2026-07-04 03:52:42.396377,
+1850,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 04:07:43.757687,f,t,2026-07-04 04:07:43.758232,
+1851,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 04:07:44.891728,f,t,2026-07-04 04:07:44.891894,
+1852,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 04:07:45.729847,f,t,2026-07-04 04:07:45.730194,
+1853,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 04:07:46.937088,f,t,2026-07-04 04:07:46.937318,
+1854,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 04:07:47.859353,f,t,2026-07-04 04:07:47.859501,
+1855,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 04:22:49.242041,f,t,2026-07-04 04:22:49.242699,
+1856,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 04:22:50.451698,f,t,2026-07-04 04:22:50.45187,
+1857,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 04:22:51.589523,f,t,2026-07-04 04:22:51.589688,
+1858,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 04:22:52.450106,f,t,2026-07-04 04:22:52.450254,
+1859,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 04:22:53.330489,f,t,2026-07-04 04:22:53.330642,
+1860,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 04:37:54.733325,f,t,2026-07-04 04:37:54.733852,
+1861,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 04:37:55.818365,f,t,2026-07-04 04:37:55.818541,
+1862,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 04:37:56.896827,f,t,2026-07-04 04:37:56.897036,
+1863,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 04:37:57.96602,f,t,2026-07-04 04:37:57.966787,
+1864,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 04:37:59.082284,f,t,2026-07-04 04:37:59.082452,
+1865,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 04:53:00.309749,f,t,2026-07-04 04:53:00.310355,
+1866,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 04:53:01.392513,f,t,2026-07-04 04:53:01.392694,
+1867,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 04:53:02.302508,f,t,2026-07-04 04:53:02.30268,
+1868,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 04:53:03.283417,f,t,2026-07-04 04:53:03.283583,
+1869,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 04:53:04.453262,f,t,2026-07-04 04:53:04.45343,
+1870,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 05:08:05.797108,f,t,2026-07-04 05:08:05.797621,
+1871,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 05:08:06.692717,f,t,2026-07-04 05:08:06.69383,
+1872,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 05:08:07.760696,f,t,2026-07-04 05:08:07.760875,
+1873,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 05:08:08.7828,f,t,2026-07-04 05:08:08.782991,
+1874,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 05:08:09.917473,f,t,2026-07-04 05:08:09.917642,
+1875,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 05:23:11.323562,f,t,2026-07-04 05:23:11.324235,
+1876,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 05:23:12.396625,f,t,2026-07-04 05:23:12.396798,
+1877,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 05:23:13.505619,f,t,2026-07-04 05:23:13.505791,
+1878,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 05:23:14.532686,f,t,2026-07-04 05:23:14.532849,
+1879,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 05:23:15.643388,f,t,2026-07-04 05:23:15.64355,
+1880,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 05:38:17.062792,f,t,2026-07-04 05:38:17.063366,
+1881,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 05:38:18.121163,f,t,2026-07-04 05:38:18.121329,
+1882,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 05:38:19.254447,f,t,2026-07-04 05:38:19.254633,
+1883,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 05:38:20.225919,f,t,2026-07-04 05:38:20.228211,
+1884,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 05:38:21.073926,f,t,2026-07-04 05:38:21.074102,
+1885,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 05:53:22.414065,f,t,2026-07-04 05:53:22.414544,
+1886,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 05:53:23.482597,f,t,2026-07-04 05:53:23.482886,
+1887,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 05:53:24.613906,f,t,2026-07-04 05:53:24.614091,
+1888,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 05:53:25.730417,f,t,2026-07-04 05:53:25.730585,
+1889,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 05:53:26.766623,f,t,2026-07-04 05:53:26.766797,
+1890,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 06:08:28.066174,f,t,2026-07-04 06:08:28.066869,
+1891,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 06:08:28.854197,f,t,2026-07-04 06:08:28.854411,
+1892,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 06:08:29.885006,f,t,2026-07-04 06:08:29.885154,
+1893,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 06:08:30.877703,f,t,2026-07-04 06:08:30.877996,
+1894,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 06:08:31.941298,f,t,2026-07-04 06:08:31.941441,
+1895,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 06:23:33.316998,f,t,2026-07-04 06:23:33.317511,
+1896,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 06:23:34.370509,f,t,2026-07-04 06:23:34.371041,
+1897,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 06:23:35.517388,f,t,2026-07-04 06:23:35.517566,
+1898,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 06:23:36.604838,f,t,2026-07-04 06:23:36.60505,
+1899,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 06:23:37.634685,f,t,2026-07-04 06:23:37.634857,
+1900,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 06:38:39.055622,f,t,2026-07-04 06:38:39.056198,
+1901,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 06:38:40.052254,f,t,2026-07-04 06:38:40.052415,
+1902,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 06:38:40.808521,f,t,2026-07-04 06:38:40.808683,
+1903,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 06:38:41.782351,f,t,2026-07-04 06:38:41.782511,
+1904,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 06:38:42.554632,f,t,2026-07-04 06:38:42.554783,
+1905,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 06:53:43.987146,f,t,2026-07-04 06:53:43.987735,
+1906,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 06:53:45.132427,f,t,2026-07-04 06:53:45.132601,
+1907,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 06:53:46.134092,f,t,2026-07-04 06:53:46.134251,
+1908,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 06:53:47.002785,f,t,2026-07-04 06:53:47.002929,
+1909,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 06:53:47.868934,f,t,2026-07-04 06:53:47.869114,
+1910,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 07:08:49.215554,f,t,2026-07-04 07:08:49.216991,
+1911,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 07:08:50.351085,f,t,2026-07-04 07:08:50.351251,
+1912,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 07:08:51.393502,f,t,2026-07-04 07:08:51.393675,
+1913,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 07:08:52.661219,f,t,2026-07-04 07:08:52.661392,
+1914,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 07:08:53.777204,f,t,2026-07-04 07:08:53.777374,
+1915,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 07:23:59.213291,f,t,2026-07-04 07:23:59.214523,
+1916,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 07:24:04.217763,f,t,2026-07-04 07:24:04.21817,
+1917,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 07:24:08.776985,f,t,2026-07-04 07:24:08.777745,
+1918,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 07:24:13.37332,f,t,2026-07-04 07:24:13.373706,
+1919,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 07:24:18.308463,f,t,2026-07-04 07:24:18.308847,
+1920,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 07:39:22.404016,f,t,2026-07-04 07:39:22.405263,
+1921,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 07:39:25.143312,f,t,2026-07-04 07:39:25.143683,
+1922,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 07:39:28.154156,f,t,2026-07-04 07:39:28.154448,
+1923,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 07:39:31.142839,f,t,2026-07-04 07:39:31.143213,
+1924,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 07:39:34.707172,f,t,2026-07-04 07:39:34.707536,
+1925,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 07:54:38.178935,f,t,2026-07-04 07:54:38.179945,
+1926,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 07:54:41.2465,f,t,2026-07-04 07:54:41.246775,
+1927,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 07:54:44.084436,f,t,2026-07-04 07:54:44.084815,
+1928,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 07:54:46.568271,f,t,2026-07-04 07:54:46.568608,
+1929,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 07:54:49.598472,f,t,2026-07-04 07:54:49.598926,
+1930,safety,CRITICAL,Data stale: last bar 40 min old,,,2026-07-04 08:09:50.071187,t,t,2026-07-04 08:09:50.072178,
+1931,safety,CRITICAL,Data stale: last bar 55 min old,,,2026-07-04 08:24:50.419857,t,t,2026-07-04 08:24:50.421028,
+1932,safety,CRITICAL,Data stale: last bar 70 min old,,,2026-07-04 08:39:50.779533,t,t,2026-07-04 08:39:50.780559,
+1933,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-04 08:54:51.078988,f,t,2026-07-04 08:54:51.080943,
+1934,safety,CRITICAL,Data stale: last bar 40 min old,,,2026-07-04 09:09:51.433911,t,t,2026-07-04 09:09:51.435208,
+1935,safety,CRITICAL,Data stale: last bar 55 min old,,,2026-07-04 09:24:51.802669,t,t,2026-07-04 09:24:51.803767,
+1936,safety,CRITICAL,Data stale: last bar 70 min old,,,2026-07-04 09:39:52.175218,t,t,2026-07-04 09:39:52.176231,
+1937,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-04 09:54:52.513481,f,t,2026-07-04 09:54:52.514358,
+1938,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 10:09:56.307773,f,t,2026-07-04 10:09:56.308864,
+1939,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 10:09:59.364546,f,t,2026-07-04 10:09:59.364952,
+2722,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-21 14:05:44.908034,f,f,2026-07-21 14:05:44.908475,b30fbc3152739363
+1940,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 10:10:02.644234,f,t,2026-07-04 10:10:02.645071,
+1941,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 10:10:05.452265,f,t,2026-07-04 10:10:05.453065,
+1942,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 10:10:08.341427,f,t,2026-07-04 10:10:08.341781,
+1943,safety,CRITICAL,Data stale: last bar 40 min old,,,2026-07-04 10:25:08.801074,t,t,2026-07-04 10:25:08.802107,
+1944,safety,CRITICAL,Data stale: last bar 55 min old,,,2026-07-04 10:40:09.218235,t,t,2026-07-04 10:40:09.219495,
+1945,safety,CRITICAL,Data stale: last bar 70 min old,,,2026-07-04 10:55:09.564451,t,t,2026-07-04 10:55:09.565441,
+1971,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 14:10:33.174476,f,t,2026-07-04 14:10:33.177053,
+1972,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 14:10:34.481523,f,t,2026-07-04 14:10:34.481697,
+1973,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 14:10:35.614357,f,t,2026-07-04 14:10:35.614525,
+1974,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 14:10:36.721919,f,t,2026-07-04 14:10:36.7221,
+1975,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 14:10:37.772052,f,t,2026-07-04 14:10:37.772219,
+1996,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 15:26:00.082358,f,t,2026-07-04 15:26:00.082896,
+1997,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 15:26:01.208816,f,t,2026-07-04 15:26:01.208993,
+1998,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 15:26:02.213492,f,t,2026-07-04 15:26:02.213708,
+1999,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 15:26:03.351042,f,t,2026-07-04 15:26:03.351207,
+2000,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 15:26:04.277395,f,t,2026-07-04 15:26:04.277542,
+2021,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BTCUSDT,2026-07-04 16:41:28.378212,f,t,2026-07-04 16:41:28.378989,
+2022,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,ETHUSDT,2026-07-04 16:41:29.190329,f,t,2026-07-04 16:41:29.19048,
+2023,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,SOLUSDT,2026-07-04 16:41:30.070257,f,t,2026-07-04 16:41:30.070413,
+2024,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,XRPUSDT,2026-07-04 16:41:30.920434,f,t,2026-07-04 16:41:30.920581,
+2025,scan,WARNING,"incompatible merge keys [0] datetime64[ms, UTC] and datetime64[ns, UTC], must be the same type",,BNBUSDT,2026-07-04 16:41:31.711116,f,t,2026-07-04 16:41:31.711264,
+2085,safety,CRITICAL,"Drawdown halt triggered: equity=7922.18, balance=9924.58",,,2026-07-07 08:35:42.442605,t,t,2026-07-07 08:35:42.443029,
+2089,safety,CRITICAL,"Drawdown halt triggered: equity=7922.18, balance=9924.58",,,2026-07-07 09:20:42.765788,t,t,2026-07-07 09:20:42.766214,
+2093,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for ETHUSDT,,,2026-07-10 05:01:42.346222,t,t,2026-07-10 05:01:42.346784,29df181439ab4d45
+2095,safety,CRITICAL,"Data stale: BTCUSDT (32m), ETHUSDT (31m), SOLUSDT (31m), XRPUSDT (33m), BNBUSDT (32m)",,,2026-07-10 18:25:12.432769,t,t,2026-07-10 18:25:12.433413,eb20d63782185e67
+2099,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-15 08:08:59.356052,f,f,2026-07-15 08:08:59.356399,46e007562e13adb8
+2101,safety,WARNING,CIRCUIT BREAKER TRIPPED — 4 critical errors in last hour,,,2026-07-15 08:13:59.483436,f,f,2026-07-15 08:13:59.483809,04cb07245bd456e7
+2103,safety,WARNING,CIRCUIT BREAKER TRIPPED — 5 critical errors in last hour,,,2026-07-15 08:18:59.626745,f,f,2026-07-15 08:18:59.62698,1c0abddd97282515
+2105,safety,WARNING,CIRCUIT BREAKER TRIPPED — 6 critical errors in last hour,,,2026-07-15 08:23:59.747384,f,f,2026-07-15 08:23:59.747771,a88d613163b30acc
+2096,safety,CRITICAL,Data stale: BNBUSDT (10m),,,2026-07-15 07:25:11.736566,t,t,2026-07-15 07:25:11.766551,f3a9c2aabafe13f0
+2107,safety,WARNING,CIRCUIT BREAKER TRIPPED — 6 critical errors in last hour,,,2026-07-15 08:28:59.868088,f,f,2026-07-15 08:28:59.86836,3dbecc48bf866028
+2109,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-15 08:33:59.992055,f,f,2026-07-15 08:33:59.992345,dcea2a34a160781b
+2111,safety,WARNING,CIRCUIT BREAKER TRIPPED — 8 critical errors in last hour,,,2026-07-15 08:39:00.10693,f,f,2026-07-15 08:39:00.107356,180b9866fd6853eb
+2113,safety,WARNING,CIRCUIT BREAKER TRIPPED — 9 critical errors in last hour,,,2026-07-15 08:44:00.2254,f,f,2026-07-15 08:44:00.225754,3052cf793f474673
+2115,safety,WARNING,CIRCUIT BREAKER TRIPPED — 10 critical errors in last hour,,,2026-07-15 08:49:00.332099,f,f,2026-07-15 08:49:00.332409,029b760d6cd569b7
+2117,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 08:54:00.439579,f,f,2026-07-15 08:54:00.439949,afa88fe7ceb2516b
+2098,safety,CRITICAL,"Data stale: BTCUSDT (22m), SOLUSDT (26m), BNBUSDT (24m)",,,2026-07-15 08:03:59.271114,t,t,2026-07-15 08:03:59.271516,84dfd86badbc3ba2
+2100,safety,CRITICAL,"Data stale: BTCUSDT (27m), ETHUSDT (25m), SOLUSDT (31m), BNBUSDT (29m)",,,2026-07-15 08:08:59.384896,t,t,2026-07-15 08:08:59.38507,72645b6b2ebbd19c
+2102,safety,CRITICAL,"Data stale: BTCUSDT (32m), ETHUSDT (30m), SOLUSDT (36m), XRPUSDT (25m), BNBUSDT (34m)",,,2026-07-15 08:13:59.528558,t,t,2026-07-15 08:13:59.52884,0d4e7947d6cacf79
+2104,safety,CRITICAL,"Data stale: BTCUSDT (37m), ETHUSDT (35m), SOLUSDT (41m), XRPUSDT (30m), BNBUSDT (39m)",,,2026-07-15 08:18:59.659862,t,t,2026-07-15 08:18:59.660008,ea9d7a74419502d3
+2106,safety,CRITICAL,"Data stale: BTCUSDT (42m), ETHUSDT (40m), SOLUSDT (46m), XRPUSDT (35m), BNBUSDT (44m)",,,2026-07-15 08:23:59.777337,t,t,2026-07-15 08:23:59.777488,eb7b7026555928d1
+2108,safety,CRITICAL,"Data stale: BTCUSDT (47m), ETHUSDT (45m), SOLUSDT (51m), XRPUSDT (40m), BNBUSDT (49m)",,,2026-07-15 08:28:59.899858,t,t,2026-07-15 08:28:59.900044,69a8af7f999ad590
+2110,safety,CRITICAL,"Data stale: BTCUSDT (52m), ETHUSDT (50m), SOLUSDT (56m), XRPUSDT (45m), BNBUSDT (54m)",,,2026-07-15 08:34:00.024459,t,t,2026-07-15 08:34:00.02464,a6d91a489333f02a
+2112,safety,CRITICAL,"Data stale: BTCUSDT (57m), ETHUSDT (55m), SOLUSDT (61m), XRPUSDT (50m), BNBUSDT (59m)",,,2026-07-15 08:39:00.13729,t,t,2026-07-15 08:39:00.137491,46d9436069165787
+2114,safety,CRITICAL,"Data stale: BTCUSDT (62m), ETHUSDT (60m), SOLUSDT (66m), XRPUSDT (55m), BNBUSDT (64m)",,,2026-07-15 08:44:00.25309,t,t,2026-07-15 08:44:00.253278,fb5f716c1a6e9c11
+2116,safety,CRITICAL,"Data stale: BTCUSDT (67m), ETHUSDT (65m), SOLUSDT (71m), XRPUSDT (60m), BNBUSDT (69m)",,,2026-07-15 08:49:00.359357,t,t,2026-07-15 08:49:00.359547,2783516d8f03f56b
+2097,safety,CRITICAL,Data stale: SOLUSDT (21m),,,2026-07-15 07:58:58.609885,t,t,2026-07-15 07:58:58.610394,66b7b9995a56387d
+2119,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 08:59:00.555913,f,f,2026-07-15 08:59:00.5563,34f9543b954ce63c
+2121,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:04:00.677721,f,f,2026-07-15 09:04:00.678,3dbde5c617ac9af3
+2123,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:09:00.792628,f,f,2026-07-15 09:09:00.792998,9ffdf5c821362450
+2125,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:14:00.902983,f,f,2026-07-15 09:14:00.90326,0982991933ccce2b
+2127,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:19:01.011843,f,f,2026-07-15 09:19:01.012164,94bf6ce3652b567d
+2129,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:24:01.127698,f,f,2026-07-15 09:24:01.128084,f36817aedf717d77
+2131,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:29:01.243825,f,f,2026-07-15 09:29:01.244194,9f6161e85898809f
+2133,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:34:01.35168,f,f,2026-07-15 09:34:01.351913,482476939bb38c1e
+2135,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:39:01.4614,f,f,2026-07-15 09:39:01.461619,a91e719f5a57c305
+2137,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:44:01.583556,f,f,2026-07-15 09:44:01.584104,f333ddc1a1b2baab
+2139,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:49:01.694317,f,f,2026-07-15 09:49:01.694538,c194871e7e79ed50
+2118,safety,CRITICAL,"Data stale: BTCUSDT (72m), ETHUSDT (70m), SOLUSDT (76m), XRPUSDT (65m), BNBUSDT (74m)",,,2026-07-15 08:54:00.467826,t,t,2026-07-15 08:54:00.467969,280abe9ddb053c1f
+2141,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:54:01.806053,f,f,2026-07-15 09:54:01.80649,abef65bb9ca5f5b3
+2120,safety,CRITICAL,"Data stale: BTCUSDT (77m), ETHUSDT (75m), SOLUSDT (81m), XRPUSDT (70m), BNBUSDT (79m)",,,2026-07-15 08:59:00.585738,t,t,2026-07-15 08:59:00.585914,61a125b63983ad71
+2143,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 09:59:01.920387,f,f,2026-07-15 09:59:01.920836,cad9044af4e4c161
+2122,safety,CRITICAL,"Data stale: BTCUSDT (82m), ETHUSDT (80m), SOLUSDT (86m), XRPUSDT (75m), BNBUSDT (84m)",,,2026-07-15 09:04:00.705344,t,t,2026-07-15 09:04:00.705527,f03cee4b625cd646
+2145,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:04:02.043394,f,f,2026-07-15 10:04:02.043612,6f2ca071494a4456
+2124,safety,CRITICAL,"Data stale: BTCUSDT (87m), ETHUSDT (85m), SOLUSDT (91m), XRPUSDT (80m), BNBUSDT (89m)",,,2026-07-15 09:09:00.820187,t,t,2026-07-15 09:09:00.820419,18d4bdb488022f11
+2147,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:09:02.163502,f,f,2026-07-15 10:09:02.163946,a6fb4e1ff9b9306d
+2126,safety,CRITICAL,"Data stale: BTCUSDT (92m), ETHUSDT (90m), SOLUSDT (96m), XRPUSDT (85m), BNBUSDT (94m)",,,2026-07-15 09:14:00.929545,t,t,2026-07-15 09:14:00.929687,f73dd5ce3f57d278
+2149,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:14:02.276168,f,f,2026-07-15 10:14:02.276567,86e08e8f78c0a936
+2128,safety,CRITICAL,"Data stale: BTCUSDT (97m), ETHUSDT (95m), SOLUSDT (101m), XRPUSDT (90m), BNBUSDT (99m)",,,2026-07-15 09:19:01.039193,t,t,2026-07-15 09:19:01.039438,7f0e0c372c982ef6
+2151,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:19:02.395297,f,f,2026-07-15 10:19:02.395523,2a1b3a7bcaedf6b4
+2130,safety,CRITICAL,"Data stale: BTCUSDT (102m), ETHUSDT (100m), SOLUSDT (106m), XRPUSDT (95m), BNBUSDT (104m)",,,2026-07-15 09:24:01.156676,t,t,2026-07-15 09:24:01.156864,f104de81b0867f6b
+2153,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:24:02.51195,f,f,2026-07-15 10:24:02.512389,9a888e1f4c108994
+2132,safety,CRITICAL,"Data stale: BTCUSDT (107m), ETHUSDT (105m), SOLUSDT (111m), XRPUSDT (100m), BNBUSDT (109m)",,,2026-07-15 09:29:01.270519,t,t,2026-07-15 09:29:01.270704,cd9c682d9e616fd5
+2155,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:29:02.629599,f,f,2026-07-15 10:29:02.63002,85bc5d045353c1ff
+2134,safety,CRITICAL,"Data stale: BTCUSDT (112m), ETHUSDT (110m), SOLUSDT (116m), XRPUSDT (105m), BNBUSDT (114m)",,,2026-07-15 09:34:01.378315,t,t,2026-07-15 09:34:01.378509,8f6cf05cd20746aa
+2157,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:34:02.747599,f,f,2026-07-15 10:34:02.748026,4f214892c4524505
+2136,safety,CRITICAL,"Data stale: BTCUSDT (117m), ETHUSDT (115m), SOLUSDT (121m), XRPUSDT (110m), BNBUSDT (119m)",,,2026-07-15 09:39:01.489692,t,t,2026-07-15 09:39:01.489888,edae7fb9b70cdf9a
+2159,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:39:02.865083,f,f,2026-07-15 10:39:02.865346,1f46df1f35e7f120
+2138,safety,CRITICAL,"Data stale: BTCUSDT (122m), ETHUSDT (120m), SOLUSDT (126m), XRPUSDT (115m), BNBUSDT (124m)",,,2026-07-15 09:44:01.611615,t,t,2026-07-15 09:44:01.6118,91ca9a2ca012d8ad
+2161,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:44:02.979007,f,f,2026-07-15 10:44:02.979334,4a2e99c1a5f7a99e
+2142,safety,CRITICAL,"Data stale: BTCUSDT (132m), ETHUSDT (130m), SOLUSDT (136m), XRPUSDT (125m), BNBUSDT (134m)",,,2026-07-15 09:54:01.83356,t,t,2026-07-15 09:54:01.833745,24edcd0a6a780147
+2144,safety,CRITICAL,"Data stale: BTCUSDT (137m), ETHUSDT (135m), SOLUSDT (141m), XRPUSDT (130m), BNBUSDT (139m)",,,2026-07-15 09:59:01.95091,t,t,2026-07-15 09:59:01.951118,e5e27149c9e2ff35
+2146,safety,CRITICAL,"Data stale: BTCUSDT (142m), ETHUSDT (140m), SOLUSDT (146m), XRPUSDT (135m), BNBUSDT (144m)",,,2026-07-15 10:04:02.073165,t,t,2026-07-15 10:04:02.07334,ea7caf36826ecbeb
+2148,safety,CRITICAL,"Data stale: BTCUSDT (147m), ETHUSDT (145m), SOLUSDT (151m), XRPUSDT (140m), BNBUSDT (149m)",,,2026-07-15 10:09:02.192444,t,t,2026-07-15 10:09:02.192584,1b574b4450bcd32a
+2150,safety,CRITICAL,"Data stale: BTCUSDT (152m), ETHUSDT (150m), SOLUSDT (156m), XRPUSDT (145m), BNBUSDT (154m)",,,2026-07-15 10:14:02.304511,t,t,2026-07-15 10:14:02.304652,0053d306182f61e3
+2152,safety,CRITICAL,"Data stale: BTCUSDT (157m), ETHUSDT (155m), SOLUSDT (161m), XRPUSDT (150m), BNBUSDT (159m)",,,2026-07-15 10:19:02.423017,t,t,2026-07-15 10:19:02.423224,ca6a1ca2598b987e
+2154,safety,CRITICAL,"Data stale: BTCUSDT (162m), ETHUSDT (160m), SOLUSDT (166m), XRPUSDT (155m), BNBUSDT (164m)",,,2026-07-15 10:24:02.54018,t,t,2026-07-15 10:24:02.540367,2126cc8238d003df
+2156,safety,CRITICAL,"Data stale: BTCUSDT (167m), ETHUSDT (165m), SOLUSDT (171m), XRPUSDT (160m), BNBUSDT (169m)",,,2026-07-15 10:29:02.658435,t,t,2026-07-15 10:29:02.658571,52209e247fe6ced3
+2158,safety,CRITICAL,"Data stale: BTCUSDT (172m), ETHUSDT (170m), SOLUSDT (176m), XRPUSDT (165m), BNBUSDT (174m)",,,2026-07-15 10:34:02.776328,t,t,2026-07-15 10:34:02.776465,fb363067e9800eef
+2160,safety,CRITICAL,"Data stale: BTCUSDT (177m), ETHUSDT (175m), SOLUSDT (181m), XRPUSDT (170m), BNBUSDT (179m)",,,2026-07-15 10:39:02.8922,t,t,2026-07-15 10:39:02.89243,1657b954b79ad27b
+2140,safety,CRITICAL,"Data stale: BTCUSDT (127m), ETHUSDT (125m), SOLUSDT (131m), XRPUSDT (120m), BNBUSDT (129m)",,,2026-07-15 09:49:01.721604,t,t,2026-07-15 09:49:01.721815,f8545de09feb09bb
+2163,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:49:03.104675,f,f,2026-07-15 10:49:03.104907,10172f5d5d013563
+2165,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:54:03.230515,f,f,2026-07-15 10:54:03.230887,1acdf220529292fb
+2167,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 10:59:03.349972,f,f,2026-07-15 10:59:03.350344,d555988c966363cf
+2169,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:04:03.464625,f,f,2026-07-15 11:04:03.464891,1a32a666aa4c330a
+2171,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:09:03.577701,f,f,2026-07-15 11:09:03.577931,e9cebe3a10d25566
+2173,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:14:03.697924,f,f,2026-07-15 11:14:03.69835,60eeb3e31e6fee36
+2175,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:19:03.816808,f,f,2026-07-15 11:19:03.817154,5ee450a587789fe0
+2177,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:24:03.938967,f,f,2026-07-15 11:24:03.939352,659b13106ac33bab
+2179,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:29:04.055451,f,f,2026-07-15 11:29:04.055898,7cc08bb5eedb73cb
+2181,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:34:04.169598,f,f,2026-07-15 11:34:04.169967,6174dead5b5d88ec
+2183,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:39:04.289925,f,f,2026-07-15 11:39:04.290349,13fbbb8cd293bb3d
+2162,safety,CRITICAL,"Data stale: BTCUSDT (182m), ETHUSDT (180m), SOLUSDT (186m), XRPUSDT (175m), BNBUSDT (184m)",,,2026-07-15 10:44:03.011107,t,t,2026-07-15 10:44:03.011268,2c30d0672646674e
+2185,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:44:04.411726,f,f,2026-07-15 11:44:04.412076,78addff5abce3e4c
+2164,safety,CRITICAL,"Data stale: BTCUSDT (187m), ETHUSDT (185m), SOLUSDT (191m), XRPUSDT (180m), BNBUSDT (189m)",,,2026-07-15 10:49:03.13507,t,t,2026-07-15 10:49:03.135226,aef51964bac57335
+2187,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:49:04.536931,f,f,2026-07-15 11:49:04.537355,b3095c482828e79b
+2166,safety,CRITICAL,"Data stale: BTCUSDT (192m), ETHUSDT (190m), SOLUSDT (196m), XRPUSDT (185m), BNBUSDT (194m)",,,2026-07-15 10:54:03.259402,t,t,2026-07-15 10:54:03.259541,9139f02e79c95126
+2189,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:54:04.654876,f,f,2026-07-15 11:54:04.655106,30d487d35e1d82d4
+2168,safety,CRITICAL,"Data stale: BTCUSDT (197m), ETHUSDT (195m), SOLUSDT (201m), XRPUSDT (190m), BNBUSDT (199m)",,,2026-07-15 10:59:03.378067,t,t,2026-07-15 10:59:03.37827,405a05bfa403c554
+2191,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 11:59:04.767623,f,f,2026-07-15 11:59:04.767993,b6a37e7f536d4405
+2170,safety,CRITICAL,"Data stale: BTCUSDT (202m), ETHUSDT (200m), SOLUSDT (206m), XRPUSDT (195m), BNBUSDT (204m)",,,2026-07-15 11:04:03.493538,t,t,2026-07-15 11:04:03.493749,2f9fa63745177fe2
+2193,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:04:04.912813,f,f,2026-07-15 12:04:04.91315,6a67b7deb7fb54e3
+2172,safety,CRITICAL,"Data stale: BTCUSDT (207m), ETHUSDT (205m), SOLUSDT (211m), XRPUSDT (200m), BNBUSDT (209m)",,,2026-07-15 11:09:03.607318,t,t,2026-07-15 11:09:03.607468,2d7327e79cbc980f
+2195,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:09:05.0578,f,f,2026-07-15 12:09:05.058131,d22a031d9e95d75c
+2174,safety,CRITICAL,"Data stale: BTCUSDT (212m), ETHUSDT (210m), SOLUSDT (216m), XRPUSDT (205m), BNBUSDT (214m)",,,2026-07-15 11:14:03.729214,t,t,2026-07-15 11:14:03.729437,6ae003f212f02485
+2197,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:14:05.174587,f,f,2026-07-15 12:14:05.174963,886bc6b217ebb352
+2176,safety,CRITICAL,"Data stale: BTCUSDT (217m), ETHUSDT (215m), SOLUSDT (221m), XRPUSDT (210m), BNBUSDT (219m)",,,2026-07-15 11:19:03.846603,t,t,2026-07-15 11:19:03.846745,48aead6bf5060646
+2199,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:19:05.297346,f,f,2026-07-15 12:19:05.297565,c807dfbb6e5a8afa
+2178,safety,CRITICAL,"Data stale: BTCUSDT (222m), ETHUSDT (220m), SOLUSDT (226m), XRPUSDT (215m), BNBUSDT (224m)",,,2026-07-15 11:24:03.967911,t,t,2026-07-15 11:24:03.968051,244cdd22f62606c4
+2201,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:24:05.414081,f,f,2026-07-15 12:24:05.414487,812a7cc34a53fc2a
+2180,safety,CRITICAL,"Data stale: BTCUSDT (227m), ETHUSDT (225m), SOLUSDT (231m), XRPUSDT (220m), BNBUSDT (229m)",,,2026-07-15 11:29:04.08309,t,t,2026-07-15 11:29:04.083257,fe5f928629e430e3
+2203,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:29:05.530589,f,f,2026-07-15 12:29:05.531013,7ca67c286b6b9e2a
+2184,safety,CRITICAL,"Data stale: BTCUSDT (237m), ETHUSDT (235m), SOLUSDT (241m), XRPUSDT (230m), BNBUSDT (239m)",,,2026-07-15 11:39:04.318552,t,t,2026-07-15 11:39:04.318735,bedcf50abb20bee7
+2186,safety,CRITICAL,"Data stale: BTCUSDT (242m), ETHUSDT (240m), SOLUSDT (246m), XRPUSDT (235m), BNBUSDT (244m)",,,2026-07-15 11:44:04.443367,t,t,2026-07-15 11:44:04.443557,f27a5aca33cfb5ff
+2188,safety,CRITICAL,"Data stale: BTCUSDT (247m), ETHUSDT (245m), SOLUSDT (251m), XRPUSDT (240m), BNBUSDT (249m)",,,2026-07-15 11:49:04.566051,t,t,2026-07-15 11:49:04.566192,0bf0657681d5e91a
+2190,safety,CRITICAL,"Data stale: BTCUSDT (252m), ETHUSDT (250m), SOLUSDT (256m), XRPUSDT (245m), BNBUSDT (254m)",,,2026-07-15 11:54:04.681659,t,t,2026-07-15 11:54:04.681803,8cda3be1663ca779
+2192,safety,CRITICAL,"Data stale: BTCUSDT (257m), ETHUSDT (255m), SOLUSDT (261m), XRPUSDT (250m), BNBUSDT (259m)",,,2026-07-15 11:59:04.801426,t,t,2026-07-15 11:59:04.801567,fd00b84e783a395c
+2194,safety,CRITICAL,"Data stale: BTCUSDT (262m), ETHUSDT (260m), SOLUSDT (266m), XRPUSDT (255m), BNBUSDT (264m)",,,2026-07-15 12:04:04.954294,t,t,2026-07-15 12:04:04.95445,c7bc7ce457d30015
+2196,safety,CRITICAL,"Data stale: BTCUSDT (267m), ETHUSDT (265m), SOLUSDT (271m), XRPUSDT (260m), BNBUSDT (269m)",,,2026-07-15 12:09:05.086172,t,t,2026-07-15 12:09:05.086403,e9e852cd471ed268
+2198,safety,CRITICAL,"Data stale: BTCUSDT (272m), ETHUSDT (270m), SOLUSDT (276m), XRPUSDT (265m), BNBUSDT (274m)",,,2026-07-15 12:14:05.205544,t,t,2026-07-15 12:14:05.205731,5563e6f9e5297933
+2200,safety,CRITICAL,"Data stale: BTCUSDT (277m), ETHUSDT (275m), SOLUSDT (281m), XRPUSDT (270m), BNBUSDT (279m)",,,2026-07-15 12:19:05.325945,t,t,2026-07-15 12:19:05.326123,6322e727925c3737
+2202,safety,CRITICAL,"Data stale: BTCUSDT (282m), ETHUSDT (280m), SOLUSDT (286m), XRPUSDT (275m), BNBUSDT (284m)",,,2026-07-15 12:24:05.442348,t,t,2026-07-15 12:24:05.442874,041f7c6faa38773c
+2204,safety,CRITICAL,"Data stale: BTCUSDT (287m), ETHUSDT (285m), SOLUSDT (291m), XRPUSDT (280m), BNBUSDT (289m)",,,2026-07-15 12:29:05.55978,t,t,2026-07-15 12:29:05.559972,5fdb8ef017ff92cd
+2182,safety,CRITICAL,"Data stale: BTCUSDT (232m), ETHUSDT (230m), SOLUSDT (236m), XRPUSDT (225m), BNBUSDT (234m)",,,2026-07-15 11:34:04.199073,t,t,2026-07-15 11:34:04.199258,e1aee0305ea1cd6a
+2205,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:34:05.645704,f,f,2026-07-15 12:34:05.645936,f220d81be97e61ea
+2207,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:39:05.754302,f,f,2026-07-15 12:39:05.755045,6ffd2fbf10f6c6ab
+2209,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:44:05.869785,f,f,2026-07-15 12:44:05.8701,33698482e31a8c6c
+2211,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:49:05.995865,f,f,2026-07-15 12:49:05.996175,aa85d4dff1410287
+2213,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:54:06.112162,f,f,2026-07-15 12:54:06.112462,8f18edd9a59691be
+2215,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 12:59:06.223701,f,f,2026-07-15 12:59:06.22398,4190fb4646b7bed9
+2217,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:04:06.334639,f,f,2026-07-15 13:04:06.334872,ecf1b1698a96f626
+2219,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:09:06.451051,f,f,2026-07-15 13:09:06.451417,aa00253539d75014
+2221,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:14:06.571071,f,f,2026-07-15 13:14:06.571444,992b2e007fd2a39e
+2223,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:19:06.692787,f,f,2026-07-15 13:19:06.693182,4b41b15c6bf888b1
+2225,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:24:06.815837,f,f,2026-07-15 13:24:06.816145,be1793486ddf7fb2
+2227,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:29:06.92683,f,f,2026-07-15 13:29:06.927108,6607f3e3553b64a9
+2206,safety,CRITICAL,"Data stale: BTCUSDT (292m), ETHUSDT (290m), SOLUSDT (296m), XRPUSDT (285m), BNBUSDT (294m)",,,2026-07-15 12:34:05.671684,t,t,2026-07-15 12:34:05.671827,b6f6f9d3a1bc0eb7
+2229,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:34:07.047259,f,f,2026-07-15 13:34:07.04767,e14da12c254a7e85
+2208,safety,CRITICAL,"Data stale: BTCUSDT (297m), ETHUSDT (295m), SOLUSDT (301m), XRPUSDT (290m), BNBUSDT (299m)",,,2026-07-15 12:39:05.782435,t,t,2026-07-15 12:39:05.78262,f6d0bc1d1f8d4d91
+2231,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:39:07.173101,f,f,2026-07-15 13:39:07.1734,474062ab041f4525
+2210,safety,CRITICAL,"Data stale: BTCUSDT (302m), ETHUSDT (300m), SOLUSDT (306m), XRPUSDT (295m), BNBUSDT (304m)",,,2026-07-15 12:44:05.899141,t,t,2026-07-15 12:44:05.899339,57b0dea8f8b74879
+2233,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:44:07.289825,f,f,2026-07-15 13:44:07.290056,bb4e1709ab947df6
+2212,safety,CRITICAL,"Data stale: BTCUSDT (307m), ETHUSDT (305m), SOLUSDT (311m), XRPUSDT (300m), BNBUSDT (309m)",,,2026-07-15 12:49:06.024242,t,t,2026-07-15 12:49:06.024441,e0c33b746817d6e5
+2235,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:49:07.402451,f,f,2026-07-15 13:49:07.4029,30313cb33137295c
+2214,safety,CRITICAL,"Data stale: BTCUSDT (312m), ETHUSDT (310m), SOLUSDT (316m), XRPUSDT (305m), BNBUSDT (314m)",,,2026-07-15 12:54:06.139849,t,t,2026-07-15 12:54:06.139992,273524408b1108c2
+2237,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:54:07.526594,f,f,2026-07-15 13:54:07.52694,b6686a2e16d7dca0
+2216,safety,CRITICAL,"Data stale: BTCUSDT (317m), ETHUSDT (315m), SOLUSDT (321m), XRPUSDT (310m), BNBUSDT (319m)",,,2026-07-15 12:59:06.251317,t,t,2026-07-15 12:59:06.251458,ff7745dabbbff833
+2239,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 13:59:07.635437,f,f,2026-07-15 13:59:07.635835,25e79d1443ea764f
+2218,safety,CRITICAL,"Data stale: BTCUSDT (322m), ETHUSDT (320m), SOLUSDT (326m), XRPUSDT (315m), BNBUSDT (324m)",,,2026-07-15 13:04:06.363392,t,t,2026-07-15 13:04:06.363533,6c59cd027f8295e3
+2241,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:04:07.754449,f,f,2026-07-15 14:04:07.754695,c4a2830d8d95212d
+2220,safety,CRITICAL,"Data stale: BTCUSDT (327m), ETHUSDT (325m), SOLUSDT (331m), XRPUSDT (320m), BNBUSDT (329m)",,,2026-07-15 13:09:06.479902,t,t,2026-07-15 13:09:06.480094,e8eee9769f10bcf6
+2243,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:09:07.895039,f,f,2026-07-15 14:09:07.895308,bba6da9d53ec32f8
+2222,safety,CRITICAL,"Data stale: BTCUSDT (332m), ETHUSDT (330m), SOLUSDT (336m), XRPUSDT (325m), BNBUSDT (334m)",,,2026-07-15 13:14:06.600328,t,t,2026-07-15 13:14:06.600469,46498f6e29a64e39
+2245,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:14:08.018714,f,f,2026-07-15 14:14:08.018945,0b52c1281c9a280e
+2224,safety,CRITICAL,"Data stale: BTCUSDT (337m), ETHUSDT (335m), SOLUSDT (341m), XRPUSDT (330m), BNBUSDT (339m)",,,2026-07-15 13:19:06.721775,t,t,2026-07-15 13:19:06.721964,ce664b26968a86eb
+2247,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:19:08.135869,f,f,2026-07-15 14:19:08.13622,c1351181a918fd86
+2228,safety,CRITICAL,"Data stale: BTCUSDT (347m), ETHUSDT (345m), SOLUSDT (351m), XRPUSDT (340m), BNBUSDT (349m)",,,2026-07-15 13:29:06.957912,t,t,2026-07-15 13:29:06.958054,2e4301aaa4c8a528
+2230,safety,CRITICAL,"Data stale: BTCUSDT (352m), ETHUSDT (350m), SOLUSDT (356m), XRPUSDT (345m), BNBUSDT (354m)",,,2026-07-15 13:34:07.078883,t,t,2026-07-15 13:34:07.079054,72247e6795290137
+2232,safety,CRITICAL,"Data stale: BTCUSDT (357m), ETHUSDT (355m), SOLUSDT (361m), XRPUSDT (350m), BNBUSDT (359m)",,,2026-07-15 13:39:07.202485,t,t,2026-07-15 13:39:07.202625,6aa8161379a82ab2
+2236,safety,CRITICAL,"Data stale: BTCUSDT (367m), ETHUSDT (365m), SOLUSDT (371m), XRPUSDT (360m), BNBUSDT (369m)",,,2026-07-15 13:49:07.431903,t,t,2026-07-15 13:49:07.432073,7174d4b82111f36a
+2238,safety,CRITICAL,"Data stale: BTCUSDT (372m), ETHUSDT (370m), SOLUSDT (376m), XRPUSDT (365m), BNBUSDT (374m)",,,2026-07-15 13:54:07.553249,t,t,2026-07-15 13:54:07.553405,1daf5bc5dfb25787
+2240,safety,CRITICAL,"Data stale: BTCUSDT (377m), ETHUSDT (375m), SOLUSDT (381m), XRPUSDT (370m), BNBUSDT (379m)",,,2026-07-15 13:59:07.663618,t,t,2026-07-15 13:59:07.663761,c6757169eafb550a
+2242,safety,CRITICAL,"Data stale: BTCUSDT (382m), ETHUSDT (380m), SOLUSDT (386m), XRPUSDT (375m), BNBUSDT (384m)",,,2026-07-15 14:04:07.785754,t,t,2026-07-15 14:04:07.785911,91b1cebadef6002b
+2244,safety,CRITICAL,"Data stale: BTCUSDT (387m), ETHUSDT (385m), SOLUSDT (391m), XRPUSDT (380m), BNBUSDT (389m)",,,2026-07-15 14:09:07.924739,t,t,2026-07-15 14:09:07.924943,5d3a0a57607894c3
+2246,safety,CRITICAL,"Data stale: BTCUSDT (392m), ETHUSDT (390m), SOLUSDT (396m), XRPUSDT (385m), BNBUSDT (394m)",,,2026-07-15 14:14:08.047024,t,t,2026-07-15 14:14:08.047168,2b48fe050e064980
+2248,safety,CRITICAL,"Data stale: BTCUSDT (397m), ETHUSDT (395m), SOLUSDT (401m), XRPUSDT (390m), BNBUSDT (399m)",,,2026-07-15 14:19:08.165124,t,t,2026-07-15 14:19:08.165305,ee238dafd94646aa
+2226,safety,CRITICAL,"Data stale: BTCUSDT (342m), ETHUSDT (340m), SOLUSDT (346m), XRPUSDT (335m), BNBUSDT (344m)",,,2026-07-15 13:24:06.842799,t,t,2026-07-15 13:24:06.842984,a8e2dfc557e1bc36
+2249,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:24:08.254596,f,f,2026-07-15 14:24:08.254826,27de6037e44619d5
+2251,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:29:08.364297,f,f,2026-07-15 14:29:08.364531,ee992c4aeb9aecd6
+2253,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:34:08.482871,f,f,2026-07-15 14:34:08.483163,22bcc933486053a9
+2255,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:39:08.596681,f,f,2026-07-15 14:39:08.596918,eaa82ba17d27c511
+2234,safety,CRITICAL,"Data stale: BTCUSDT (362m), ETHUSDT (360m), SOLUSDT (366m), XRPUSDT (355m), BNBUSDT (364m)",,,2026-07-15 13:44:07.316633,t,t,2026-07-15 13:44:07.316824,711fbcd199f8156b
+2257,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:44:08.7103,f,f,2026-07-15 14:44:08.710753,c219a3a4b2c51327
+2259,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:49:08.826786,f,f,2026-07-15 14:49:08.82702,da313527e11d3129
+2261,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:54:08.936718,f,f,2026-07-15 14:54:08.937104,18d418c42768ac8f
+2263,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 14:59:09.054664,f,f,2026-07-15 14:59:09.055103,d4243f19a8c33874
+2265,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:04:09.185471,f,f,2026-07-15 15:04:09.185998,3352261f10269190
+2267,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:09:09.3076,f,f,2026-07-15 15:09:09.307983,b877db461619407a
+2269,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:14:09.425116,f,f,2026-07-15 15:14:09.425522,08ab146d594def0d
+2271,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:19:09.544515,f,f,2026-07-15 15:19:09.544929,c4f8e2089299427d
+2250,safety,CRITICAL,"Data stale: BTCUSDT (402m), ETHUSDT (400m), SOLUSDT (406m), XRPUSDT (395m), BNBUSDT (404m)",,,2026-07-15 14:24:08.280787,t,t,2026-07-15 14:24:08.280928,8e39dbd4aa0c3a72
+2273,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:24:09.653195,f,f,2026-07-15 15:24:09.653665,dc22fd478435424a
+2252,safety,CRITICAL,"Data stale: BTCUSDT (407m), ETHUSDT (405m), SOLUSDT (411m), XRPUSDT (400m), BNBUSDT (409m)",,,2026-07-15 14:29:08.392835,t,t,2026-07-15 14:29:08.392979,3ef98e0034b548c5
+2275,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:29:09.77282,f,f,2026-07-15 15:29:09.77313,703be8244d5b4e81
+2254,safety,CRITICAL,"Data stale: BTCUSDT (412m), ETHUSDT (410m), SOLUSDT (416m), XRPUSDT (405m), BNBUSDT (414m)",,,2026-07-15 14:34:08.511528,t,t,2026-07-15 14:34:08.511701,14dd530fb520fee1
+2277,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:34:09.892297,f,f,2026-07-15 15:34:09.892519,25f875a46c027ca4
+2256,safety,CRITICAL,"Data stale: BTCUSDT (417m), ETHUSDT (415m), SOLUSDT (421m), XRPUSDT (410m), BNBUSDT (419m)",,,2026-07-15 14:39:08.62314,t,t,2026-07-15 14:39:08.623335,74e82a4dd363b947
+2279,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:39:10.007186,f,f,2026-07-15 15:39:10.007531,05db24125e3d1edb
+2258,safety,CRITICAL,"Data stale: BTCUSDT (422m), ETHUSDT (420m), SOLUSDT (426m), XRPUSDT (415m), BNBUSDT (424m)",,,2026-07-15 14:44:08.739437,t,t,2026-07-15 14:44:08.739619,6b67fd56eff43092
+2281,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:44:10.127136,f,f,2026-07-15 15:44:10.127499,6770c79b4f9f8cca
+2260,safety,CRITICAL,"Data stale: BTCUSDT (427m), ETHUSDT (425m), SOLUSDT (431m), XRPUSDT (420m), BNBUSDT (429m)",,,2026-07-15 14:49:08.853391,t,t,2026-07-15 14:49:08.853559,89a9399044bf8e8e
+2283,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:49:10.245905,f,f,2026-07-15 15:49:10.246198,c2d1f09b099bb0a6
+2262,safety,CRITICAL,"Data stale: BTCUSDT (432m), ETHUSDT (430m), SOLUSDT (436m), XRPUSDT (425m), BNBUSDT (434m)",,,2026-07-15 14:54:08.965358,t,t,2026-07-15 14:54:08.965552,a248d784b4b35c11
+2285,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:54:10.362561,f,f,2026-07-15 15:54:10.362791,328797ada79c756d
+2264,safety,CRITICAL,"Data stale: BTCUSDT (437m), ETHUSDT (435m), SOLUSDT (441m), XRPUSDT (430m), BNBUSDT (439m)",,,2026-07-15 14:59:09.084853,t,t,2026-07-15 14:59:09.085037,c647d5c575933f68
+2287,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 15:59:10.483947,f,f,2026-07-15 15:59:10.484353,b4760e2412bc9c90
+2266,safety,CRITICAL,"Data stale: BTCUSDT (442m), ETHUSDT (440m), SOLUSDT (446m), XRPUSDT (435m), BNBUSDT (444m)",,,2026-07-15 15:04:09.215106,t,t,2026-07-15 15:04:09.215291,b95d66b0548560ab
+2289,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:04:10.597176,f,f,2026-07-15 16:04:10.597512,65d3c85a7d824cff
+2270,safety,CRITICAL,"Data stale: BTCUSDT (452m), ETHUSDT (450m), SOLUSDT (456m), XRPUSDT (445m), BNBUSDT (454m)",,,2026-07-15 15:14:09.457099,t,t,2026-07-15 15:14:09.457326,34b3ea62121551e0
+2272,safety,CRITICAL,"Data stale: BTCUSDT (457m), ETHUSDT (455m), SOLUSDT (461m), XRPUSDT (450m), BNBUSDT (459m)",,,2026-07-15 15:19:09.571441,t,t,2026-07-15 15:19:09.571585,cad4fc7082e5c90e
+2274,safety,CRITICAL,"Data stale: BTCUSDT (462m), ETHUSDT (460m), SOLUSDT (466m), XRPUSDT (455m), BNBUSDT (464m)",,,2026-07-15 15:24:09.681961,t,t,2026-07-15 15:24:09.682118,58785cb690f4ff7f
+2276,safety,CRITICAL,"Data stale: BTCUSDT (467m), ETHUSDT (465m), SOLUSDT (471m), XRPUSDT (460m), BNBUSDT (469m)",,,2026-07-15 15:29:09.802955,t,t,2026-07-15 15:29:09.803096,02fc2d5271bc1341
+2278,safety,CRITICAL,"Data stale: BTCUSDT (472m), ETHUSDT (470m), SOLUSDT (476m), XRPUSDT (465m), BNBUSDT (474m)",,,2026-07-15 15:34:09.92039,t,t,2026-07-15 15:34:09.920531,e26181b87dea6751
+2280,safety,CRITICAL,"Data stale: BTCUSDT (477m), ETHUSDT (475m), SOLUSDT (481m), XRPUSDT (470m), BNBUSDT (479m)",,,2026-07-15 15:39:10.037868,t,t,2026-07-15 15:39:10.038042,e46b3ca552836e75
+2282,safety,CRITICAL,"Data stale: BTCUSDT (482m), ETHUSDT (480m), SOLUSDT (486m), XRPUSDT (475m), BNBUSDT (484m)",,,2026-07-15 15:44:10.15591,t,t,2026-07-15 15:44:10.156082,eaafbdfe031e1e91
+2284,safety,CRITICAL,"Data stale: BTCUSDT (487m), ETHUSDT (485m), SOLUSDT (491m), XRPUSDT (480m), BNBUSDT (489m)",,,2026-07-15 15:49:10.274725,t,t,2026-07-15 15:49:10.274908,bf73b75344e6a022
+2286,safety,CRITICAL,"Data stale: BTCUSDT (492m), ETHUSDT (490m), SOLUSDT (496m), XRPUSDT (485m), BNBUSDT (494m)",,,2026-07-15 15:54:10.390711,t,t,2026-07-15 15:54:10.390855,bbded4cc27078e3d
+2288,safety,CRITICAL,"Data stale: BTCUSDT (497m), ETHUSDT (495m), SOLUSDT (501m), XRPUSDT (490m), BNBUSDT (499m)",,,2026-07-15 15:59:10.511263,t,t,2026-07-15 15:59:10.51145,6276abd4a06cde9d
+2290,safety,CRITICAL,"Data stale: BTCUSDT (502m), ETHUSDT (500m), SOLUSDT (506m), XRPUSDT (495m), BNBUSDT (504m)",,,2026-07-15 16:04:10.624379,t,t,2026-07-15 16:04:10.624583,12fcb04802866a7c
+2268,safety,CRITICAL,"Data stale: BTCUSDT (447m), ETHUSDT (445m), SOLUSDT (451m), XRPUSDT (440m), BNBUSDT (449m)",,,2026-07-15 15:09:09.336771,t,t,2026-07-15 15:09:09.336943,94f0bdd92b51ec26
+2291,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:09:10.707505,f,f,2026-07-15 16:09:10.707763,66394f463dbcb4b8
+2293,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:14:10.824946,f,f,2026-07-15 16:14:10.825369,8f90185b433e3052
+2295,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:19:10.939916,f,f,2026-07-15 16:19:10.940144,97b346d4426f9392
+2297,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:24:11.051248,f,f,2026-07-15 16:24:11.051485,f937d9606d55a20d
+2299,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:29:11.173709,f,f,2026-07-15 16:29:11.174131,2fb693859feaaa2b
+2301,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:34:11.293475,f,f,2026-07-15 16:34:11.293697,7eba513954b3c8b2
+2303,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:39:11.403983,f,f,2026-07-15 16:39:11.404391,2e321e985d166cd7
+2305,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:44:11.519668,f,f,2026-07-15 16:44:11.520053,e39d58c4c9014aab
+2307,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:49:11.63646,f,f,2026-07-15 16:49:11.63668,6236883d4c5f9319
+2309,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:54:11.757138,f,f,2026-07-15 16:54:11.757417,9dbea3514905f94f
+2311,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 16:59:11.875046,f,f,2026-07-15 16:59:11.875401,d0eb0852c515c2f8
+2313,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:04:11.986296,f,f,2026-07-15 17:04:11.987142,3f2b1b15a3765b3f
+2292,safety,CRITICAL,"Data stale: BTCUSDT (507m), ETHUSDT (505m), SOLUSDT (511m), XRPUSDT (500m), BNBUSDT (509m)",,,2026-07-15 16:09:10.735465,t,t,2026-07-15 16:09:10.735618,390b5d93787e022e
+2315,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:09:12.104055,f,f,2026-07-15 17:09:12.104325,c048f4ea7e38cef5
+2294,safety,CRITICAL,"Data stale: BTCUSDT (512m), ETHUSDT (510m), SOLUSDT (516m), XRPUSDT (505m), BNBUSDT (514m)",,,2026-07-15 16:14:10.853341,t,t,2026-07-15 16:14:10.853522,392232997f2a73d4
+2317,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:14:12.225897,f,f,2026-07-15 17:14:12.226137,72dcb0be064bbfdc
+2296,safety,CRITICAL,"Data stale: BTCUSDT (517m), ETHUSDT (515m), SOLUSDT (521m), XRPUSDT (510m), BNBUSDT (519m)",,,2026-07-15 16:19:10.966586,t,t,2026-07-15 16:19:10.966726,e5f89936825a1889
+2319,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:19:12.341241,f,f,2026-07-15 17:19:12.341692,8350571343a97bdd
+2298,safety,CRITICAL,"Data stale: BTCUSDT (522m), ETHUSDT (520m), SOLUSDT (526m), XRPUSDT (515m), BNBUSDT (524m)",,,2026-07-15 16:24:11.081031,t,t,2026-07-15 16:24:11.081167,b20f5c5ba2f96e48
+2321,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:24:12.457851,f,f,2026-07-15 17:24:12.458194,97a4eb1b7a13675a
+2300,safety,CRITICAL,"Data stale: BTCUSDT (527m), ETHUSDT (525m), SOLUSDT (531m), XRPUSDT (520m), BNBUSDT (529m)",,,2026-07-15 16:29:11.203614,t,t,2026-07-15 16:29:11.203797,8a30bbd9c1eeeaed
+2323,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:29:12.579779,f,f,2026-07-15 17:29:12.580084,d84fdb1f625b9f44
+2302,safety,CRITICAL,"Data stale: BTCUSDT (532m), ETHUSDT (530m), SOLUSDT (536m), XRPUSDT (525m), BNBUSDT (534m)",,,2026-07-15 16:34:11.319949,t,t,2026-07-15 16:34:11.320091,4086bc20b711b980
+2325,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:34:12.695638,f,f,2026-07-15 17:34:12.695908,9dffcefc9932fe51
+2304,safety,CRITICAL,"Data stale: BTCUSDT (537m), ETHUSDT (535m), SOLUSDT (541m), XRPUSDT (530m), BNBUSDT (539m)",,,2026-07-15 16:39:11.432848,t,t,2026-07-15 16:39:11.433039,5a82c9d8744e307d
+2327,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:39:12.806301,f,f,2026-07-15 17:39:12.806521,ea9080f1d79cc4d9
+2306,safety,CRITICAL,"Data stale: BTCUSDT (542m), ETHUSDT (540m), SOLUSDT (546m), XRPUSDT (535m), BNBUSDT (544m)",,,2026-07-15 16:44:11.547779,t,t,2026-07-15 16:44:11.547947,b1f08e9f11002b2c
+2329,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:44:12.92367,f,f,2026-07-15 17:44:12.9239,17dc9254a31f1c51
+2308,safety,CRITICAL,"Data stale: BTCUSDT (547m), ETHUSDT (545m), SOLUSDT (551m), XRPUSDT (540m), BNBUSDT (549m)",,,2026-07-15 16:49:11.66507,t,t,2026-07-15 16:49:11.665246,445e651418726082
+2331,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:49:13.040789,f,f,2026-07-15 17:49:13.041128,321b7ef5d6e8b3d1
+2310,safety,CRITICAL,"Data stale: BTCUSDT (552m), ETHUSDT (550m), SOLUSDT (556m), XRPUSDT (545m), BNBUSDT (554m)",,,2026-07-15 16:54:11.78635,t,t,2026-07-15 16:54:11.786532,ced9c5701ac0d38b
+2333,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:54:13.155633,f,f,2026-07-15 17:54:13.155855,fd61ae08890f3a25
+2314,safety,CRITICAL,"Data stale: BTCUSDT (562m), ETHUSDT (560m), SOLUSDT (566m), XRPUSDT (555m), BNBUSDT (564m)",,,2026-07-15 17:04:12.015301,t,t,2026-07-15 17:04:12.01544,148e3ffa1ab8a90c
+2316,safety,CRITICAL,"Data stale: BTCUSDT (567m), ETHUSDT (565m), SOLUSDT (571m), XRPUSDT (560m), BNBUSDT (569m)",,,2026-07-15 17:09:12.133845,t,t,2026-07-15 17:09:12.134027,d39707b6b4779e68
+2318,safety,CRITICAL,"Data stale: BTCUSDT (572m), ETHUSDT (570m), SOLUSDT (576m), XRPUSDT (565m), BNBUSDT (574m)",,,2026-07-15 17:14:12.253851,t,t,2026-07-15 17:14:12.254025,734377ece7dabbdb
+2322,safety,CRITICAL,"Data stale: BTCUSDT (582m), ETHUSDT (580m), SOLUSDT (586m), XRPUSDT (575m), BNBUSDT (584m)",,,2026-07-15 17:24:12.488822,t,t,2026-07-15 17:24:12.488983,744b29c5c7811d84
+2324,safety,CRITICAL,"Data stale: BTCUSDT (587m), ETHUSDT (585m), SOLUSDT (591m), XRPUSDT (580m), BNBUSDT (589m)",,,2026-07-15 17:29:12.607818,t,t,2026-07-15 17:29:12.608012,db4098d308ec49c3
+2326,safety,CRITICAL,"Data stale: BTCUSDT (592m), ETHUSDT (590m), SOLUSDT (596m), XRPUSDT (585m), BNBUSDT (594m)",,,2026-07-15 17:34:12.722375,t,t,2026-07-15 17:34:12.722555,00d6c33d7034ad64
+2328,safety,CRITICAL,"Data stale: BTCUSDT (597m), ETHUSDT (595m), SOLUSDT (601m), XRPUSDT (590m), BNBUSDT (599m)",,,2026-07-15 17:39:12.834565,t,t,2026-07-15 17:39:12.834753,45a21c35eda29725
+2330,safety,CRITICAL,"Data stale: BTCUSDT (602m), ETHUSDT (600m), SOLUSDT (606m), XRPUSDT (595m), BNBUSDT (604m)",,,2026-07-15 17:44:12.951165,t,t,2026-07-15 17:44:12.951363,b5baa0409f072d2d
+2332,safety,CRITICAL,"Data stale: BTCUSDT (607m), ETHUSDT (605m), SOLUSDT (611m), XRPUSDT (600m), BNBUSDT (609m)",,,2026-07-15 17:49:13.070912,t,t,2026-07-15 17:49:13.071069,6ab06e85e0a23a00
+2334,safety,CRITICAL,"Data stale: BTCUSDT (612m), ETHUSDT (610m), SOLUSDT (616m), XRPUSDT (605m), BNBUSDT (614m)",,,2026-07-15 17:54:13.183347,t,t,2026-07-15 17:54:13.183529,a492165db07304b5
+2312,safety,CRITICAL,"Data stale: BTCUSDT (557m), ETHUSDT (555m), SOLUSDT (561m), XRPUSDT (550m), BNBUSDT (559m)",,,2026-07-15 16:59:11.901789,t,t,2026-07-15 16:59:11.901975,89fee64187c2fb71
+2335,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 17:59:13.274103,f,f,2026-07-15 17:59:13.274522,b9e40556bb7ea5aa
+2337,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:04:13.39065,f,f,2026-07-15 18:04:13.390886,9dd9411ec666a631
+2339,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:09:13.508933,f,f,2026-07-15 18:09:13.509351,49eba1aa59dea70d
+2341,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:14:13.626453,f,f,2026-07-15 18:14:13.626805,97bfe333853f1f25
+2320,safety,CRITICAL,"Data stale: BTCUSDT (577m), ETHUSDT (575m), SOLUSDT (581m), XRPUSDT (570m), BNBUSDT (579m)",,,2026-07-15 17:19:12.369199,t,t,2026-07-15 17:19:12.369354,fcf456f1c22723ef
+2343,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:19:13.746789,f,f,2026-07-15 18:19:13.74711,7c4b205916be83e8
+2345,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:24:13.861314,f,f,2026-07-15 18:24:13.861548,04bb64f1f0208e61
+2347,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:29:13.977691,f,f,2026-07-15 18:29:13.978054,98e1d1e178acae64
+2349,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:34:14.095089,f,f,2026-07-15 18:34:14.095349,6ab5e77171d21952
+2351,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:39:14.218226,f,f,2026-07-15 18:39:14.218709,f9595e41c361fed4
+2353,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:44:14.335834,f,f,2026-07-15 18:44:14.336081,df5b14fa19818490
+2355,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:49:14.456657,f,f,2026-07-15 18:49:14.456929,e02de4c1da86e3d0
+2357,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:54:14.579926,f,f,2026-07-15 18:54:14.580157,2ee264553f7fb97b
+2336,safety,CRITICAL,"Data stale: BTCUSDT (617m), ETHUSDT (615m), SOLUSDT (621m), XRPUSDT (610m), BNBUSDT (619m)",,,2026-07-15 17:59:13.302376,t,t,2026-07-15 17:59:13.302558,230810211f90dc62
+2359,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 18:59:14.691312,f,f,2026-07-15 18:59:14.691738,8d804cedde728122
+2338,safety,CRITICAL,"Data stale: BTCUSDT (622m), ETHUSDT (620m), SOLUSDT (626m), XRPUSDT (615m), BNBUSDT (624m)",,,2026-07-15 18:04:13.419149,t,t,2026-07-15 18:04:13.419336,aba85d016b01701b
+2361,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:04:14.817924,f,f,2026-07-15 19:04:14.818315,0fe63c832b880838
+2340,safety,CRITICAL,"Data stale: BTCUSDT (627m), ETHUSDT (625m), SOLUSDT (631m), XRPUSDT (620m), BNBUSDT (629m)",,,2026-07-15 18:09:13.537394,t,t,2026-07-15 18:09:13.537575,ddc5227261d9fe92
+2363,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:09:14.941971,f,f,2026-07-15 19:09:14.942369,f5cc0434cbd5d3cf
+2342,safety,CRITICAL,"Data stale: BTCUSDT (632m), ETHUSDT (630m), SOLUSDT (636m), XRPUSDT (625m), BNBUSDT (634m)",,,2026-07-15 18:14:13.656136,t,t,2026-07-15 18:14:13.656321,d568cc2b872988e5
+2365,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:14:15.056239,f,f,2026-07-15 19:14:15.056477,d35a6befe8c2955c
+2344,safety,CRITICAL,"Data stale: BTCUSDT (637m), ETHUSDT (635m), SOLUSDT (641m), XRPUSDT (630m), BNBUSDT (639m)",,,2026-07-15 18:19:13.774743,t,t,2026-07-15 18:19:13.774932,90a8541b65533ed8
+2367,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:19:15.172007,f,f,2026-07-15 19:19:15.172425,01eeb9cd38dd7c32
+2346,safety,CRITICAL,"Data stale: BTCUSDT (642m), ETHUSDT (640m), SOLUSDT (646m), XRPUSDT (635m), BNBUSDT (644m)",,,2026-07-15 18:24:13.890035,t,t,2026-07-15 18:24:13.890215,e68340f21f259d49
+2369,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:24:15.288582,f,f,2026-07-15 19:24:15.288944,b2fc6fcb416989a8
+2348,safety,CRITICAL,"Data stale: BTCUSDT (647m), ETHUSDT (645m), SOLUSDT (651m), XRPUSDT (640m), BNBUSDT (649m)",,,2026-07-15 18:29:14.007067,t,t,2026-07-15 18:29:14.007235,1e9bbc21804ac586
+2371,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:29:15.404516,f,f,2026-07-15 19:29:15.404761,8d74e145f430852c
+2350,safety,CRITICAL,"Data stale: BTCUSDT (652m), ETHUSDT (650m), SOLUSDT (656m), XRPUSDT (645m), BNBUSDT (654m)",,,2026-07-15 18:34:14.124373,t,t,2026-07-15 18:34:14.124558,215b4ff7818a2c31
+2373,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:34:15.515286,f,f,2026-07-15 19:34:15.515697,ff367daf138b6d60
+2352,safety,CRITICAL,"Data stale: BTCUSDT (657m), ETHUSDT (655m), SOLUSDT (661m), XRPUSDT (650m), BNBUSDT (659m)",,,2026-07-15 18:39:14.246866,t,t,2026-07-15 18:39:14.247055,e32f9ca172e0f5bc
+2375,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:39:15.633261,f,f,2026-07-15 19:39:15.633674,9226b613acbef77d
+2356,safety,CRITICAL,"Data stale: BTCUSDT (667m), ETHUSDT (665m), SOLUSDT (671m), XRPUSDT (660m), BNBUSDT (669m)",,,2026-07-15 18:49:14.489112,t,t,2026-07-15 18:49:14.48928,f2a7ee46892b0e65
+2358,safety,CRITICAL,"Data stale: BTCUSDT (672m), ETHUSDT (670m), SOLUSDT (676m), XRPUSDT (665m), BNBUSDT (674m)",,,2026-07-15 18:54:14.607316,t,t,2026-07-15 18:54:14.607524,a956ff3676038c8e
+2360,safety,CRITICAL,"Data stale: BTCUSDT (677m), ETHUSDT (675m), SOLUSDT (681m), XRPUSDT (670m), BNBUSDT (679m)",,,2026-07-15 18:59:14.723265,t,t,2026-07-15 18:59:14.723429,90be517b80501d52
+2362,safety,CRITICAL,"Data stale: BTCUSDT (682m), ETHUSDT (680m), SOLUSDT (686m), XRPUSDT (675m), BNBUSDT (684m)",,,2026-07-15 19:04:14.848673,t,t,2026-07-15 19:04:14.848864,0a79c149dd981c77
+2364,safety,CRITICAL,"Data stale: BTCUSDT (687m), ETHUSDT (685m), SOLUSDT (691m), XRPUSDT (680m), BNBUSDT (689m)",,,2026-07-15 19:09:14.970917,t,t,2026-07-15 19:09:14.971063,c2009aad69519b89
+2366,safety,CRITICAL,"Data stale: BTCUSDT (692m), ETHUSDT (690m), SOLUSDT (696m), XRPUSDT (685m), BNBUSDT (694m)",,,2026-07-15 19:14:15.084917,t,t,2026-07-15 19:14:15.085092,5fe770d561636186
+2368,safety,CRITICAL,"Data stale: BTCUSDT (697m), ETHUSDT (695m), SOLUSDT (701m), XRPUSDT (690m), BNBUSDT (699m)",,,2026-07-15 19:19:15.200559,t,t,2026-07-15 19:19:15.200703,4631c53f05325349
+2370,safety,CRITICAL,"Data stale: BTCUSDT (702m), ETHUSDT (700m), SOLUSDT (706m), XRPUSDT (695m), BNBUSDT (704m)",,,2026-07-15 19:24:15.31705,t,t,2026-07-15 19:24:15.317213,a40334aa0debca99
+2372,safety,CRITICAL,"Data stale: BTCUSDT (707m), ETHUSDT (705m), SOLUSDT (711m), XRPUSDT (700m), BNBUSDT (709m)",,,2026-07-15 19:29:15.431967,t,t,2026-07-15 19:29:15.432111,a4d005d7eed0bb73
+2374,safety,CRITICAL,"Data stale: BTCUSDT (712m), ETHUSDT (710m), SOLUSDT (716m), XRPUSDT (705m), BNBUSDT (714m)",,,2026-07-15 19:34:15.544411,t,t,2026-07-15 19:34:15.544593,56f7772fb80b061b
+2376,safety,CRITICAL,"Data stale: BTCUSDT (717m), ETHUSDT (715m), SOLUSDT (721m), XRPUSDT (710m), BNBUSDT (719m)",,,2026-07-15 19:39:15.663199,t,t,2026-07-15 19:39:15.663441,9da42f33373d64fc
+2354,safety,CRITICAL,"Data stale: BTCUSDT (662m), ETHUSDT (660m), SOLUSDT (666m), XRPUSDT (655m), BNBUSDT (664m)",,,2026-07-15 18:44:14.36562,t,t,2026-07-15 18:44:14.365802,ce595cd4525f4bdc
+2377,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:44:15.747587,f,f,2026-07-15 19:44:15.747821,9ca635b59c581091
+2379,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:49:15.852863,f,f,2026-07-15 19:49:15.853194,6e90cc24ac9b3d71
+2381,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:54:15.963133,f,f,2026-07-15 19:54:15.963481,593cf4e3f36fbee0
+2383,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 19:59:16.074061,f,f,2026-07-15 19:59:16.074339,c6f31f286954ea9e
+2385,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:04:16.185308,f,f,2026-07-15 20:04:16.185759,36bbefced1298e92
+2387,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:09:16.301722,f,f,2026-07-15 20:09:16.301957,8c06822b2f8c2de5
+2389,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:14:16.434713,f,f,2026-07-15 20:14:16.434944,ec8b6dd26cf07a56
+2391,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:19:16.554896,f,f,2026-07-15 20:19:16.555187,c06beab40868c2f3
+2393,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:24:16.66479,f,f,2026-07-15 20:24:16.665135,d9b9f38e69dec6e0
+2395,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:29:16.77616,f,f,2026-07-15 20:29:16.776421,beca46a7196bd8d8
+2397,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:34:16.882057,f,f,2026-07-15 20:34:16.882532,3fde8d3c4db27caa
+2399,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:39:16.996191,f,f,2026-07-15 20:39:16.996572,8719bd2c62a5eeb3
+2378,safety,CRITICAL,"Data stale: BTCUSDT (722m), ETHUSDT (720m), SOLUSDT (726m), XRPUSDT (715m), BNBUSDT (724m)",,,2026-07-15 19:44:15.774989,t,t,2026-07-15 19:44:15.775133,1328b842db5eb5b1
+2401,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:44:17.10684,f,f,2026-07-15 20:44:17.107187,87559ba3bbe6530d
+2380,safety,CRITICAL,"Data stale: BTCUSDT (727m), ETHUSDT (725m), SOLUSDT (731m), XRPUSDT (720m), BNBUSDT (729m)",,,2026-07-15 19:49:15.88153,t,t,2026-07-15 19:49:15.881683,d9771b1c4937e246
+2403,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:49:17.223318,f,f,2026-07-15 20:49:17.22354,c2887f0e1fc3b34a
+2382,safety,CRITICAL,"Data stale: BTCUSDT (732m), ETHUSDT (730m), SOLUSDT (736m), XRPUSDT (725m), BNBUSDT (734m)",,,2026-07-15 19:54:15.991776,t,t,2026-07-15 19:54:15.991974,5c304bb5d5ac5161
+2405,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:54:17.337899,f,f,2026-07-15 20:54:17.338156,719e22733df600be
+2384,safety,CRITICAL,"Data stale: BTCUSDT (737m), ETHUSDT (735m), SOLUSDT (741m), XRPUSDT (730m), BNBUSDT (739m)",,,2026-07-15 19:59:16.102996,t,t,2026-07-15 19:59:16.103185,307713b6546218fe
+2407,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 20:59:17.451285,f,f,2026-07-15 20:59:17.45158,748a7df54e970e3a
+2386,safety,CRITICAL,"Data stale: BTCUSDT (742m), ETHUSDT (740m), SOLUSDT (746m), XRPUSDT (735m), BNBUSDT (744m)",,,2026-07-15 20:04:16.215464,t,t,2026-07-15 20:04:16.21606,c403dbd977468fde
+2409,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:04:17.567782,f,f,2026-07-15 21:04:17.568151,147a274ebccdc710
+2388,safety,CRITICAL,"Data stale: BTCUSDT (747m), ETHUSDT (745m), SOLUSDT (751m), XRPUSDT (740m), BNBUSDT (749m)",,,2026-07-15 20:09:16.33015,t,t,2026-07-15 20:09:16.330384,8cdda9d6b85cbda1
+2411,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:09:17.677104,f,f,2026-07-15 21:09:17.67738,7e2f8c927967c19c
+2390,safety,CRITICAL,"Data stale: BTCUSDT (752m), ETHUSDT (750m), SOLUSDT (756m), XRPUSDT (745m), BNBUSDT (754m)",,,2026-07-15 20:14:16.463824,t,t,2026-07-15 20:14:16.464012,15c1e3f4110cce01
+2413,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:14:17.783604,f,f,2026-07-15 21:14:17.784002,7f4c97a85292a604
+2392,safety,CRITICAL,"Data stale: BTCUSDT (757m), ETHUSDT (755m), SOLUSDT (761m), XRPUSDT (750m), BNBUSDT (759m)",,,2026-07-15 20:19:16.582931,t,t,2026-07-15 20:19:16.583073,bd3d58386b49365f
+2415,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:19:17.898589,f,f,2026-07-15 21:19:17.898961,57db762e90e71f92
+2394,safety,CRITICAL,"Data stale: BTCUSDT (762m), ETHUSDT (760m), SOLUSDT (766m), XRPUSDT (755m), BNBUSDT (764m)",,,2026-07-15 20:24:16.693086,t,t,2026-07-15 20:24:16.69326,184235420e2d5cf4
+2417,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:24:18.008878,f,f,2026-07-15 21:24:18.009326,35b92ac7c3283f88
+2396,safety,CRITICAL,"Data stale: BTCUSDT (767m), ETHUSDT (765m), SOLUSDT (771m), XRPUSDT (760m), BNBUSDT (769m)",,,2026-07-15 20:29:16.803172,t,t,2026-07-15 20:29:16.803374,aa23e0141136fd14
+2419,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:29:18.120674,f,f,2026-07-15 21:29:18.121062,32e3ac1509112713
+2400,safety,CRITICAL,"Data stale: BTCUSDT (777m), ETHUSDT (775m), SOLUSDT (781m), XRPUSDT (770m), BNBUSDT (779m)",,,2026-07-15 20:39:17.024277,t,t,2026-07-15 20:39:17.024414,16aa0e8653889afc
+2402,safety,CRITICAL,"Data stale: BTCUSDT (782m), ETHUSDT (780m), SOLUSDT (786m), XRPUSDT (775m), BNBUSDT (784m)",,,2026-07-15 20:44:17.136128,t,t,2026-07-15 20:44:17.136327,c53faaf499bff783
+2404,safety,CRITICAL,"Data stale: BTCUSDT (787m), ETHUSDT (785m), SOLUSDT (791m), XRPUSDT (780m), BNBUSDT (789m)",,,2026-07-15 20:49:17.252799,t,t,2026-07-15 20:49:17.252984,48e3bdc0f864b563
+2408,safety,CRITICAL,"Data stale: BTCUSDT (797m), ETHUSDT (795m), SOLUSDT (801m), XRPUSDT (790m), BNBUSDT (799m)",,,2026-07-15 20:59:17.479778,t,t,2026-07-15 20:59:17.479958,1018edce2b412db0
+2410,safety,CRITICAL,"Data stale: BTCUSDT (802m), ETHUSDT (800m), SOLUSDT (806m), XRPUSDT (795m), BNBUSDT (804m)",,,2026-07-15 21:04:17.596739,t,t,2026-07-15 21:04:17.596923,8bd8296f4d3c907a
+2412,safety,CRITICAL,"Data stale: BTCUSDT (807m), ETHUSDT (805m), SOLUSDT (811m), XRPUSDT (800m), BNBUSDT (809m)",,,2026-07-15 21:09:17.703962,t,t,2026-07-15 21:09:17.704163,1215db0ae4cbe048
+2414,safety,CRITICAL,"Data stale: BTCUSDT (812m), ETHUSDT (810m), SOLUSDT (816m), XRPUSDT (805m), BNBUSDT (814m)",,,2026-07-15 21:14:17.812734,t,t,2026-07-15 21:14:17.812922,9b83d90b4c59c654
+2416,safety,CRITICAL,"Data stale: BTCUSDT (817m), ETHUSDT (815m), SOLUSDT (821m), XRPUSDT (810m), BNBUSDT (819m)",,,2026-07-15 21:19:17.927129,t,t,2026-07-15 21:19:17.927344,2f5cb8cf09b73065
+2418,safety,CRITICAL,"Data stale: BTCUSDT (822m), ETHUSDT (820m), SOLUSDT (826m), XRPUSDT (815m), BNBUSDT (824m)",,,2026-07-15 21:24:18.03679,t,t,2026-07-15 21:24:18.036973,e56030cd3d439239
+2420,safety,CRITICAL,"Data stale: BTCUSDT (827m), ETHUSDT (825m), SOLUSDT (831m), XRPUSDT (820m), BNBUSDT (829m)",,,2026-07-15 21:29:18.149,t,t,2026-07-15 21:29:18.14918,f9fd7055540c800d
+2398,safety,CRITICAL,"Data stale: BTCUSDT (772m), ETHUSDT (770m), SOLUSDT (776m), XRPUSDT (765m), BNBUSDT (774m)",,,2026-07-15 20:34:16.910518,t,t,2026-07-15 20:34:16.910663,1263d2088bb1dabe
+2421,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:34:18.237601,f,f,2026-07-15 21:34:18.237828,f9a1e477ae8dd243
+2423,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:39:18.360847,f,f,2026-07-15 21:39:18.36108,2fdb308173f9a7b1
+2425,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:44:18.476129,f,f,2026-07-15 21:44:18.47651,5ded6ecdbdcf9d2f
+2427,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:49:18.581631,f,f,2026-07-15 21:49:18.582031,b0291acb888698b6
+2406,safety,CRITICAL,"Data stale: BTCUSDT (792m), ETHUSDT (790m), SOLUSDT (796m), XRPUSDT (785m), BNBUSDT (794m)",,,2026-07-15 20:54:17.36597,t,t,2026-07-15 20:54:17.366138,06672fd1449734c4
+2429,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:54:18.686433,f,f,2026-07-15 21:54:18.686653,814ace3b15274c65
+2431,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 21:59:18.795857,f,f,2026-07-15 21:59:18.796087,86ceb95689001032
+2433,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:04:18.908476,f,f,2026-07-15 22:04:18.90887,76781dd580ad833a
+2435,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:09:19.027587,f,f,2026-07-15 22:09:19.027931,433bb7c43a5633a0
+2437,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:14:19.143302,f,f,2026-07-15 22:14:19.143525,c0401ff72e261257
+2439,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:19:19.258643,f,f,2026-07-15 22:19:19.259058,658a0db3d36bfdce
+2441,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:24:19.366852,f,f,2026-07-15 22:24:19.367221,05d52433d4cf6c7a
+2443,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:29:19.47996,f,f,2026-07-15 22:29:19.480373,017d6d3ac0787649
+2422,safety,CRITICAL,"Data stale: BTCUSDT (832m), ETHUSDT (830m), SOLUSDT (836m), XRPUSDT (825m), BNBUSDT (834m)",,,2026-07-15 21:34:18.271305,t,t,2026-07-15 21:34:18.271496,f7947e6d7afbe2d9
+2445,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:34:19.586921,f,f,2026-07-15 22:34:19.587329,8fb78c318c700f63
+2424,safety,CRITICAL,"Data stale: BTCUSDT (837m), ETHUSDT (835m), SOLUSDT (841m), XRPUSDT (830m), BNBUSDT (839m)",,,2026-07-15 21:39:18.390519,t,t,2026-07-15 21:39:18.390659,1c748ac0187c1fab
+2447,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:39:19.715311,f,f,2026-07-15 22:39:19.715711,a6b17318fad12163
+2426,safety,CRITICAL,"Data stale: BTCUSDT (842m), ETHUSDT (840m), SOLUSDT (846m), XRPUSDT (835m), BNBUSDT (844m)",,,2026-07-15 21:44:18.504084,t,t,2026-07-15 21:44:18.50425,053197432f874669
+2449,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:44:19.819833,f,f,2026-07-15 22:44:19.820189,959040ecee47d5d4
+2428,safety,CRITICAL,"Data stale: BTCUSDT (847m), ETHUSDT (845m), SOLUSDT (851m), XRPUSDT (840m), BNBUSDT (849m)",,,2026-07-15 21:49:18.609913,t,t,2026-07-15 21:49:18.610055,923ff0b7162da22a
+2451,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:49:19.926702,f,f,2026-07-15 22:49:19.926933,64bc1b47d1f554e5
+2430,safety,CRITICAL,"Data stale: BTCUSDT (852m), ETHUSDT (850m), SOLUSDT (856m), XRPUSDT (845m), BNBUSDT (854m)",,,2026-07-15 21:54:18.714398,t,t,2026-07-15 21:54:18.714536,dd9da4dfbd462d9e
+2453,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:54:20.036171,f,f,2026-07-15 22:54:20.036584,e600b3899c697d7c
+2432,safety,CRITICAL,"Data stale: BTCUSDT (857m), ETHUSDT (855m), SOLUSDT (861m), XRPUSDT (850m), BNBUSDT (859m)",,,2026-07-15 21:59:18.826532,t,t,2026-07-15 21:59:18.826718,424bc6ca9fbfc932
+2455,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 22:59:20.142137,f,f,2026-07-15 22:59:20.142409,29f021cf1f0b6e71
+2434,safety,CRITICAL,"Data stale: BTCUSDT (862m), ETHUSDT (860m), SOLUSDT (866m), XRPUSDT (855m), BNBUSDT (864m)",,,2026-07-15 22:04:18.939316,t,t,2026-07-15 22:04:18.939516,5c16f0ab3708eb94
+2457,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:04:20.252891,f,f,2026-07-15 23:04:20.253177,878699e22e607943
+2436,safety,CRITICAL,"Data stale: BTCUSDT (867m), ETHUSDT (865m), SOLUSDT (871m), XRPUSDT (860m), BNBUSDT (869m)",,,2026-07-15 22:09:19.057173,t,t,2026-07-15 22:09:19.057355,d9e11a903fd0f043
+2459,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:09:20.357621,f,f,2026-07-15 23:09:20.357844,7ab8a50c0aff0582
+2438,safety,CRITICAL,"Data stale: BTCUSDT (872m), ETHUSDT (870m), SOLUSDT (876m), XRPUSDT (865m), BNBUSDT (874m)",,,2026-07-15 22:14:19.171769,t,t,2026-07-15 22:14:19.171915,02be88e8b722c507
+2461,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:14:20.463265,f,f,2026-07-15 23:14:20.463751,be7d7cde1b374184
+2442,safety,CRITICAL,"Data stale: BTCUSDT (882m), ETHUSDT (880m), SOLUSDT (886m), XRPUSDT (875m), BNBUSDT (884m)",,,2026-07-15 22:24:19.396343,t,t,2026-07-15 22:24:19.396484,8258dea1dec52fa1
+2444,safety,CRITICAL,"Data stale: BTCUSDT (887m), ETHUSDT (885m), SOLUSDT (891m), XRPUSDT (880m), BNBUSDT (889m)",,,2026-07-15 22:29:19.507307,t,t,2026-07-15 22:29:19.507487,adeada7d80645428
+2446,safety,CRITICAL,"Data stale: BTCUSDT (892m), ETHUSDT (890m), SOLUSDT (896m), XRPUSDT (885m), BNBUSDT (894m)",,,2026-07-15 22:34:19.621865,t,t,2026-07-15 22:34:19.622085,ebc5ed4aa3eb5a81
+2448,safety,CRITICAL,"Data stale: BTCUSDT (897m), ETHUSDT (895m), SOLUSDT (901m), XRPUSDT (890m), BNBUSDT (899m)",,,2026-07-15 22:39:19.742129,t,t,2026-07-15 22:39:19.742323,216bdf7bb83a0378
+2450,safety,CRITICAL,"Data stale: BTCUSDT (902m), ETHUSDT (900m), SOLUSDT (906m), XRPUSDT (895m), BNBUSDT (904m)",,,2026-07-15 22:44:19.847407,t,t,2026-07-15 22:44:19.847546,84db02e486c1baf5
+2452,safety,CRITICAL,"Data stale: BTCUSDT (907m), ETHUSDT (905m), SOLUSDT (911m), XRPUSDT (900m), BNBUSDT (909m)",,,2026-07-15 22:49:19.953957,t,t,2026-07-15 22:49:19.954131,3f61bb6c101b5df4
+2454,safety,CRITICAL,"Data stale: BTCUSDT (912m), ETHUSDT (910m), SOLUSDT (916m), XRPUSDT (905m), BNBUSDT (914m)",,,2026-07-15 22:54:20.063434,t,t,2026-07-15 22:54:20.063618,3d0b059607b7a240
+2456,safety,CRITICAL,"Data stale: BTCUSDT (917m), ETHUSDT (915m), SOLUSDT (921m), XRPUSDT (910m), BNBUSDT (919m)",,,2026-07-15 22:59:20.171159,t,t,2026-07-15 22:59:20.171357,58cad27a3c11e0e4
+2458,safety,CRITICAL,"Data stale: BTCUSDT (922m), ETHUSDT (920m), SOLUSDT (926m), XRPUSDT (915m), BNBUSDT (924m)",,,2026-07-15 23:04:20.28067,t,t,2026-07-15 23:04:20.280852,f4a8ed9aa3571541
+2460,safety,CRITICAL,"Data stale: BTCUSDT (927m), ETHUSDT (925m), SOLUSDT (931m), XRPUSDT (920m), BNBUSDT (929m)",,,2026-07-15 23:09:20.38508,t,t,2026-07-15 23:09:20.385273,4d7918ad30489afa
+2462,safety,CRITICAL,"Data stale: BTCUSDT (932m), ETHUSDT (930m), SOLUSDT (936m), XRPUSDT (925m), BNBUSDT (934m)",,,2026-07-15 23:14:20.492952,t,t,2026-07-15 23:14:20.493121,b697bb66e6fe95bf
+2440,safety,CRITICAL,"Data stale: BTCUSDT (877m), ETHUSDT (875m), SOLUSDT (881m), XRPUSDT (870m), BNBUSDT (879m)",,,2026-07-15 22:19:19.287038,t,t,2026-07-15 22:19:19.287218,22187b2d53a517f9
+2463,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:19:20.575924,f,f,2026-07-15 23:19:20.576362,801f23e0439fd8f9
+2465,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:24:20.681891,f,f,2026-07-15 23:24:20.682122,3fa9048f00a23a60
+2467,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:29:20.79036,f,f,2026-07-15 23:29:20.790582,fcf01425959dafb7
+2469,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:34:20.899592,f,f,2026-07-15 23:34:20.899823,badd0804a1913113
+2471,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:39:21.007864,f,f,2026-07-15 23:39:21.008196,3477761b83476346
+2473,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:44:21.115484,f,f,2026-07-15 23:44:21.115932,da77dac8dfe0b60f
+2475,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:49:21.223,f,f,2026-07-15 23:49:21.223397,41301f4a0909bb01
+2477,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:54:21.335089,f,f,2026-07-15 23:54:21.335347,2a9a71b8930a90dd
+2479,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-15 23:59:21.44106,f,f,2026-07-15 23:59:21.44152,176aacd5314820b6
+2481,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:04:21.552294,f,f,2026-07-16 00:04:21.552527,ebd7de899f9afddd
+2483,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:09:21.666001,f,f,2026-07-16 00:09:21.666263,829cd078d6729f40
+2485,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:14:21.779725,f,f,2026-07-16 00:14:21.780091,7a0b30028f92d72d
+2464,safety,CRITICAL,"Data stale: BTCUSDT (937m), ETHUSDT (935m), SOLUSDT (941m), XRPUSDT (930m), BNBUSDT (939m)",,,2026-07-15 23:19:20.603356,t,t,2026-07-15 23:19:20.603538,393aad7d5f84c78f
+2487,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:19:21.899797,f,f,2026-07-16 00:19:21.900135,6f1aa37514118e22
+2466,safety,CRITICAL,"Data stale: BTCUSDT (942m), ETHUSDT (940m), SOLUSDT (946m), XRPUSDT (935m), BNBUSDT (944m)",,,2026-07-15 23:24:20.709023,t,t,2026-07-15 23:24:20.709214,176d6fa900ad8ab4
+2489,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:24:22.012426,f,f,2026-07-16 00:24:22.012737,a7f3283d25a23774
+2468,safety,CRITICAL,"Data stale: BTCUSDT (947m), ETHUSDT (945m), SOLUSDT (951m), XRPUSDT (940m), BNBUSDT (949m)",,,2026-07-15 23:29:20.818569,t,t,2026-07-15 23:29:20.818708,a0333789290c64ff
+2491,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:29:22.122875,f,f,2026-07-16 00:29:22.123103,81d2bf7dd884a8af
+2470,safety,CRITICAL,"Data stale: BTCUSDT (952m), ETHUSDT (950m), SOLUSDT (956m), XRPUSDT (945m), BNBUSDT (954m)",,,2026-07-15 23:34:20.927893,t,t,2026-07-15 23:34:20.928033,87a3c9419a69e578
+2493,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:34:22.23381,f,f,2026-07-16 00:34:22.234163,c778c97f77595bb2
+2472,safety,CRITICAL,"Data stale: BTCUSDT (957m), ETHUSDT (955m), SOLUSDT (961m), XRPUSDT (950m), BNBUSDT (959m)",,,2026-07-15 23:39:21.035462,t,t,2026-07-15 23:39:21.03563,f279a894e2b00e69
+2495,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:39:22.34445,f,f,2026-07-16 00:39:22.344875,80df56f4ea6a4306
+2474,safety,CRITICAL,"Data stale: BTCUSDT (962m), ETHUSDT (960m), SOLUSDT (966m), XRPUSDT (955m), BNBUSDT (964m)",,,2026-07-15 23:44:21.142952,t,t,2026-07-15 23:44:21.143095,9ebdf7d6cf5c754e
+2497,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:44:22.457263,f,f,2026-07-16 00:44:22.457701,ccc2b4edf39a833b
+2476,safety,CRITICAL,"Data stale: BTCUSDT (967m), ETHUSDT (965m), SOLUSDT (971m), XRPUSDT (960m), BNBUSDT (969m)",,,2026-07-15 23:49:21.253572,t,t,2026-07-15 23:49:21.253716,e56d3d5fea2797a1
+2499,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:49:22.570518,f,f,2026-07-16 00:49:22.570945,886bc9043eae1091
+2478,safety,CRITICAL,"Data stale: BTCUSDT (972m), ETHUSDT (970m), SOLUSDT (976m), XRPUSDT (965m), BNBUSDT (974m)",,,2026-07-15 23:54:21.362947,t,t,2026-07-15 23:54:21.363124,f083c945c5e1bc93
+2501,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:54:22.683808,f,f,2026-07-16 00:54:22.684046,0dfd61501dfec148
+2480,safety,CRITICAL,"Data stale: BTCUSDT (977m), ETHUSDT (975m), SOLUSDT (981m), XRPUSDT (970m), BNBUSDT (979m)",,,2026-07-15 23:59:21.46979,t,t,2026-07-15 23:59:21.469934,c69f17fd844eb1c1
+2503,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 00:59:22.798152,f,f,2026-07-16 00:59:22.798413,093781021a21642c
+2482,safety,CRITICAL,"Data stale: BTCUSDT (982m), ETHUSDT (980m), SOLUSDT (986m), XRPUSDT (975m), BNBUSDT (984m)",,,2026-07-16 00:04:21.583037,t,t,2026-07-16 00:04:21.583182,f51cc9c58003b839
+2505,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:04:22.91086,f,f,2026-07-16 01:04:22.911177,d7e8b7eb606e2bbe
+2486,safety,CRITICAL,"Data stale: BTCUSDT (992m), ETHUSDT (990m), SOLUSDT (996m), XRPUSDT (985m), BNBUSDT (994m)",,,2026-07-16 00:14:21.811294,t,t,2026-07-16 00:14:21.81145,f0a3371342ced4ec
+2488,safety,CRITICAL,"Data stale: BTCUSDT (997m), ETHUSDT (995m), SOLUSDT (1001m), XRPUSDT (990m), BNBUSDT (999m)",,,2026-07-16 00:19:21.928922,t,t,2026-07-16 00:19:21.929109,f1d60ddc56a09520
+2490,safety,CRITICAL,"Data stale: BTCUSDT (1002m), ETHUSDT (1000m), SOLUSDT (1006m), XRPUSDT (995m), BNBUSDT (1004m)",,,2026-07-16 00:24:22.040994,t,t,2026-07-16 00:24:22.041517,2515caa2fc8e5d76
+2492,safety,CRITICAL,"Data stale: BTCUSDT (1007m), ETHUSDT (1005m), SOLUSDT (1011m), XRPUSDT (1000m), BNBUSDT (1009m)",,,2026-07-16 00:29:22.151791,t,t,2026-07-16 00:29:22.151976,847938da9e93ebdf
+2494,safety,CRITICAL,"Data stale: BTCUSDT (1012m), ETHUSDT (1010m), SOLUSDT (1016m), XRPUSDT (1005m), BNBUSDT (1014m)",,,2026-07-16 00:34:22.262379,t,t,2026-07-16 00:34:22.262563,003045c683794e18
+2496,safety,CRITICAL,"Data stale: BTCUSDT (1017m), ETHUSDT (1015m), SOLUSDT (1021m), XRPUSDT (1010m), BNBUSDT (1019m)",,,2026-07-16 00:39:22.373427,t,t,2026-07-16 00:39:22.3736,c6f9f3cec69e0c0e
+2498,safety,CRITICAL,"Data stale: BTCUSDT (1022m), ETHUSDT (1020m), SOLUSDT (1026m), XRPUSDT (1015m), BNBUSDT (1024m)",,,2026-07-16 00:44:22.487382,t,t,2026-07-16 00:44:22.487588,9ab5a66bec721d5e
+2500,safety,CRITICAL,"Data stale: BTCUSDT (1027m), ETHUSDT (1025m), SOLUSDT (1031m), XRPUSDT (1020m), BNBUSDT (1029m)",,,2026-07-16 00:49:22.599173,t,t,2026-07-16 00:49:22.599388,88879d7ecd8da41e
+2502,safety,CRITICAL,"Data stale: BTCUSDT (1032m), ETHUSDT (1030m), SOLUSDT (1036m), XRPUSDT (1025m), BNBUSDT (1034m)",,,2026-07-16 00:54:22.713441,t,t,2026-07-16 00:54:22.713581,9834f6c200e70afa
+2504,safety,CRITICAL,"Data stale: BTCUSDT (1037m), ETHUSDT (1035m), SOLUSDT (1041m), XRPUSDT (1030m), BNBUSDT (1039m)",,,2026-07-16 00:59:22.826156,t,t,2026-07-16 00:59:22.826347,6621cc8fe22458ef
+2484,safety,CRITICAL,"Data stale: BTCUSDT (987m), ETHUSDT (985m), SOLUSDT (991m), XRPUSDT (980m), BNBUSDT (989m)",,,2026-07-16 00:09:21.693158,t,t,2026-07-16 00:09:21.69337,0a11c984fbf81936
+2507,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:09:23.022151,f,f,2026-07-16 01:09:23.022416,b31d34d8b7e6b0d7
+2509,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:14:23.133482,f,f,2026-07-16 01:14:23.13393,b58babe94bee3a29
+2511,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:19:23.240177,f,f,2026-07-16 01:19:23.240559,b27d79d0981a00c8
+2513,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:24:23.357032,f,f,2026-07-16 01:24:23.357392,7949e45dffe9e77b
+2515,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:29:23.47817,f,f,2026-07-16 01:29:23.478433,ee4bca15b4f23f8b
+2517,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:34:23.592792,f,f,2026-07-16 01:34:23.593025,ea5de36b2e4386f3
+2519,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:39:23.705797,f,f,2026-07-16 01:39:23.706026,df0416816f661ed1
+2521,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:44:23.821235,f,f,2026-07-16 01:44:23.821475,f67b3f028d3e87c3
+2523,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:49:23.930946,f,f,2026-07-16 01:49:23.93137,9cd84004f1c6d892
+2525,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:54:24.039935,f,f,2026-07-16 01:54:24.040304,3e498886d45c1511
+2527,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 01:59:24.150918,f,f,2026-07-16 01:59:24.151328,ffb7e0f0b9867f00
+2506,safety,CRITICAL,"Data stale: BTCUSDT (1042m), ETHUSDT (1040m), SOLUSDT (1046m), XRPUSDT (1035m), BNBUSDT (1044m)",,,2026-07-16 01:04:22.938957,t,t,2026-07-16 01:04:22.939125,da4431ab92b7de5a
+2529,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:04:24.266041,f,f,2026-07-16 02:04:24.266471,bb291d73c7cd086d
+2508,safety,CRITICAL,"Data stale: BTCUSDT (1047m), ETHUSDT (1045m), SOLUSDT (1051m), XRPUSDT (1040m), BNBUSDT (1049m)",,,2026-07-16 01:09:23.051585,t,t,2026-07-16 01:09:23.051777,e3449ebdc936153b
+2531,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:09:24.382635,f,f,2026-07-16 02:09:24.38305,07884a67898f7a6d
+2510,safety,CRITICAL,"Data stale: BTCUSDT (1052m), ETHUSDT (1050m), SOLUSDT (1056m), XRPUSDT (1045m), BNBUSDT (1054m)",,,2026-07-16 01:14:23.161055,t,t,2026-07-16 01:14:23.161252,0222975f5136c814
+2533,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:14:24.492047,f,f,2026-07-16 02:14:24.492316,e30819eb0ea0887d
+2512,safety,CRITICAL,"Data stale: BTCUSDT (1057m), ETHUSDT (1055m), SOLUSDT (1061m), XRPUSDT (1050m), BNBUSDT (1059m)",,,2026-07-16 01:19:23.269901,t,t,2026-07-16 01:19:23.270055,c6416f74afe4eb7f
+2535,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:19:24.604812,f,f,2026-07-16 02:19:24.605151,3912ecab7c2794df
+2514,safety,CRITICAL,"Data stale: BTCUSDT (1062m), ETHUSDT (1060m), SOLUSDT (1066m), XRPUSDT (1055m), BNBUSDT (1064m)",,,2026-07-16 01:24:23.387285,t,t,2026-07-16 01:24:23.38743,71a4e03c4dd1868c
+2537,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:24:24.719324,f,f,2026-07-16 02:24:24.719542,3e41944d9519ce3c
+2516,safety,CRITICAL,"Data stale: BTCUSDT (1067m), ETHUSDT (1065m), SOLUSDT (1071m), XRPUSDT (1060m), BNBUSDT (1069m)",,,2026-07-16 01:29:23.507001,t,t,2026-07-16 01:29:23.507171,eb13197e122eaf3f
+2539,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:29:24.82629,f,f,2026-07-16 02:29:24.826754,33d2a36dc8efef8a
+2518,safety,CRITICAL,"Data stale: BTCUSDT (1072m), ETHUSDT (1070m), SOLUSDT (1076m), XRPUSDT (1065m), BNBUSDT (1074m)",,,2026-07-16 01:34:23.621156,t,t,2026-07-16 01:34:23.621383,6fe7dd33d64b4b71
+2541,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:34:24.935943,f,f,2026-07-16 02:34:24.936174,77723076356fba46
+2520,safety,CRITICAL,"Data stale: BTCUSDT (1077m), ETHUSDT (1075m), SOLUSDT (1081m), XRPUSDT (1070m), BNBUSDT (1079m)",,,2026-07-16 01:39:23.735671,t,t,2026-07-16 01:39:23.735811,e0b8e26c092a8137
+2543,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:39:25.051904,f,f,2026-07-16 02:39:25.05217,4389f595747c11bf
+2522,safety,CRITICAL,"Data stale: BTCUSDT (1082m), ETHUSDT (1080m), SOLUSDT (1086m), XRPUSDT (1075m), BNBUSDT (1084m)",,,2026-07-16 01:44:23.849955,t,t,2026-07-16 01:44:23.850128,10b69149679c20d5
+2545,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:44:25.167658,f,f,2026-07-16 02:44:25.168021,9294127126b83057
+2524,safety,CRITICAL,"Data stale: BTCUSDT (1087m), ETHUSDT (1085m), SOLUSDT (1091m), XRPUSDT (1080m), BNBUSDT (1089m)",,,2026-07-16 01:49:23.9597,t,t,2026-07-16 01:49:23.959886,711b6982d5086767
+2547,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:49:25.28876,f,f,2026-07-16 02:49:25.289112,1b7f0f1f21543ad2
+2530,safety,CRITICAL,"Data stale: BTCUSDT (1102m), ETHUSDT (1100m), SOLUSDT (1106m), XRPUSDT (1095m), BNBUSDT (1104m)",,,2026-07-16 02:04:24.295952,t,t,2026-07-16 02:04:24.296135,08e4c2b307fbb1af
+2532,safety,CRITICAL,"Data stale: BTCUSDT (1107m), ETHUSDT (1105m), SOLUSDT (1111m), XRPUSDT (1100m), BNBUSDT (1109m)",,,2026-07-16 02:09:24.4111,t,t,2026-07-16 02:09:24.411282,a5ea78bf48cd6b3b
+2534,safety,CRITICAL,"Data stale: BTCUSDT (1112m), ETHUSDT (1110m), SOLUSDT (1116m), XRPUSDT (1105m), BNBUSDT (1114m)",,,2026-07-16 02:14:24.521073,t,t,2026-07-16 02:14:24.52128,56086c15d2185e7a
+2536,safety,CRITICAL,"Data stale: BTCUSDT (1117m), ETHUSDT (1115m), SOLUSDT (1121m), XRPUSDT (1110m), BNBUSDT (1119m)",,,2026-07-16 02:19:24.634924,t,t,2026-07-16 02:19:24.635097,0713ec1fc33fac89
+2538,safety,CRITICAL,"Data stale: BTCUSDT (1122m), ETHUSDT (1120m), SOLUSDT (1126m), XRPUSDT (1115m), BNBUSDT (1124m)",,,2026-07-16 02:24:24.746407,t,t,2026-07-16 02:24:24.746601,806d85960ccb07f8
+2540,safety,CRITICAL,"Data stale: BTCUSDT (1127m), ETHUSDT (1125m), SOLUSDT (1131m), XRPUSDT (1120m), BNBUSDT (1129m)",,,2026-07-16 02:29:24.854911,t,t,2026-07-16 02:29:24.855082,26f9676875c63646
+2542,safety,CRITICAL,"Data stale: BTCUSDT (1132m), ETHUSDT (1130m), SOLUSDT (1136m), XRPUSDT (1125m), BNBUSDT (1134m)",,,2026-07-16 02:34:24.965135,t,t,2026-07-16 02:34:24.965384,d690fe9af3d3d83a
+2544,safety,CRITICAL,"Data stale: BTCUSDT (1137m), ETHUSDT (1135m), SOLUSDT (1141m), XRPUSDT (1130m), BNBUSDT (1139m)",,,2026-07-16 02:39:25.079802,t,t,2026-07-16 02:39:25.079989,1d45745674348952
+2546,safety,CRITICAL,"Data stale: BTCUSDT (1142m), ETHUSDT (1140m), SOLUSDT (1146m), XRPUSDT (1135m), BNBUSDT (1144m)",,,2026-07-16 02:44:25.197245,t,t,2026-07-16 02:44:25.197409,1c0445cef3f28155
+2548,safety,CRITICAL,"Data stale: BTCUSDT (1147m), ETHUSDT (1145m), SOLUSDT (1151m), XRPUSDT (1140m), BNBUSDT (1149m)",,,2026-07-16 02:49:25.318887,t,t,2026-07-16 02:49:25.319042,3da947b3596c3e7a
+2526,safety,CRITICAL,"Data stale: BTCUSDT (1092m), ETHUSDT (1090m), SOLUSDT (1096m), XRPUSDT (1085m), BNBUSDT (1094m)",,,2026-07-16 01:54:24.068901,t,t,2026-07-16 01:54:24.069054,b4cdfa52bfdb24ff
+2549,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:54:25.401652,f,f,2026-07-16 02:54:25.402103,fc1c4b3eb6869d67
+2528,safety,CRITICAL,"Data stale: BTCUSDT (1097m), ETHUSDT (1095m), SOLUSDT (1101m), XRPUSDT (1090m), BNBUSDT (1099m)",,,2026-07-16 01:59:24.181106,t,t,2026-07-16 01:59:24.18129,cf100715395fb887
+2551,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 02:59:25.509284,f,f,2026-07-16 02:59:25.509756,484d31c296505326
+2553,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:04:25.619074,f,f,2026-07-16 03:04:25.619489,2d7aa474e35ca066
+2555,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:09:25.723855,f,f,2026-07-16 03:09:25.724169,ae2f3cde039ee1d8
+2557,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:14:25.834809,f,f,2026-07-16 03:14:25.835131,b45b1bf9b0a96d0b
+2559,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:19:25.940994,f,f,2026-07-16 03:19:25.941419,f92bdb6a98c1e0c2
+2561,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:24:26.053217,f,f,2026-07-16 03:24:26.05366,fdcddb0a934924d5
+2563,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:29:26.172968,f,f,2026-07-16 03:29:26.173397,a3d74efa964c6491
+2565,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:34:26.277903,f,f,2026-07-16 03:34:26.278228,4d0df40f48a1f2a7
+2567,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:39:26.383683,f,f,2026-07-16 03:39:26.384099,f0195e133fa0128e
+2569,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:44:26.491506,f,f,2026-07-16 03:44:26.491724,83273dc63dc2b2f3
+2571,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:49:26.603809,f,f,2026-07-16 03:49:26.604125,30c5df351c49c717
+2550,safety,CRITICAL,"Data stale: BTCUSDT (1152m), ETHUSDT (1150m), SOLUSDT (1156m), XRPUSDT (1145m), BNBUSDT (1154m)",,,2026-07-16 02:54:25.430269,t,t,2026-07-16 02:54:25.430451,43f68f917e3711f9
+2573,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:54:26.715954,f,f,2026-07-16 03:54:26.716407,57b2e7fc008a8c21
+2552,safety,CRITICAL,"Data stale: BTCUSDT (1157m), ETHUSDT (1155m), SOLUSDT (1161m), XRPUSDT (1150m), BNBUSDT (1159m)",,,2026-07-16 02:59:25.537973,t,t,2026-07-16 02:59:25.538116,39c2b8725a705f32
+2575,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 03:59:26.827623,f,f,2026-07-16 03:59:26.828037,24d2879afb87e1ca
+2554,safety,CRITICAL,"Data stale: BTCUSDT (1162m), ETHUSDT (1160m), SOLUSDT (1166m), XRPUSDT (1155m), BNBUSDT (1164m)",,,2026-07-16 03:04:25.646115,t,t,2026-07-16 03:04:25.646325,951bdfce37f9c4c6
+2577,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:04:26.93906,f,f,2026-07-16 04:04:26.939331,9e7ebbef0a4c3e4e
+2556,safety,CRITICAL,"Data stale: BTCUSDT (1167m), ETHUSDT (1165m), SOLUSDT (1171m), XRPUSDT (1160m), BNBUSDT (1169m)",,,2026-07-16 03:09:25.753165,t,t,2026-07-16 03:09:25.753359,1c80200270e496c4
+2579,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:09:27.046712,f,f,2026-07-16 04:09:27.047133,04f5cecb7c399d90
+2558,safety,CRITICAL,"Data stale: BTCUSDT (1172m), ETHUSDT (1170m), SOLUSDT (1176m), XRPUSDT (1165m), BNBUSDT (1174m)",,,2026-07-16 03:14:25.862414,t,t,2026-07-16 03:14:25.862596,295685f3e8279b81
+2581,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:14:27.154569,f,f,2026-07-16 04:14:27.154793,c3749423316ec1ed
+2560,safety,CRITICAL,"Data stale: BTCUSDT (1177m), ETHUSDT (1175m), SOLUSDT (1181m), XRPUSDT (1170m), BNBUSDT (1179m)",,,2026-07-16 03:19:25.969391,t,t,2026-07-16 03:19:25.969532,9a8de48db9bb7775
+2583,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:19:27.261238,f,f,2026-07-16 04:19:27.261696,b49fcb08bcecedce
+2562,safety,CRITICAL,"Data stale: BTCUSDT (1182m), ETHUSDT (1180m), SOLUSDT (1186m), XRPUSDT (1175m), BNBUSDT (1184m)",,,2026-07-16 03:24:26.083937,t,t,2026-07-16 03:24:26.084138,65e80b6f3c874d2f
+2585,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:24:27.367964,f,f,2026-07-16 04:24:27.36838,1c0e7831999838eb
+2564,safety,CRITICAL,"Data stale: BTCUSDT (1187m), ETHUSDT (1185m), SOLUSDT (1191m), XRPUSDT (1180m), BNBUSDT (1189m)",,,2026-07-16 03:29:26.200135,t,t,2026-07-16 03:29:26.200351,a21ba61ccd5dc49e
+2587,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:29:27.485027,f,f,2026-07-16 04:29:27.485489,a161817c55659a7a
+2566,safety,CRITICAL,"Data stale: BTCUSDT (1192m), ETHUSDT (1190m), SOLUSDT (1196m), XRPUSDT (1185m), BNBUSDT (1194m)",,,2026-07-16 03:34:26.305091,t,t,2026-07-16 03:34:26.305281,cbf6735bac98629b
+2589,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:34:27.597283,f,f,2026-07-16 04:34:27.59772,d2e68d407bc7e28f
+2570,safety,CRITICAL,"Data stale: BTCUSDT (1202m), ETHUSDT (1200m), SOLUSDT (1206m), XRPUSDT (1195m), BNBUSDT (1204m)",,,2026-07-16 03:44:26.520338,t,t,2026-07-16 03:44:26.520524,3c227e989ee685e3
+2572,safety,CRITICAL,"Data stale: BTCUSDT (1207m), ETHUSDT (1205m), SOLUSDT (1211m), XRPUSDT (1200m), BNBUSDT (1209m)",,,2026-07-16 03:49:26.632443,t,t,2026-07-16 03:49:26.632582,0dd26060ef66ce68
+2574,safety,CRITICAL,"Data stale: BTCUSDT (1212m), ETHUSDT (1210m), SOLUSDT (1216m), XRPUSDT (1205m), BNBUSDT (1214m)",,,2026-07-16 03:54:26.744864,t,t,2026-07-16 03:54:26.745013,488c6a3cdc182717
+2576,safety,CRITICAL,"Data stale: BTCUSDT (1217m), ETHUSDT (1215m), SOLUSDT (1221m), XRPUSDT (1210m), BNBUSDT (1219m)",,,2026-07-16 03:59:26.856434,t,t,2026-07-16 03:59:26.856573,4d8bd044cb46eb2b
+2578,safety,CRITICAL,"Data stale: BTCUSDT (1222m), ETHUSDT (1220m), SOLUSDT (1226m), XRPUSDT (1215m), BNBUSDT (1224m)",,,2026-07-16 04:04:26.966501,t,t,2026-07-16 04:04:26.966639,6f2d0a18c1678926
+2580,safety,CRITICAL,"Data stale: BTCUSDT (1227m), ETHUSDT (1225m), SOLUSDT (1231m), XRPUSDT (1220m), BNBUSDT (1229m)",,,2026-07-16 04:09:27.075554,t,t,2026-07-16 04:09:27.075739,91d567bd8ac5d4a2
+2582,safety,CRITICAL,"Data stale: BTCUSDT (1232m), ETHUSDT (1230m), SOLUSDT (1236m), XRPUSDT (1225m), BNBUSDT (1234m)",,,2026-07-16 04:14:27.181504,t,t,2026-07-16 04:14:27.181641,cdf7e123e784c1ab
+2584,safety,CRITICAL,"Data stale: BTCUSDT (1237m), ETHUSDT (1235m), SOLUSDT (1241m), XRPUSDT (1230m), BNBUSDT (1239m)",,,2026-07-16 04:19:27.288823,t,t,2026-07-16 04:19:27.288966,7bd8d97f4fd27c3e
+2586,safety,CRITICAL,"Data stale: BTCUSDT (1242m), ETHUSDT (1240m), SOLUSDT (1246m), XRPUSDT (1235m), BNBUSDT (1244m)",,,2026-07-16 04:24:27.397859,t,t,2026-07-16 04:24:27.39803,dacfc65e8654488d
+2588,safety,CRITICAL,"Data stale: BTCUSDT (1247m), ETHUSDT (1245m), SOLUSDT (1251m), XRPUSDT (1240m), BNBUSDT (1249m)",,,2026-07-16 04:29:27.514133,t,t,2026-07-16 04:29:27.514285,ee42f8fc2da35980
+2719,safety,CRITICAL,"Data stale: BTCUSDT (56m), ETHUSDT (61m), SOLUSDT (53m), XRPUSDT (59m), BNBUSDT (58m)",,,2026-07-21 13:55:44.584938,t,f,2026-07-21 13:55:44.585171,466a376a2371dcf5
+2568,safety,CRITICAL,"Data stale: BTCUSDT (1197m), ETHUSDT (1195m), SOLUSDT (1201m), XRPUSDT (1190m), BNBUSDT (1199m)",,,2026-07-16 03:39:26.411922,t,t,2026-07-16 03:39:26.412145,6c29843178f5f4b8
+2591,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:39:27.704554,f,f,2026-07-16 04:39:27.704947,362ed3f153118aa4
+2593,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:44:27.823024,f,f,2026-07-16 04:44:27.823302,826f490b9b70dd65
+2595,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:49:27.929732,f,f,2026-07-16 04:49:27.930165,cae897ba6688e892
+2597,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:54:28.043488,f,f,2026-07-16 04:54:28.043709,65c9295d54807217
+2599,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 04:59:28.158566,f,f,2026-07-16 04:59:28.158986,e1b441f6326d0b7f
+2601,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:04:28.262932,f,f,2026-07-16 05:04:28.263348,06733e602305eff1
+2603,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:09:28.374967,f,f,2026-07-16 05:09:28.375416,1a565c4d80669bcd
+2605,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:14:28.492604,f,f,2026-07-16 05:14:28.492972,c5fe8332ad774b01
+2607,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:19:28.60444,f,f,2026-07-16 05:19:28.604661,3d0b671245408340
+2609,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:24:28.720935,f,f,2026-07-16 05:24:28.721377,7dec05ba8bca7a00
+2611,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:29:28.833948,f,f,2026-07-16 05:29:28.834179,06fd3e72f3efc290
+2590,safety,CRITICAL,"Data stale: BTCUSDT (1252m), ETHUSDT (1250m), SOLUSDT (1256m), XRPUSDT (1245m), BNBUSDT (1254m)",,,2026-07-16 04:34:27.624946,t,t,2026-07-16 04:34:27.625134,a1796978c281009b
+2613,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:34:28.941499,f,f,2026-07-16 05:34:28.941945,e053f22885d86af3
+2592,safety,CRITICAL,"Data stale: BTCUSDT (1257m), ETHUSDT (1255m), SOLUSDT (1261m), XRPUSDT (1250m), BNBUSDT (1259m)",,,2026-07-16 04:39:27.734371,t,t,2026-07-16 04:39:27.73451,834e29e132e08e3e
+2615,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:39:29.05675,f,f,2026-07-16 05:39:29.056981,26eddcc6d00512f3
+2594,safety,CRITICAL,"Data stale: BTCUSDT (1262m), ETHUSDT (1260m), SOLUSDT (1266m), XRPUSDT (1255m), BNBUSDT (1264m)",,,2026-07-16 04:44:27.850001,t,t,2026-07-16 04:44:27.850176,a2a69b5a0f8fb6b0
+2617,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:44:29.166802,f,f,2026-07-16 05:44:29.167035,068c51a23b8b06d5
+2596,safety,CRITICAL,"Data stale: BTCUSDT (1267m), ETHUSDT (1265m), SOLUSDT (1271m), XRPUSDT (1260m), BNBUSDT (1269m)",,,2026-07-16 04:49:27.959788,t,t,2026-07-16 04:49:27.959976,8d2bd41a2f18d29a
+2619,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:49:29.272454,f,f,2026-07-16 05:49:29.272903,4da0b4f0b0c97932
+2598,safety,CRITICAL,"Data stale: BTCUSDT (1272m), ETHUSDT (1270m), SOLUSDT (1276m), XRPUSDT (1265m), BNBUSDT (1274m)",,,2026-07-16 04:54:28.072118,t,t,2026-07-16 04:54:28.072283,bd4990a9e168de7f
+2621,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:54:29.383697,f,f,2026-07-16 05:54:29.383927,7af3354d99749b3a
+2600,safety,CRITICAL,"Data stale: BTCUSDT (1277m), ETHUSDT (1275m), SOLUSDT (1281m), XRPUSDT (1270m), BNBUSDT (1279m)",,,2026-07-16 04:59:28.185988,t,t,2026-07-16 04:59:28.186164,1219a2e784152799
+2623,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 05:59:29.493645,f,f,2026-07-16 05:59:29.494059,34b0b68238f03b43
+2602,safety,CRITICAL,"Data stale: BTCUSDT (1282m), ETHUSDT (1280m), SOLUSDT (1286m), XRPUSDT (1275m), BNBUSDT (1284m)",,,2026-07-16 05:04:28.291385,t,t,2026-07-16 05:04:28.291565,92c372e3895eaaef
+2625,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:04:29.623748,f,f,2026-07-16 06:04:29.624051,872d2a0fa4358d93
+2604,safety,CRITICAL,"Data stale: BTCUSDT (1287m), ETHUSDT (1285m), SOLUSDT (1291m), XRPUSDT (1280m), BNBUSDT (1289m)",,,2026-07-16 05:09:28.405354,t,t,2026-07-16 05:09:28.405495,9310bf8a3add05e0
+2627,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:09:29.869784,f,f,2026-07-16 06:09:29.872275,e2bac752a882d6e6
+2606,safety,CRITICAL,"Data stale: BTCUSDT (1292m), ETHUSDT (1290m), SOLUSDT (1296m), XRPUSDT (1285m), BNBUSDT (1294m)",,,2026-07-16 05:14:28.521328,t,t,2026-07-16 05:14:28.521469,72fed73547dcefc6
+2629,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:14:30.310653,f,f,2026-07-16 06:14:30.310882,bfeda00e791d9e5b
+2608,safety,CRITICAL,"Data stale: BTCUSDT (1297m), ETHUSDT (1295m), SOLUSDT (1301m), XRPUSDT (1290m), BNBUSDT (1299m)",,,2026-07-16 05:19:28.634034,t,t,2026-07-16 05:19:28.634257,4cf9c6be0527a1b1
+2631,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:19:30.432847,f,f,2026-07-16 06:19:30.433193,f4f0895d3196553a
+2612,safety,CRITICAL,"Data stale: BTCUSDT (1307m), ETHUSDT (1305m), SOLUSDT (1311m), XRPUSDT (1300m), BNBUSDT (1309m)",,,2026-07-16 05:29:28.86112,t,t,2026-07-16 05:29:28.861351,2d4cb9a564cd7670
+2614,safety,CRITICAL,"Data stale: BTCUSDT (1312m), ETHUSDT (1310m), SOLUSDT (1316m), XRPUSDT (1305m), BNBUSDT (1314m)",,,2026-07-16 05:34:28.971244,t,t,2026-07-16 05:34:28.971401,5501887e0b922e0c
+2616,safety,CRITICAL,"Data stale: BTCUSDT (1317m), ETHUSDT (1315m), SOLUSDT (1321m), XRPUSDT (1310m), BNBUSDT (1319m)",,,2026-07-16 05:39:29.085518,t,t,2026-07-16 05:39:29.08567,3865c2bcd42a1e88
+2618,safety,CRITICAL,"Data stale: BTCUSDT (1322m), ETHUSDT (1320m), SOLUSDT (1326m), XRPUSDT (1315m), BNBUSDT (1324m)",,,2026-07-16 05:44:29.193716,t,t,2026-07-16 05:44:29.193885,efd76aabe6491f5c
+2620,safety,CRITICAL,"Data stale: BTCUSDT (1327m), ETHUSDT (1325m), SOLUSDT (1331m), XRPUSDT (1320m), BNBUSDT (1329m)",,,2026-07-16 05:49:29.301616,t,t,2026-07-16 05:49:29.301758,bcf991d4fbbcff73
+2622,safety,CRITICAL,"Data stale: BTCUSDT (1332m), ETHUSDT (1330m), SOLUSDT (1336m), XRPUSDT (1325m), BNBUSDT (1334m)",,,2026-07-16 05:54:29.412083,t,t,2026-07-16 05:54:29.412275,ceacc9db03f76be7
+2624,safety,CRITICAL,"Data stale: BTCUSDT (1337m), ETHUSDT (1335m), SOLUSDT (1341m), XRPUSDT (1330m), BNBUSDT (1339m)",,,2026-07-16 05:59:29.521429,t,t,2026-07-16 05:59:29.521573,74a93805158da79c
+2626,safety,CRITICAL,"Data stale: BTCUSDT (1342m), ETHUSDT (1340m), SOLUSDT (1346m), XRPUSDT (1335m), BNBUSDT (1344m)",,,2026-07-16 06:04:29.681007,t,t,2026-07-16 06:04:29.681578,22972224e028415d
+2628,safety,CRITICAL,"Data stale: BTCUSDT (1347m), ETHUSDT (1345m), SOLUSDT (1351m), XRPUSDT (1340m), BNBUSDT (1349m)",,,2026-07-16 06:09:30.215687,t,t,2026-07-16 06:09:30.215823,3e31cb4728f7ce77
+2630,safety,CRITICAL,"Data stale: BTCUSDT (1353m), ETHUSDT (1351m), SOLUSDT (1357m), XRPUSDT (1346m), BNBUSDT (1355m)",,,2026-07-16 06:14:30.345419,t,t,2026-07-16 06:14:30.345601,b1a2518b97879c2b
+2721,safety,CRITICAL,"Data stale: BTCUSDT (61m), ETHUSDT (66m), SOLUSDT (58m), XRPUSDT (64m), BNBUSDT (63m)",,,2026-07-21 14:00:44.762309,t,f,2026-07-21 14:00:44.762518,0def452d1f8177ac
+2610,safety,CRITICAL,"Data stale: BTCUSDT (1302m), ETHUSDT (1300m), SOLUSDT (1306m), XRPUSDT (1295m), BNBUSDT (1304m)",,,2026-07-16 05:24:28.749794,t,t,2026-07-16 05:24:28.749987,c26f11a8220cce2c
+2633,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:24:30.55492,f,f,2026-07-16 06:24:30.555352,62b37f2822e4bf08
+2635,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:29:30.682985,f,f,2026-07-16 06:29:30.683389,6242e1ae76015001
+2637,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:34:30.801867,f,f,2026-07-16 06:34:30.802192,26d8fde098c4d67f
+2639,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:39:30.917366,f,f,2026-07-16 06:39:30.917584,ce3373bfe56b411b
+2641,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:44:31.036792,f,f,2026-07-16 06:44:31.037136,6c87cb1eba019714
+2643,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:49:31.154948,f,f,2026-07-16 06:49:31.155372,f670999ae8f6be13
+2645,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:54:31.283358,f,f,2026-07-16 06:54:31.283591,cdea96848e0eb4a9
+2647,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 06:59:31.427893,f,f,2026-07-16 06:59:31.428607,4cb1b033a7cdc41e
+2649,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:04:31.582301,f,f,2026-07-16 07:04:31.58326,98c3c72e67ab4299
+2651,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:09:31.739287,f,f,2026-07-16 07:09:31.739767,ff6527683f8c4188
+2653,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:14:31.863843,f,f,2026-07-16 07:14:31.864274,bc304995261dadfc
+2632,safety,CRITICAL,"Data stale: BTCUSDT (1358m), ETHUSDT (1356m), SOLUSDT (1362m), XRPUSDT (1351m), BNBUSDT (1360m)",,,2026-07-16 06:19:30.463318,t,t,2026-07-16 06:19:30.463488,5683d2c35495ade4
+2655,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:19:32.00897,f,f,2026-07-16 07:19:32.009298,dd1f4bbe5a1b3e20
+2634,safety,CRITICAL,"Data stale: BTCUSDT (1363m), ETHUSDT (1361m), SOLUSDT (1367m), XRPUSDT (1356m), BNBUSDT (1365m)",,,2026-07-16 06:24:30.590065,t,t,2026-07-16 06:24:30.590338,40974687bb880cfb
+2657,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:24:32.160331,f,f,2026-07-16 07:24:32.160597,2cdac6b0730b1f07
+2636,safety,CRITICAL,"Data stale: BTCUSDT (1368m), ETHUSDT (1366m), SOLUSDT (1372m), XRPUSDT (1361m), BNBUSDT (1370m)",,,2026-07-16 06:29:30.71275,t,t,2026-07-16 06:29:30.712921,d49b9434fe165389
+2659,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:29:32.32855,f,f,2026-07-16 07:29:32.328933,b1e1f20e45649c69
+2638,safety,CRITICAL,"Data stale: BTCUSDT (1373m), ETHUSDT (1371m), SOLUSDT (1377m), XRPUSDT (1366m), BNBUSDT (1375m)",,,2026-07-16 06:34:30.832176,t,t,2026-07-16 06:34:30.832404,3adbcd92f5975c26
+2661,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:34:32.641739,f,f,2026-07-16 07:34:32.643178,e28fa1c90e7bdb48
+2640,safety,CRITICAL,"Data stale: BTCUSDT (1378m), ETHUSDT (1376m), SOLUSDT (1382m), XRPUSDT (1371m), BNBUSDT (1380m)",,,2026-07-16 06:39:30.947703,t,t,2026-07-16 06:39:30.947892,2e9ae4fe9db0e43d
+2663,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:39:33.006594,f,f,2026-07-16 07:39:33.019678,aea8c8ddd7a84494
+2665,safety,WARNING,CIRCUIT BREAKER TRIPPED — 12 critical errors in last hour,,,2026-07-16 07:44:23.05024,f,f,2026-07-16 07:44:23.053643,197949d3a67774da
+2642,safety,CRITICAL,"Data stale: BTCUSDT (1383m), ETHUSDT (1381m), SOLUSDT (1387m), XRPUSDT (1376m), BNBUSDT (1385m)",,,2026-07-16 06:44:31.067582,t,t,2026-07-16 06:44:31.067759,f52ce88dd5b0bbd9
+2667,safety,WARNING,CIRCUIT BREAKER TRIPPED — 12 critical errors in last hour,,,2026-07-16 07:49:24.051677,f,f,2026-07-16 07:49:24.052306,9056b3571244d60b
+2644,safety,CRITICAL,"Data stale: BTCUSDT (1388m), ETHUSDT (1386m), SOLUSDT (1392m), XRPUSDT (1381m), BNBUSDT (1390m)",,,2026-07-16 06:49:31.185397,t,t,2026-07-16 06:49:31.185555,c4038737658692e4
+2668,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-16 07:54:24.398959,f,f,2026-07-16 07:54:24.399319,48209b16e281d82b
+2646,safety,CRITICAL,"Data stale: BTCUSDT (1393m), ETHUSDT (1391m), SOLUSDT (1397m), XRPUSDT (1386m), BNBUSDT (1395m)",,,2026-07-16 06:54:31.321173,t,t,2026-07-16 06:54:31.321428,b3cefc087bd47c59
+2669,safety,WARNING,CIRCUIT BREAKER TRIPPED — 10 critical errors in last hour,,,2026-07-16 07:59:24.551354,f,f,2026-07-16 07:59:24.55171,45a2b1891d4771fb
+2648,safety,CRITICAL,"Data stale: BTCUSDT (1398m), ETHUSDT (1396m), SOLUSDT (1402m), XRPUSDT (1391m), BNBUSDT (1400m)",,,2026-07-16 06:59:31.468341,t,t,2026-07-16 06:59:31.468502,4d6173e841aa3fa5
+2670,safety,WARNING,CIRCUIT BREAKER TRIPPED — 9 critical errors in last hour,,,2026-07-16 08:04:24.709135,f,f,2026-07-16 08:04:24.70951,bdef74bb6f9e9f43
+2650,safety,CRITICAL,"Data stale: BTCUSDT (1403m), ETHUSDT (1401m), SOLUSDT (1407m), XRPUSDT (1396m), BNBUSDT (1405m)",,,2026-07-16 07:04:31.630811,t,t,2026-07-16 07:04:31.631097,091ec9e5e9731185
+2671,safety,WARNING,CIRCUIT BREAKER TRIPPED — 8 critical errors in last hour,,,2026-07-16 08:09:24.865118,f,f,2026-07-16 08:09:24.865742,751fe566c5719b56
+2652,safety,CRITICAL,"Data stale: BTCUSDT (1408m), ETHUSDT (1406m), SOLUSDT (1412m), XRPUSDT (1401m), BNBUSDT (1410m)",,,2026-07-16 07:09:31.772799,t,t,2026-07-16 07:09:31.773069,974a3726befdf33d
+2672,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-16 08:10:49.405364,f,f,2026-07-16 08:10:49.40579,704d0fc6a542d386
+2654,safety,CRITICAL,"Data stale: BTCUSDT (1413m), ETHUSDT (1411m), SOLUSDT (1417m), XRPUSDT (1406m), BNBUSDT (1415m)",,,2026-07-16 07:14:31.899102,t,t,2026-07-16 07:14:31.899395,d7a45565d63fd46d
+2673,safety,WARNING,CIRCUIT BREAKER TRIPPED — 6 critical errors in last hour,,,2026-07-16 08:15:49.765199,f,f,2026-07-16 08:15:49.765997,0450226627ab619e
+2656,safety,CRITICAL,"Data stale: BTCUSDT (1418m), ETHUSDT (1416m), SOLUSDT (1422m), XRPUSDT (1411m), BNBUSDT (1420m)",,,2026-07-16 07:19:32.04581,t,t,2026-07-16 07:19:32.046023,50476afacc5ab841
+2674,safety,WARNING,CIRCUIT BREAKER TRIPPED — 5 critical errors in last hour,,,2026-07-16 08:20:50.323516,f,f,2026-07-16 08:20:50.325294,7219dff524d8f23d
+2660,safety,CRITICAL,"Data stale: BTCUSDT (1428m), ETHUSDT (1426m), SOLUSDT (1432m), XRPUSDT (1421m), BNBUSDT (1430m)",,,2026-07-16 07:29:32.522239,t,t,2026-07-16 07:29:32.522402,16f4d4b52cefb8bd
+2662,safety,CRITICAL,"Data stale: BTCUSDT (1433m), ETHUSDT (1431m), SOLUSDT (1437m), XRPUSDT (1426m), BNBUSDT (1435m)",,,2026-07-16 07:34:32.830386,t,t,2026-07-16 07:34:32.830558,cac553b545087fbe
+2664,safety,CRITICAL,"Data stale: BTCUSDT (1438m), ETHUSDT (1436m), SOLUSDT (1442m), XRPUSDT (1431m), BNBUSDT (1440m)",,,2026-07-16 07:39:33.318703,t,t,2026-07-16 07:39:33.319277,82b3adea4700daa3
+2666,safety,CRITICAL,"Data stale: BTCUSDT (1442m), ETHUSDT (1440m), SOLUSDT (1446m), XRPUSDT (1435m), BNBUSDT (1444m)",,,2026-07-16 07:44:23.819041,t,t,2026-07-16 07:44:23.819287,74e3e1bd53b0bcb7
+2658,safety,CRITICAL,"Data stale: BTCUSDT (1423m), ETHUSDT (1421m), SOLUSDT (1427m), XRPUSDT (1416m), BNBUSDT (1425m)",,,2026-07-16 07:24:32.200193,t,t,2026-07-16 07:24:32.200395,e2f9ba06f0b9f390
+2675,safety,WARNING,CIRCUIT BREAKER TRIPPED — 4 critical errors in last hour,,,2026-07-16 08:25:51.051004,f,f,2026-07-16 08:25:51.053335,f6e5a86bd787253f
+2676,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-16 08:30:52.281175,f,f,2026-07-16 08:30:52.282684,6e765b44688ecb1e
+2677,safety,CRITICAL,"Data stale: BTCUSDT (20m), ETHUSDT (25m), SOLUSDT (24m), XRPUSDT (23m), BNBUSDT (22m)",,,2026-07-16 08:41:29.636108,t,t,2026-07-16 08:41:29.640783,4a36647d6e0695c0
+2678,safety,CRITICAL,"Data stale: BTCUSDT (43m), ETHUSDT (48m), SOLUSDT (47m), XRPUSDT (46m), BNBUSDT (45m)",,,2026-07-16 09:03:32.068802,t,t,2026-07-16 09:03:32.069293,55882ee501f2a3d3
+2679,safety,CRITICAL,"Data stale: BTCUSDT (605m), ETHUSDT (610m), SOLUSDT (609m), XRPUSDT (608m), BNBUSDT (607m)",,,2026-07-16 18:25:59.044459,t,t,2026-07-16 18:25:59.047426,1cfc705d83549c96
+2680,safety,CRITICAL,"Data stale: BTCUSDT (606m), ETHUSDT (611m), SOLUSDT (610m), XRPUSDT (609m), BNBUSDT (608m)",,,2026-07-16 18:27:09.348456,t,t,2026-07-16 18:27:09.348976,03381f67e186f705
+2681,safety,WARNING,Mismatch: 3 open trades vs 4 ledger entries,,,2026-07-17 13:01:40.944088,f,f,2026-07-17 13:01:40.94458,706aa149de01dcee
+2682,invariant,CRITICAL,INVARIANT BREACH: risk_ledger (4) != paper_trades (3),,,2026-07-17 13:01:40.960673,t,t,2026-07-17 13:01:40.961399,756c73a5a0b13c77
+2683,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for BTCUSDT,,,2026-07-17 13:42:36.791407,t,t,2026-07-17 13:42:36.791761,652e42d43bd09181
+2687,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-19 16:32:43.603402,f,f,2026-07-19 16:32:43.607715,f808ace379f60b82
+2689,safety,WARNING,CIRCUIT BREAKER TRIPPED — 4 critical errors in last hour,,,2026-07-19 16:37:43.901669,f,f,2026-07-19 16:37:43.90554,d51bda3ae6ce236f
+2684,safety,CRITICAL,"Data stale: BTCUSDT (71m), ETHUSDT (75m), SOLUSDT (74m), XRPUSDT (73m), BNBUSDT (72m)",,,2026-07-19 15:40:00.609892,t,t,2026-07-19 15:40:00.611705,4271426fc056bded
+2691,safety,WARNING,CIRCUIT BREAKER TRIPPED — 4 critical errors in last hour,,,2026-07-19 16:42:44.321107,f,f,2026-07-19 16:42:44.334853,093057f4949fd435
+2693,safety,WARNING,CIRCUIT BREAKER TRIPPED — 5 critical errors in last hour,,,2026-07-19 16:47:44.779464,f,f,2026-07-19 16:47:44.781498,17ea78eeea11679a
+2695,safety,WARNING,CIRCUIT BREAKER TRIPPED — 6 critical errors in last hour,,,2026-07-19 16:52:45.184632,f,f,2026-07-19 16:52:45.199037,78f6fd4d1ae5ae35
+2697,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-19 16:58:12.528607,f,f,2026-07-19 16:58:12.531624,e058edd41102a61c
+2698,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-19 17:03:13.401111,f,f,2026-07-19 17:03:13.403516,c327146e023145e0
+2699,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-19 17:08:13.946771,f,f,2026-07-19 17:08:13.95547,aee6c2ada6e6724e
+2700,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-19 17:13:14.848483,f,f,2026-07-19 17:13:14.85196,4bde0fb8d925e726
+2701,safety,WARNING,CIRCUIT BREAKER TRIPPED — 7 critical errors in last hour,,,2026-07-19 17:18:15.167701,f,f,2026-07-19 17:18:15.169021,c6e94fb930333594
+2685,safety,CRITICAL,"Data stale: BTCUSDT (24m), ETHUSDT (22m), SOLUSDT (21m)",,,2026-07-19 16:22:42.33843,t,t,2026-07-19 16:22:42.340065,75e3c779730ac515
+2702,safety,WARNING,CIRCUIT BREAKER TRIPPED — 6 critical errors in last hour,,,2026-07-19 17:23:15.643942,f,f,2026-07-19 17:23:15.644361,6135f172ab14104a
+2686,safety,CRITICAL,"Data stale: BTCUSDT (29m), ETHUSDT (27m), SOLUSDT (26m), XRPUSDT (25m), BNBUSDT (24m)",,,2026-07-19 16:27:43.378041,t,t,2026-07-19 16:27:43.384,63674b0e3e6f5290
+2703,safety,WARNING,CIRCUIT BREAKER TRIPPED — 5 critical errors in last hour,,,2026-07-19 17:28:15.957368,f,f,2026-07-19 17:28:15.958379,c3053d6ab6d56f25
+2688,safety,CRITICAL,"Data stale: BTCUSDT (34m), ETHUSDT (32m), SOLUSDT (31m), XRPUSDT (30m), BNBUSDT (29m)",,,2026-07-19 16:32:43.674342,t,t,2026-07-19 16:32:43.674933,8e1700d71eaa5dd9
+2704,safety,WARNING,CIRCUIT BREAKER TRIPPED — 4 critical errors in last hour,,,2026-07-19 17:33:16.358852,f,f,2026-07-19 17:33:16.361597,bb00c41b10842601
+2690,safety,CRITICAL,"Data stale: BTCUSDT (39m), ETHUSDT (37m), SOLUSDT (36m), XRPUSDT (35m), BNBUSDT (34m)",,,2026-07-19 16:37:44.032545,t,t,2026-07-19 16:37:44.033355,caa16203ac5daf36
+2705,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-19 17:38:16.769273,f,f,2026-07-19 17:38:16.781842,84cd79bb1e995358
+2692,safety,CRITICAL,"Data stale: BTCUSDT (44m), ETHUSDT (42m), SOLUSDT (41m), XRPUSDT (40m), BNBUSDT (39m)",,,2026-07-19 16:42:44.518104,t,t,2026-07-19 16:42:44.520315,de19ae2123283cf9
+2694,safety,CRITICAL,"Data stale: BTCUSDT (49m), ETHUSDT (47m), SOLUSDT (46m), XRPUSDT (45m), BNBUSDT (44m)",,,2026-07-19 16:47:44.899704,t,t,2026-07-19 16:47:44.90585,a6b54b8ddee40eb4
+2696,safety,CRITICAL,"Data stale: SOLUSDT (51m), XRPUSDT (50m), BNBUSDT (49m)",,,2026-07-19 16:52:45.323251,t,t,2026-07-19 16:52:45.32423,30c58c57b5ffcc13
+2706,safety,WARNING,"Post-flight check failed: current transaction is aborted, commands ignored until end of transaction block
+",,,2026-07-20 11:18:12.13499,f,f,2026-07-20 11:18:12.135286,87aeedd1b07bc53d
+2707,invariant,CRITICAL,INVARIANT BREACH: expiry mismatch for BTCUSDT,,,2026-07-20 19:07:19.197067,t,t,2026-07-20 19:07:19.197483,d59167574ef526df
+2708,safety,WARNING,Mismatch: 1 open trades vs 2 ledger entries,,,2026-07-21 07:59:00.938864,f,f,2026-07-21 07:59:00.94177,dd6ccb8f53c86a67
+2709,invariant,CRITICAL,INVARIANT BREACH: risk_ledger (2) != paper_trades (1),,,2026-07-21 07:59:00.97957,t,t,2026-07-21 07:59:00.980013,ff8bcdd2ce3f5bde
+2710,safety,CRITICAL,"Drawdown halt: true_equity=4746.81, balance=15787.13, floating_pnl=19.39",,,2026-07-21 10:31:35.617989,t,t,2026-07-21 10:31:35.623765,f5e804e50b15e8f3
+2711,safety,CRITICAL,"Data stale: BTCUSDT (31m), ETHUSDT (36m), SOLUSDT (28m), XRPUSDT (34m), BNBUSDT (33m)",,,2026-07-21 13:30:43.283201,t,f,2026-07-21 13:30:43.285787,83dfacc6997d5f2c
+2712,safety,CRITICAL,"Data stale: BTCUSDT (36m), ETHUSDT (41m), SOLUSDT (33m), XRPUSDT (39m), BNBUSDT (38m)",,,2026-07-21 13:35:43.605049,t,f,2026-07-21 13:35:43.607418,192379bc52924ec3
+2713,safety,CRITICAL,"Data stale: BTCUSDT (41m), ETHUSDT (46m), SOLUSDT (38m), XRPUSDT (44m), BNBUSDT (43m)",,,2026-07-21 13:40:43.873486,t,f,2026-07-21 13:40:43.874676,227c0464e8ce3598
+2714,safety,WARNING,CIRCUIT BREAKER TRIPPED — 3 critical errors in last hour,,,2026-07-21 13:45:44.041811,f,f,2026-07-21 13:45:44.042657,5b8c9a101224d9a6
+2715,safety,CRITICAL,"Data stale: BTCUSDT (46m), ETHUSDT (51m), SOLUSDT (43m), XRPUSDT (49m), BNBUSDT (48m)",,,2026-07-21 13:45:44.103273,t,f,2026-07-21 13:45:44.103517,b7f6cbcf8b53b40d
+2716,safety,WARNING,CIRCUIT BREAKER TRIPPED — 4 critical errors in last hour,,,2026-07-21 13:50:44.324017,f,f,2026-07-21 13:50:44.325176,54c0e94ac848ce11
+2717,safety,CRITICAL,"Data stale: BTCUSDT (51m), ETHUSDT (56m), SOLUSDT (48m), XRPUSDT (54m), BNBUSDT (53m)",,,2026-07-21 13:50:44.371508,t,f,2026-07-21 13:50:44.373203,2d07e9a890098a63
+2718,safety,WARNING,CIRCUIT BREAKER TRIPPED — 5 critical errors in last hour,,,2026-07-21 13:55:44.527031,f,f,2026-07-21 13:55:44.529128,4bd8367686d45ff3
+2720,safety,WARNING,CIRCUIT BREAKER TRIPPED — 6 critical errors in last hour,,,2026-07-21 14:00:44.717752,f,f,2026-07-21 14:00:44.71805,052645c1d62e7edf
+2723,safety,CRITICAL,"Data stale: BTCUSDT (66m), ETHUSDT (71m), SOLUSDT (63m), XRPUSDT (69m), BNBUSDT (68m)",,,2026-07-21 14:05:44.997545,t,f,2026-07-21 14:05:44.997781,8eb2cdd637d12562
+2724,safety,WARNING,CIRCUIT BREAKER TRIPPED — 8 critical errors in last hour,,,2026-07-21 14:10:45.160254,f,f,2026-07-21 14:10:45.160687,be850c83582a3701
+2725,safety,CRITICAL,"Data stale: BTCUSDT (71m), ETHUSDT (76m), SOLUSDT (68m), XRPUSDT (74m), BNBUSDT (73m)",,,2026-07-21 14:10:45.217783,t,f,2026-07-21 14:10:45.218026,4f0bbf36e03c83ee
+2726,safety,WARNING,CIRCUIT BREAKER TRIPPED — 9 critical errors in last hour,,,2026-07-21 14:15:45.359785,f,f,2026-07-21 14:15:45.3601,65a71c2364921834
+2727,safety,CRITICAL,"Data stale: BTCUSDT (76m), ETHUSDT (81m), SOLUSDT (73m), XRPUSDT (79m), BNBUSDT (78m)",,,2026-07-21 14:15:45.398722,t,f,2026-07-21 14:15:45.398868,989ba5ee2b1557bd
+2728,safety,WARNING,CIRCUIT BREAKER TRIPPED — 10 critical errors in last hour,,,2026-07-21 14:20:45.56292,f,f,2026-07-21 14:20:45.5645,5cdc585d5efbad27
+2729,safety,CRITICAL,"Data stale: ETHUSDT (86m), SOLUSDT (78m), XRPUSDT (84m), BNBUSDT (83m)",,,2026-07-21 14:20:45.655138,t,f,2026-07-21 14:20:45.65893,098661c7bdbcccb2
+2730,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-21 14:25:45.994538,f,f,2026-07-21 14:25:45.996059,297ddf16499d23ad
+2731,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-21 14:27:18.076907,f,f,2026-07-21 14:27:18.082142,124f1df86042b559
+2732,safety,WARNING,CIRCUIT BREAKER TRIPPED — 11 critical errors in last hour,,,2026-07-21 14:30:02.171542,f,f,2026-07-21 14:30:02.172047,bae42a4d2bad43d8

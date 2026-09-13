@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Ingestion Pipeline · VLTHR</title>
+<style>
+:root{--bg:#000;--surface:#0a0a0a;--surface-2:#141414;--surface-3:#1a1a1a;--border:#222;--border-light:#2a2a2a;--text:#e8e8e8;--text-2:#a0a0a0;--text-muted:#666;--accent:#e82127;--accent-dim:rgba(232,33,39,.15);--accent-glow:rgba(232,33,39,.4);--blue:#2d7ff9;--green:#00e676;--yellow:#ffd600;--orange:#ff9100;--purple:#b388ff;--red:#ff5252;--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1);--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 32px}
+.hero{position:relative;padding:80px 0 60px;text-align:center;background:radial-gradient(ellipse at center,var(--surface-2) 0%,var(--bg) 70%);border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 50%);animation:pulse-glow 6s ease-in-out infinite;pointer-events:none}
+@keyframes pulse-glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:3em;font-weight:700;letter-spacing:-1px;margin-bottom:12px;position:relative;animation:fade-up .8s ease-out}
+.hero h1 .accent{color:var(--accent)}
+.hero .subtitle{font-size:1.2em;color:var(--text-2);margin-bottom:24px;position:relative;animation:fade-up .8s ease-out .1s both}
+.hero .meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;animation:fade-up .8s ease-out .2s both}
+.hero .meta-item{text-align:center}
+.hero .meta-item .label{font-size:.75em;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero .meta-item .value{font-size:1.3em;font-weight:600;color:var(--text)}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 24px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:.9em;font-weight:500;cursor:pointer;white-space:nowrap;transition:var(--transition);border-bottom:2px solid transparent;position:relative}
+.tab-btn:hover{color:var(--text);background:var(--surface-2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-num{font-size:.75em;opacity:.5;margin-right:4px}
+.tab-content{display:none;padding:48px 0;animation:fade-in .4s ease-out}
+.tab-content.active{display:block}
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h2{font-size:2em;font-weight:700;letter-spacing:-.5px;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:1.4em;font-weight:600;margin-top:40px;margin-bottom:16px;color:var(--text)}
+h4{font-size:1.15em;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--text-2)}
+p{margin-bottom:14px;color:var(--text)}
+ul,ol{margin-bottom:16px;padding-left:24px}
+li{margin-bottom:6px;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);background:var(--surface-3);padding:2px 8px;border-radius:4px;font-size:.88em;color:var(--accent);border:1px solid var(--border)}
+pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin-bottom:20px;font-size:.85em}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.9em;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-size:.8em;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;transition:var(--transition)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.card-title{font-size:1.1em;font-weight:600;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78em;font-weight:600;letter-spacing:.3px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.3)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.3)}
+.badge-purple{background:rgba(179,136,255,.12);color:var(--purple);border:1px solid rgba(179,136,255,.3)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.3)}
+.badge-orange{background:rgba(255,145,0,.12);color:var(--orange);border:1px solid rgba(255,145,0,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:20px}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:600;margin-bottom:8px;color:var(--text)}
+.metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;transition:var(--transition)}
+.metric-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-tile .metric-value{font-size:2em;font-weight:700;margin-bottom:4px}
+.metric-tile .metric-label{font-size:.8em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85em}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>Data <span class="accent">Ingestion</span> Pipeline</h1>
+  <p class="subtitle">Bybit V5 market data collection. OHLCV, funding, open interest, orderbook, enriched parquet output.</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Service</div><div class="value">data-ingestion</div></div>
+    <div class="meta-item"><div class="label">Image</div><div class="value">python:3.11-slim</div></div>
+    <div class="meta-item"><div class="label">Symbols</div><div class="value">6</div></div>
+    <div class="meta-item"><div class="label">Timeframes</div><div class="value">7</div></div>
+    <div class="meta-item"><div class="label">Container</div><div class="value">vlthr-data-ingestion</div></div>
+  </div>
+</section>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)"><span class="tab-num">01</span>Overview</button>
+  <button class="tab-btn" onclick="switchTab(1)"><span class="tab-num">02</span>Architecture</button>
+  <button class="tab-btn" onclick="switchTab(2)"><span class="tab-num">03</span>Schedule</button>
+  <button class="tab-btn" onclick="switchTab(3)"><span class="tab-num">04</span>Data Types</button>
+  <button class="tab-btn" onclick="switchTab(4)"><span class="tab-num">05</span>Storage</button>
+  <button class="tab-btn" onclick="switchTab(5)"><span class="tab-num">06</span>Docker Config</button>
+  <button class="tab-btn" onclick="switchTab(6)"><span class="tab-num">07</span>Rate Limiting</button>
+</div>
+
+<div class="container">
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content active" id="tab-0">
+  <h2>Overview</h2>
+  <p>The data ingestion service collects market data from Bybit's V5 API for 6 crypto perpetual symbols across 7 timeframes. It runs as a Docker container with three concurrent processes, writing partitioned Parquet files to a shared volume.</p>
+
+  <div class="grid-4">
+    <div class="metric-tile"><div class="metric-value" style="color:var(--accent)">6</div><div class="metric-label">Symbols</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--blue)">7</div><div class="metric-label">Timeframes</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--green)">3</div><div class="metric-label">Processes</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--orange)">2s</div><div class="metric-label">Throttle</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Symbols Tracked</div>
+    <table>
+      <thead><tr><th>Symbol</th><th>Category</th><th>Exchange</th></tr></thead>
+      <tbody>
+        <tr><td>BTCUSDT</td><td>Major</td><td>Bybit Linear Perpetual</td></tr>
+        <tr><td>ETHUSDT</td><td>Major</td><td>Bybit Linear Perpetual</td></tr>
+        <tr><td>SOLUSDT</td><td>Alt</td><td>Bybit Linear Perpetual</td></tr>
+        <tr><td>XRPUSDT</td><td>Alt</td><td>Bybit Linear Perpetual</td></tr>
+        <tr><td>BNBUSDT</td><td>Alt</td><td>Bybit Linear Perpetual</td></tr>
+        <tr><td>DOGEUSDT</td><td>Meme</td><td>Bybit Linear Perpetual</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Timeframes</div>
+    <table>
+      <thead><tr><th>Timeframe</th><th>Source</th><th>Cadence</th></tr></thead>
+      <tbody>
+        <tr><td>1m</td><td>minute_scheduler</td><td>Every minute + 5s offset</td></tr>
+        <tr><td>5m</td><td>data_scheduler</td><td>Every 5 min + 30s offset</td></tr>
+        <tr><td>15m</td><td>data_scheduler</td><td>Every 15 min + 60s offset</td></tr>
+        <tr><td>30m</td><td>data_scheduler</td><td>Every 30 min + 90s offset</td></tr>
+        <tr><td>1h</td><td>data_scheduler</td><td>Every 1 hour + 150s offset</td></tr>
+        <tr><td>4h</td><td>data_scheduler</td><td>Every 4 hours + 240s offset</td></tr>
+        <tr><td>1d</td><td>data_scheduler</td><td>Every 4 hours (batch)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Docker Service</div>
+    Runs as <code>vlthr-data-ingestion</code> container. Built from <code>./data-ingestion/Dockerfile</code>. Entrypoint is <code>run_ingestion.sh</code> which launches 3 Python processes. Depends on PostgreSQL health check. Restart policy: <code>unless-stopped</code>.
+  </div>
+</div>
+
+<!-- TAB 1: ARCHITECTURE -->
+<div class="tab-content" id="tab-1">
+  <h2>Architecture</h2>
+  <p>Three concurrent processes run inside a single container, coordinated by <code>run_ingestion.sh</code>. All processes write to the same Parquet store via a shared volume mount.</p>
+
+  <div class="card">
+    <div class="card-title">Process 1: data_scheduler.py</div>
+    <p>Fetches OHLCV candles (5m, 15m, 30m, 1h, 4h, 1d), funding rates, open interest, orderbook L2 snapshots, and runs the enrichment merger. Uses candle-aligned scheduling with wall-clock offsets.</p>
+    <ul>
+      <li><strong>Core module:</strong> <code>scheduler_core.py</code> (690 lines) — shared throttle client, incremental fetch logic</li>
+      <li><strong>Ingest core:</strong> <code>bybit_ingest_core.py</code> — OHLCV V5 kline fetch, gap detection, backfill</li>
+      <li><strong>Market data:</strong> <code>bybit_market_data_core.py</code> — funding, OI, orderbook L2</li>
+      <li><strong>Enrichment:</strong> <code>bybit_enrich_core.py</code> — merges OHLCV + OI + funding via <code>merge_asof</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Process 2: minute_scheduler.py</div>
+    <p>Dedicated 1-minute OHLCV fetcher for all 6 symbols. Uses <code>PROXY_URL_2</code> (secondary proxy) to distribute network load. Fires at <code>:00</code> + 5s offset each minute.</p>
+    <ul>
+      <li><strong>Storage:</strong> <code>data/bybit/{SYMBOL}/1m/{YYYY}/{MM}.parquet</code></li>
+      <li><strong>Rate:</strong> 6 requests per minute (0.1 req/s)</li>
+      <li><strong>Proxy:</strong> Reads <code>PROXY_URL_2</code> from env, falls back to <code>PROXY_URL</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Process 3: scheduler_monitor.py</div>
+    <p>Watches scheduler logs, sends Telegram alerts on failures, and produces hourly health reports. Monitors both <code>data_scheduler</code> and <code>minute_scheduler</code> output.</p>
+    <ul>
+      <li><strong>Alert channel:</strong> Telegram bot</li>
+      <li><strong>Report cadence:</strong> Hourly summary</li>
+      <li><strong>Failure detection:</strong> Log pattern matching</li>
+    </ul>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Process Lifecycle</div>
+    If any process exits, <code>run_ingestion.sh</code> shuts down all remaining processes via SIGTERM trap. The Docker restart policy (<code>unless-stopped</code>) restarts the container.
+  </div>
+</div>
+
+<!-- TAB 2: SCHEDULE -->
+<div class="tab-content" id="tab-2">
+  <h2>Schedule Configuration</h2>
+  <p>All scheduling is candle-aligned. Each data type fires at absolute wall-clock boundaries plus a fixed offset so the fetch happens just after the candle closes.</p>
+
+  <div class="card">
+    <div class="card-title">Interval Configuration (data_scheduler)</div>
+    <table>
+      <thead><tr><th>Data Type</th><th>Interval</th><th>Offset</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Orderbook L2</td><td>5 min</td><td>+10s</td><td>Snapshot of top 50 bids/asks</td></tr>
+        <tr><td>OHLCV 5m</td><td>5 min</td><td>+30s</td><td>5-minute candles</td></tr>
+        <tr><td>OHLCV 15m</td><td>15 min</td><td>+60s</td><td>15-minute candles</td></tr>
+        <tr><td>OHLCV 30m</td><td>30 min</td><td>+90s</td><td>30-minute candles</td></tr>
+        <tr><td>Enrich</td><td>15 min</td><td>+120s</td><td>Merge OHLCV + OI + funding</td></tr>
+        <tr><td>OHLCV 1h</td><td>1 hour</td><td>+150s</td><td>1-hour candles</td></tr>
+        <tr><td>Funding Rate</td><td>1 hour</td><td>+180s</td><td>Funding rate history</td></tr>
+        <tr><td>Open Interest</td><td>1 hour</td><td>+210s</td><td>OI history</td></tr>
+        <tr><td>OHLCV 4h</td><td>4 hours</td><td>+240s</td><td>4-hour candles</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Startup Behavior</div>
+    <p>On launch, <code>data_scheduler</code> runs a full sequential pass for all symbols and all data types immediately. No waiting for the first interval boundary. After the startup pass, candle-aligned scheduling takes over.</p>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Sequential Processing</div>
+    For each interval tick, all 6 symbols are processed one-by-one with a 2-second global throttle between API calls. 6 symbols times approximately 9 requests equals roughly 18 seconds per interval pass. Well inside Bybit's 600 req / 5s limit.
+  </div>
+</div>
+
+<!-- TAB 3: DATA TYPES -->
+<div class="tab-content" id="tab-3">
+  <h2>Data Types</h2>
+
+  <div class="card">
+    <div class="card-title">OHLCV Candles</div>
+    <p>Open, High, Low, Close, Volume data from Bybit V5 kline endpoint. Fetched for 7 timeframes (1m, 5m, 15m, 30m, 1h, 4h, 1d). Incremental fetch with gap detection and automatic backfill.</p>
+    <ul>
+      <li><strong>Endpoint:</strong> <code>https://api.bybit.com/v5/market/kline</code></li>
+      <li><strong>Category:</strong> <code>linear</code></li>
+      <li><strong>Page size:</strong> 1000 candles max</li>
+      <li><strong>Retry:</strong> 6 attempts with exponential backoff (base 2.0)</li>
+      <li><strong>Gap detection:</strong> Threshold at 1.5x expected interval</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Funding Rate</div>
+    <p>Historical funding rates for each symbol. Fetched hourly with pagination support.</p>
+    <ul>
+      <li><strong>Endpoint:</strong> <code>/v5/market/funding/history</code></li>
+      <li><strong>Page limit:</strong> 200 records</li>
+      <li><strong>Storage:</strong> <code>data/bybit/{SYMBOL}/funding/{YYYY}/{MM}.parquet</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Open Interest</div>
+    <p>Historical open interest data. Fetched hourly.</p>
+    <ul>
+      <li><strong>Endpoint:</strong> <code>/v5/market/open-interest</code></li>
+      <li><strong>Page limit:</strong> 200 records</li>
+      <li><strong>Storage:</strong> <code>data/bybit/{SYMBOL}/oi/{YYYY}/{MM}.parquet</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Orderbook L2</div>
+    <p>Level 2 orderbook snapshots (top 50 bids and asks). Fetched every 5 minutes.</p>
+    <ul>
+      <li><strong>Endpoint:</strong> <code>/v5/market/orderbook</code></li>
+      <li><strong>Depth:</strong> 50 levels</li>
+      <li><strong>Storage:</strong> <code>data/bybit/{SYMBOL}/orderbook/{YYYY}/{MM}/{DD}.parquet</code></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Enriched Parquet</div>
+    <p>Merges OHLCV + open interest + funding rate into a single file per symbol, timeframe, year, and month. Uses <code>merge_asof</code> with backward direction for temporal alignment. No future leakage.</p>
+    <ul>
+      <li><strong>Alignment rule:</strong> For each candle timestamp, fetch the most recent OI and funding rate at or before that timestamp</li>
+      <li><strong>Output:</strong> <code>data/bybit/{SYMBOL}/enriched/{TF}/{YYYY}/{MM}.parquet</code></li>
+      <li><strong>Compression:</strong> Zstandard</li>
+      <li><strong>Cadence:</strong> Every 15 minutes, +120s offset</li>
+    </ul>
+  </div>
+</div>
+
+<!-- TAB 4: STORAGE -->
+<div class="tab-content" id="tab-4">
+  <h2>Storage Layout</h2>
+  <p>All data is stored as partitioned Parquet files on disk. The container mounts <code>./data</code> to <code>/app/data</code> as a read-write volume.</p>
+
+  <div class="card">
+    <div class="card-title">Directory Structure</div>
+    <pre><code>data/
+  bybit/
+    BTCUSDT/
+      1m/2025/07.parquet
+      5m/2025/07.parquet
+      15m/2025/07.parquet
+      30m/2025/07.parquet
+      1h/2025/07.parquet
+      4h/2025/07.parquet
+      1d/2025/07.parquet
+      funding/2025/07.parquet
+      oi/2025/07.parquet
+      orderbook/2025/07/15.parquet
+      enriched/15m/2025/07.parquet
+    ETHUSDT/
+      ...
+    SOLUSDT/
+      ...
+    XRPUSDT/
+      ...
+    BNBUSDT/
+      ...
+    DOGEUSDT/
+      ...</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Parquet Schema (OHLCV)</div>
+    <table>
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>timestamp</td><td>datetime64[UTC]</td><td>Candle open time</td></tr>
+        <tr><td>open</td><td>float64</td><td>Open price</td></tr>
+        <tr><td>high</td><td>float64</td><td>High price</td></tr>
+        <tr><td>low</td><td>float64</td><td>Low price</td></tr>
+        <tr><td>close</td><td>float64</td><td>Close price</td></tr>
+        <tr><td>volume</td><td>float64</td><td>Volume in base currency</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Write Strategy</div>
+    <p>Atomic writes via temp file rename. Each partition is written to a <code>.tmp</code> file first, then atomically renamed to the final path. This prevents partial reads by downstream consumers.</p>
+    <ul>
+      <li><strong>Compression:</strong> Zstandard for enriched, snappy for raw OHLCV</li>
+      <li><strong>Deduplication:</strong> On read, timestamps are deduplicated and sorted</li>
+      <li><strong>Validation:</strong> Gap detection runs on each fetch cycle</li>
+    </ul>
+  </div>
+</div>
+
+<!-- TAB 5: DOCKER CONFIG -->
+<div class="tab-content" id="tab-5">
+  <h2>Docker Configuration</h2>
+
+  <div class="card">
+    <div class="card-title">Service Definition</div>
+    <pre><code>data-ingestion:
+  build:
+    context: ./data-ingestion
+    dockerfile: Dockerfile
+  container_name: vlthr-data-ingestion
+  env_file:
+    - .env
+  environment:
+    - DATA_ROOT=/app/data
+  volumes:
+    - ./data-ingestion/workers:/app/workers:ro
+    - ./data:/app/data
+    - ./.env:/app/.env:ro
+  working_dir: /app
+  depends_on:
+    postgres:
+      condition: service_healthy
+  networks:
+    - vlthr-net
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "pgrep", "-f", "data_scheduler.py"]
+    interval: 60s
+    timeout: 10s
+    retries: 3
+    start_period: 30s
+  entrypoint: ["/bin/bash", "/app/workers/run_ingestion.sh"]</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dockerfile</div>
+    <p>Base image: <code>python:3.11-slim</code>. Installs <code>libpq-dev</code> and <code>procps</code> (for <code>pgrep</code> used in healthcheck). Python packages: <code>requests</code>, <code>pandas</code>, <code>pyarrow</code>, <code>numpy</code>, <code>python-dotenv</code>, <code>urllib3</code>, <code>psycopg2-binary</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Volume Mounts</div>
+    <table>
+      <thead><tr><th>Host Path</th><th>Container Path</th><th>Mode</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>./data-ingestion/workers</td><td>/app/workers</td><td>ro</td><td>Python scripts</td></tr>
+        <tr><td>./data</td><td>/app/data</td><td>rw</td><td>Parquet data store</td></tr>
+        <tr><td>./.env</td><td>/app/.env</td><td>ro</td><td>Environment variables</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Health Check</div>
+    Docker healthcheck runs <code>pgrep -f data_scheduler.py</code> every 60s. If the main scheduler process dies, the container is marked unhealthy and restarted.
+  </div>
+</div>
+
+<!-- TAB 6: RATE LIMITING -->
+<div class="tab-content" id="tab-6">
+  <h2>Rate Limiting and Proxy</h2>
+
+  <div class="card">
+    <div class="card-title">Global Throttle</div>
+    <p>All API requests go through a single 2-second cooldown gate in <code>scheduler_core.py</code>. This ensures no burst patterns regardless of how many symbols or data types are being fetched.</p>
+    <ul>
+      <li><strong>Cooldown:</strong> 2.0 seconds between any two API calls</li>
+      <li><strong>Per interval pass:</strong> 6 symbols x ~9 requests = ~18 seconds</li>
+      <li><strong>Bybit limit:</strong> 600 requests per 5 seconds (we use 0.5 req/s)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Retry and Backoff</div>
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>MAX_RETRIES</td><td>6</td><td>Max retry attempts per request</td></tr>
+        <tr><td>BACKOFF_BASE</td><td>2.0</td><td>Exponential backoff base</td></tr>
+        <tr><td>RATE_LIMIT_SLEEP</td><td>30.0s</td><td>Sleep on HTTP 429 (rate limit)</td></tr>
+        <tr><td>REQUEST_DELAY</td><td>1.0s</td><td>Default delay between requests</td></tr>
+        <tr><td>TIMEOUT</td><td>60s</td><td>HTTP request timeout</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Proxy Support</div>
+    <p>The ingestion client supports HTTP/HTTPS proxies via environment variables. Useful when Bybit API is not directly accessible from the host network.</p>
+    <ul>
+      <li><strong>PROXY_URL:</strong> Primary proxy for data_scheduler</li>
+      <li><strong>PROXY_URL_2:</strong> Secondary proxy for minute_scheduler (falls back to PROXY_URL)</li>
+      <li><strong>Connection:</strong> <code>Connection: close</code> header to prevent connection pool issues in restricted networks</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Rate Limit Detection</div>
+    <p>When Bybit returns <code>retCode 10006</code> (rate limited), the client reads the <code>X-Bapi-Limit-Reset-Timestamp</code> header to calculate the exact wait time. Falls back to <code>RATE_LIMIT_SLEEP * attempt_number</code> if the header is missing.</p>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  VLTHR Data Ingestion Pipeline Documentation · Generated Jul 2026 · <a href="../docker-compose.yml" style="color:var(--accent)">docker-compose.yml</a>
+</div>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.tab-content').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

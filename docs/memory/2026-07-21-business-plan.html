@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLTHR Business Plan — Revenue Architecture & API Strategy</title>
+<style>
+:root{--bg:#0b0b0f;--surface:#141418;--card:#1c1c22;--border:rgba(255,255,255,.08);--text:#f5f5f7;--body:#a0a0a8;--mute:#6b6b73;--green:#28c840;--red:#ff5f57;--amber:#febc2e;--blue:#5b8def;--purple:#a78bfa;--gold:#FFD700;--cyan:#00E5FF;--radius:16px;--pill:999px;--font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'SF Mono','Fira Code','JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.container{max-width:1200px;margin:0 auto;padding:48px 24px}
+h1{font-size:40px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+h2{font-size:28px;font-weight:700;letter-spacing:-.02em;margin:56px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:22px;font-weight:600;margin:36px 0 12px}
+h4{font-size:17px;font-weight:600;margin:20px 0 8px}
+p{color:var(--body);margin-bottom:12px}
+strong{color:var(--text);font-weight:600}
+code{background:var(--surface);padding:2px 7px;border-radius:5px;font-size:13px;font-family:var(--mono);color:var(--cyan)}
+pre{background:var(--surface);padding:18px;border-radius:var(--radius);overflow-x:auto;margin:16px 0;font-size:12px;line-height:1.6;font-family:var(--mono);color:var(--body);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{text-align:left;padding:12px 16px;border-bottom:2px solid var(--text);font-weight:600;color:var(--text)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--body)}
+td strong{color:var(--text)}
+.badge{display:inline-block;padding:4px 12px;border-radius:var(--pill);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.b-live{background:rgba(40,200,64,.15);color:var(--green)}
+.b-plan{background:rgba(254,188,46,.15);color:var(--amber)}
+.b-new{background:rgba(167,139,250,.15);color:var(--purple)}
+.b-rev{background:rgba(255,215,0,.15);color:var(--gold)}
+.card{background:var(--card);border-radius:var(--radius);padding:24px;margin:12px 0;border:1px solid var(--border)}
+.card h4{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin:16px 0}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-right:4px;text-transform:uppercase}
+.t-api{background:rgba(0,229,255,.12);color:var(--cyan)}.t-ui{background:rgba(91,141,239,.12);color:var(--blue)}.t-db{background:rgba(167,139,250,.12);color:var(--purple)}.t-pipe{background:rgba(254,188,46,.12);color:var(--amber)}.t-ai{background:rgba(40,200,64,.12);color:var(--green)}.t-rev{background:rgba(255,215,0,.12);color:var(--gold)}
+.hero{background:linear-gradient(135deg,#0b0b0f 0%,#1a1a2e 50%,#0b0b0f 100%);border:1px solid var(--border);border-radius:var(--radius);padding:40px;margin:24px 0}
+.stat-row{display:flex;gap:32px;flex-wrap:wrap;margin:20px 0}
+.stat .num{font-size:36px;font-weight:700;letter-spacing:-.02em}.stat .lbl{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.toc{background:var(--surface);border-radius:var(--radius);padding:28px;margin:24px 0;border:1px solid var(--border)}
+.toc-title{font-size:16px;font-weight:600;margin-bottom:12px}
+.toc ol{margin:0 0 0 20px}.toc li{margin:6px 0}.toc a{color:var(--cyan);text-decoration:none;font-weight:500}
+.callout{border-left:3px solid var(--gold);padding:16px 20px;margin:20px 0;background:rgba(255,215,0,.04);border-radius:0 var(--radius) var(--radius) 0}
+.callout-blue{border-left:3px solid var(--blue);padding:16px 20px;margin:20px 0;background:rgba(91,141,239,.04);border-radius:0 var(--radius) var(--radius) 0}
+.method{display:inline-block;width:55px;font-weight:700;font-size:11px}
+.m-get{color:var(--green)}.m-post{color:var(--amber)}.m-del{color:var(--red)}
+.footer{text-align:center;padding:40px 0;color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>VLTHR Business Plan</h1>
+  <p style="font-size:18px;color:var(--body);margin-bottom:24px">Revenue Architecture, API Strategy &amp; Expansion Optimization</p>
+  <div class="stat-row">
+    <div class="stat"><div class="num" style="color:var(--green)">9</div><div class="lbl">Business Units</div></div>
+    <div class="stat"><div class="num" style="color:var(--blue)">50+</div><div class="lbl">Live API Endpoints</div></div>
+    <div class="stat"><div class="num" style="color:var(--amber)">12</div><div class="lbl">Pipeline Gates</div></div>
+    <div class="stat"><div class="num" style="color:var(--purple)">6</div><div class="lbl">Traded Assets</div></div>
+    <div class="stat"><div class="num" style="color:var(--gold)">5</div><div class="lbl">Revenue Tiers</div></div>
+  </div>
+  <p style="margin-top:16px">Grounded in actual codebase audit. Every claim references a file, endpoint, or module that exists today.</p>
+</div>
+
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ol>
+    <li><a href="#exec">Executive Summary</a></li>
+    <li><a href="#gap">Original Plan vs Current Reality</a></li>
+    <li><a href="#units">Business Unit Catalog (9 Units)</a></li>
+    <li><a href="#tiers">Revenue Tier Architecture</a></li>
+    <li><a href="#api">API Service Map for Frontend Consumption</a></li>
+    <li><a href="#pipeline">Pipeline as a Business Asset</a></li>
+    <li><a href="#data">Data Assets &amp; Monetization</a></li>
+    <li><a href="#ai">AI/LLM Integration as Competitive Moat</a></li>
+    <li><a href="#infra">Infrastructure &amp; Operations</a></li>
+    <li><a href="#roadmap">Optimized Expansion Roadmap</a></li>
+    <li><a href="#gaps">Gap Analysis: What to Build Next</a></li>
+    <li><a href="#compliance">Compliance &amp; Risk</a></li>
+    <li><a href="#kpi">KPIs &amp; Success Metrics</a></li>
+  </ol>
+</div>
+
+<h2 id="exec">1. Executive Summary</h2>
+<p>The original AELTHR expansion plan proposed 12 services across 4 tiers, 25 new API endpoints, 10 new database tables, and 18 new frontend pages. It was written against a TypeScript/Fastify/Neon/React Native stack that does not match the actual VLTHR codebase.</p>
+<p><strong>What actually exists:</strong> A Python pipeline engine with a 12-gate signal approval system, an Express.js backend with 50+ live API endpoints, a Vite/React frontend, an AI trader engine (FastAPI), dual execution on paper and Bybit demo, a VTC token economy, and 9 Docker services. The platform already generates, scores, approves, and executes trading signals with a proven backtest (480 trades, PF 2.58, expectancy $6.05).</p>
+<p>This document reframes the expansion plan around <strong>what is built</strong>, identifies <strong>9 business units</strong> already embedded in the code, maps <strong>5 revenue tiers</strong>, and defines an <strong>API service contract</strong> for the separately built frontend.</p>
+<div class="callout">
+  <h4>Key Insight</h4>
+  <p>The expansion plan underestimated the platform. VLTHR already has signal generation, dual execution, backtesting, AI analysis, market intelligence, paper trading, VTC tokenomics, and a WebSocket data service. The gap is not building from scratch. It is <strong>productizing what exists</strong> and building the missing 3 units: developer API access, webhook delivery, and historical data export.</p>
+</div>
+
+<h2 id="gap">2. Original Plan vs Current Reality</h2>
+<table>
+  <tr><th>Dimension</th><th>AELTHR Plan (Document)</th><th>VLTHR Reality (Codebase)</th></tr>
+  <tr><td><strong>Backend Stack</strong></td><td>TypeScript, Fastify, Neon Postgres</td><td>JavaScript (Express), local Docker Postgres</td></tr>
+  <tr><td><strong>Signal Engine</strong></td><td>ADCOS orchestrator (conceptual)</td><td>Python pipeline, 12-gate system, DQS scoring, Kelly V7 sizing, regime router</td></tr>
+  <tr><td><strong>Execution</strong></td><td>Not mentioned</td><td>Dual execution: paper trades + Bybit demo (real orders, real fills)</td></tr>
+  <tr><td><strong>Backtesting</strong></td><td>Proposed as new service</td><td>180-day backtest runner, stress test suite, calibration monitor</td></tr>
+  <tr><td><strong>AI Integration</strong></td><td>Gemini 1.5 Pro/Flash, 8 scorer modules</td><td>AI trader engine (FastAPI) with probe, chat, strategy, validation, memory. Uses nvidia/llama-3.1-nemotron-70b</td></tr>
+  <tr><td><strong>Token Economy</strong></td><td>Not mentioned</td><td>VTC (Performance-Weighted Token) with mint/burn, treasury, audit, price history</td></tr>
+  <tr><td><strong>Market Data</strong></td><td>7 new sources proposed</td><td>Bybit WS service (klines, tickers, orderbooks), parquet price feed, market intel with 8 symbols</td></tr>
+  <tr><td><strong>Frontend</strong></td><td>React Native, 56 pages, RevenueCat IAP</td><td>Vite/React, existing pages, built separately</td></tr>
+  <tr><td><strong>API Endpoints</strong></td><td>25 new endpoints proposed</td><td>50+ endpoints already live across 5 route files + server.cjs</td></tr>
+  <tr><td><strong>Telegram</strong></td><td>Not mentioned</td><td>Telegram bot service running as Docker container</td></tr>
+</table>
+
+<h2 id="units">3. Business Unit Catalog (9 Units)</h2>
+<p>Each unit is a distinct revenue-generating capability already present in the codebase. Evidence cites the actual file or endpoint.</p>
+
+<div class="card">
+  <h4>BU-01: Signal Intelligence Service <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>The core product. A 12-gate pipeline scans 6 crypto assets every 5 minutes, scores signals with DQS (Decision Quality Score), sizes positions with Kelly V7, and approves trades through calibration, regime, correlation, crowding, data quality, and risk budget gates.</p>
+  <p><strong>Evidence:</strong> <code>pipeline/engine/portfolio_orchestrator.py</code>, <code>portfolio_gates.py</code>, <code>v2_filters.py</code>, <code>signal_ranker.py</code>, <code>calibration_engine.py</code></p>
+  <p><strong>API Endpoints:</strong></p>
+  <pre><span class="method m-get">GET</span>  /api/signals              — list all signals
+<span class="method m-get">GET</span>  /api/signals/stream       — SSE real-time signal push
+<span class="method m-post">POST</span> /api/signals/:id/action   — mark executed/ignored
+<span class="method m-post">POST</span> /api/signals/simulate     — generate simulated signal
+<span class="method m-get">GET</span>  /api/history              — signal history
+<span class="method m-get">GET</span>  /api/watchlist             — user watchlist
+<span class="method m-get">GET</span>  /api/winners               — top performing signals
+<span class="method m-get">GET</span>  /api/power-trades          — promoted high-conviction trades</pre>
+  <p><span class="tag t-rev">Revenue: Free tier (3 signals/day), Pro tier (unlimited), Enterprise (API + webhook delivery)</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-02: Dual Execution Engine <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>Every approved signal trades on both paper and Bybit demo simultaneously. Same risk_pct, independent account balances. Bybit executor places real market orders with SL/TP attached at creation. Reconciliation loop checks positions each cycle, calculates PnL on close.</p>
+  <p><strong>Evidence:</strong> <code>pipeline/engine/bybit_executor.py</code> (313 lines, HMAC-SHA256 auth, Bybit V5 API), <code>shadow_runner.py</code>, <code>portfolio_orchestrator.py</code> (lines 655-729 dual execution, 1717-1795 reconciliation)</p>
+  <p><strong>API Endpoints:</strong></p>
+  <pre><span class="method m-get">GET</span>  /api/bybit/trades         — Bybit trade list (OPEN/CLOSED/ALL)
+<span class="method m-get">GET</span>  /api/bybit/account        — Bybit + paper account summary with stats
+<span class="method m-get">GET</span>  /api/bybit/positions      — live Bybit positions with unrealized PnL
+<span class="method m-get">GET</span>  /api/bybit/orders         — live Bybit open orders
+<span class="method m-get">GET</span>  /api/bybit/closed-pnl     — Bybit closed PnL history from exchange
+<span class="method m-get">GET</span>  /api/bybit/compare        — side-by-side paper vs Bybit performance</pre>
+  <p><span class="tag t-rev">Revenue: Pro tier (paper only), Enterprise (Bybit live execution, managed accounts)</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-03: Paper Trading Platform <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>Full paper trading simulation with account management, position sizing, leverage, entry/exit tracking, and PnL calculation. Users can manually open/close trades or auto-follow signals.</p>
+  <p><strong>Evidence:</strong> <code>backend/src/routes/paper.cjs</code> (17KB), <code>paper_account</code> and <code>paper_trades</code> DB tables</p>
+  <p><strong>API Endpoints:</strong></p>
+  <pre><span class="method m-get">GET</span>  /api/paper/account        — paper account balance, equity, stats
+<span class="method m-get">GET</span>  /api/paper/trades         — pending, active, closed paper trades
+<span class="method m-post">POST</span> /api/paper/trade          — open new paper trade
+<span class="method m-post">POST</span> /api/paper/trade/:id/close — close paper trade at exit price
+<span class="method m-del">DEL</span>  /api/paper/trade/:id      — delete paper trade</pre>
+  <p><span class="tag t-rev">Revenue: Free tier (limited trades), Pro tier (unlimited + auto-follow)</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-04: Backtesting &amp; Validation Lab <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>180-day backtest runner with walk-forward, Monte Carlo, and out-of-sample validation. Stress test suite (5 stages x 3 modes). Calibration monitor tracks model drift. Results: 480 trades, PF 2.58, expectancy $6.05, 5/6 gates pass.</p>
+  <p><strong>Evidence:</strong> <code>backtest/backtest_runner.py</code>, <code>backtest/stress_test.py</code>, <code>backtest/calibration_monitor.py</code>, <code>pipeline/engine/regime_backtest.py</code>, <code>freqtrade_validator.py</code></p>
+  <p><strong>API Endpoints (via engine proxy):</strong></p>
+  <pre><span class="method m-post">POST</span> /api/engine/backtest/start   — start backtest run
+<span class="method m-get">GET</span>  /api/engine/backtest/status  — check backtest progress
+<span class="method m-get">GET</span>  /api/engine/backtest/result  — get backtest results
+<span class="method m-post">POST</span> /api/engine/backtest/cancel  — cancel running backtest
+<span class="method m-post">POST</span> /api/engine/validate/walkforward — walk-forward validation
+<span class="method m-post">POST</span> /api/engine/validate/montecarlo   — Monte Carlo simulation
+<span class="method m-post">POST</span> /api/engine/validate/oos          — out-of-sample test</pre>
+  <p><span class="tag t-rev">Revenue: Pro tier (preset strategies), Enterprise (custom strategy backtesting)</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-05: AI Market Intelligence <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>Twice-daily AI-generated market overview across 6 symbols. Per-symbol regime detection, strategy alignment analysis, stale parameter flagging, and risk summary. AI trader engine provides chat, probe comparison, and strategy creation.</p>
+  <p><strong>Evidence:</strong> <code>ai-trader-engine/main.py</code> (31KB, FastAPI), <code>backend/src/server.cjs</code> (lines 2275-2440 overview endpoints), <code>ai_overviews</code> DB table</p>
+  <p><strong>API Endpoints:</strong></p>
+  <pre><span class="method m-post">POST</span> /api/overview/generate     — generate AI market overview
+<span class="method m-get">GET</span>  /api/overview/latest       — get latest AI overview
+<span class="method m-post">POST</span> /api/engine/ai/chat        — direct AI chat (strategy questions)
+<span class="method m-post">POST</span> /api/engine/probe/compare  — multi-symbol probe comparison
+<span class="method m-post">POST</span> /api/engine/probe/:action   — single-symbol deep probe
+<span class="method m-post">POST</span> /api/engine/strategy/create — create custom strategy
+<span class="method m-get">GET</span>  /api/engine/strategy        — list strategies
+<span class="method m-get">GET</span>  /api/engine/strategy/:id    — get strategy detail</pre>
+  <p><span class="tag t-rev">Revenue: Pro tier (daily overview), Enterprise (custom AI analysis, strategy creation)</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-06: Market Data Feed <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>Real-time price feed from parquet files (15s refresh). Bybit WebSocket service subscribes to klines, tickers, and orderbooks for 6 crypto symbols plus XAUUSD. Market intel aggregates price, orderbook, open interest, and funding data per symbol.</p>
+  <p><strong>Evidence:</strong> <code>pipeline/engine/bybit_ws.py</code> (280 lines, WebSocket client), <code>backend/src/server.cjs</code> (lines 2442-2489 parquet price feed), <code>data-ingestion/</code> directory</p>
+  <p><strong>API Endpoints:</strong></p>
+  <pre><span class="method m-get">GET</span>  /api/prices                — live prices for all symbols
+<span class="method m-get">GET</span>  /api/market/:symbol/history — price history + intel for symbol
+<span class="method m-get">GET</span>  /api/engine/candles        — OHLCV candle data
+<span class="method m-get">GET</span>  /api/engine/funding        — funding rate data
+<span class="method m-get">GET</span>  /api/engine/open-interest  — open interest data
+<span class="method m-get">GET</span>  /api/engine/features       — computed feature data</pre>
+  <p><span class="tag t-rev">Revenue: Free tier (delayed 15min), Pro tier (real-time), Enterprise (raw data API + WebSocket)</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-07: VTC Token Economy <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>Performance-weighted token system with mint/burn mechanics, treasury tracking, price history, vector scoring, and full audit trail. Token price reflects platform performance. Users earn VTC through signal accuracy, burn for premium features.</p>
+  <p><strong>Evidence:</strong> <code>backend/src/server.cjs</code> (lines 1888-1947 VTC endpoints), VTC database tables</p>
+  <p><strong>API Endpoints:</strong></p>
+  <pre><span class="method m-get">GET</span>  /api/vtc/current    — current VTC price and score
+<span class="method m-get">GET</span>  /api/vtc/vector     — performance vector breakdown
+<span class="method m-get">GET</span>  /api/vtc/history    — price history (1H/24H/7D/30D)
+<span class="method m-get">GET</span>  /api/vtc/scores     — historical score points
+<span class="method m-get">GET</span>  /api/vtc/treasury   — supply, circulating, minted, burned
+<span class="method m-get">GET</span>  /api/vtc/audit      — mint/burn audit trail
+<span class="method m-post">POST</span> /api/vtc/mint       — mint tokens (admin)
+<span class="method m-post">POST</span> /api/vtc/burn       — burn tokens (user/admin)</pre>
+  <p><span class="tag t-rev">Revenue: Token-based monetization. Users burn VTC for premium features. Performance-linked intrinsic value.</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-08: Power Trades <span class="badge b-live">LIVE</span> <span class="badge b-rev">REVENUE</span></h4>
+  <p>High-conviction signal promotion system. Analysts can promote signals to "power trade" status with urgency levels and analyst notes. Users can dismiss power trades. Creates a curated, human-verified signal tier above the automated pipeline.</p>
+  <p><strong>Evidence:</strong> <code>backend/src/routes/power.cjs</code>, <code>power_trades</code> DB table</p>
+  <p><strong>API Endpoints:</strong></p>
+  <pre><span class="method m-get">GET</span>  /api/power-trades             — list power trades
+<span class="method m-post">POST</span> /api/power-trades/promote     — promote signal to power trade
+<span class="method m-post">POST</span> /api/power-trades/:id/dismiss — dismiss power trade</pre>
+  <p><span class="tag t-rev">Revenue: Enterprise tier (analyst-curated signals, human verification layer)</span></p>
+</div>
+
+<div class="card">
+  <h4>BU-09: Telegram Delivery Channel <span class="badge b-live">LIVE</span></h4>
+  <p>Telegram bot service delivers signals and notifications to users via Telegram. Runs as a dedicated Docker container. Extends signal delivery beyond the web frontend to a push-based mobile channel.</p>
+  <p><strong>Evidence:</strong> <code>telegram/</code> directory, <code>docker-compose.yml</code> telegram service</p>
+  <p><span class="tag t-rev">Revenue: Pro tier (Telegram signal alerts), Enterprise (custom bot, dedicated channel)</span></p>
+</div>
+
+<h2 id="tiers">4. Revenue Tier Architecture</h2>
+<p>Five tiers mapped to the 9 business units. Each tier unlocks capabilities across multiple units.</p>
+
+<table>
+  <tr><th>Tier</th><th>Price Point</th><th>Units Unlocked</th><th>Key Features</th></tr>
+  <tr>
+    <td><strong>Free</strong></td>
+    <td>$0</td>
+    <td>BU-01 (limited), BU-03 (limited), BU-06 (delayed)</td>
+    <td>3 signals/day, 5 paper trades, 15-min delayed prices, basic history</td>
+  </tr>
+  <tr>
+    <td><strong>Pro</strong></td>
+    <td>$29/mo</td>
+    <td>BU-01 (full), BU-03 (full), BU-04 (presets), BU-05 (daily), BU-06 (real-time), BU-09</td>
+    <td>Unlimited signals, unlimited paper trades, preset backtests, daily AI overview, real-time prices, Telegram alerts</td>
+  </tr>
+  <tr>
+    <td><strong>Pro+</strong></td>
+    <td>$79/mo</td>
+    <td>All Pro + BU-02 (paper), BU-04 (custom), BU-07 (earn)</td>
+    <td>Dual execution view (paper side), custom strategy backtesting, VTC earning through accuracy, Monte Carlo simulations</td>
+  </tr>
+  <tr>
+    <td><strong>Enterprise</strong></td>
+    <td>$299/mo</td>
+    <td>All Pro+ + BU-02 (live), BU-08, API access, webhooks</td>
+    <td>Bybit live execution, power trades, developer API keys, webhook delivery, historical export, custom AI analysis</td>
+  </tr>
+  <tr>
+    <td><strong>Institutional</strong></td>
+    <td>Custom</td>
+    <td>All units, dedicated infra</td>
+    <td>Managed accounts, dedicated Bybit sub-accounts, custom risk parameters, SLA, on-premise option, white-label frontend</td>
+  </tr>
+</table>
+
+<div class="callout-blue">
+  <h4>VTC Token Integration</h4>
+  <p>VTC tokens cross-cut all tiers. Users earn VTC by maintaining high signal accuracy (Pro+ and above). VTC can be burned to unlock time-limited Enterprise features, reducing the cash barrier to entry. This creates a performance-meritocratic upgrade path: good traders get premium tools without paying cash.</p>
+</div>
+
+<h2 id="api">5. API Service Map for Frontend Consumption</h2>
+<p>The frontend is built separately. The API contract below defines every endpoint the frontend can consume today, organized by business unit. All endpoints return JSON. SSE is used for real-time signal and price streaming.</p>
+
+<h3>Authentication</h3>
+<pre><span class="method m-get">GET</span>  /api/auth/test              — health check
+<span class="method m-get">GET</span>  /api/auth/setup             — initial setup (requires setup token)
+<span class="method m-post">POST</span> /api/auth/verify            — verify 6-digit access token
+<span class="method m-get">GET</span>  /api/auth/session/:sessionId — validate session
+<span class="method m-post">POST</span> /api/auth/logout            — destroy session</pre>
+
+<h3>Signals (BU-01)</h3>
+<pre><span class="method m-get">GET</span>  /api/signals                — all signals (SSE on /stream)
+<span class="method m-get">GET</span>  /api/signals/stream         — Server-Sent Events, pushes new signals
+<span class="method m-post">POST</span> /api/signals/:id/action     — mark signal as Executed or Ignored
+<span class="method m-post">POST</span> /api/signals/simulate       — generate simulated signal for demo
+<span class="method m-get">GET</span>  /api/history                — historical signal data
+<span class="method m-get">GET</span>  /api/watchlist              — user watchlist
+<span class="method m-get">GET</span>  /api/winners                — top performing signals
+<span class="method m-get">GET</span>  /api/power-trades           — analyst-promoted high-conviction trades
+<span class="method m-post">POST</span> /api/power-trades/promote   — promote signal (analyst)
+<span class="method m-post">POST</span> /api/power-trades/:id/dismiss — dismiss power trade</pre>
+
+<h3>Execution (BU-02 + BU-03)</h3>
+<pre><span class="method m-get">GET</span>  /api/paper/account          — paper account balance, equity, PnL stats
+<span class="method m-get">GET</span>  /api/paper/trades           — pending + active + closed paper trades
+<span class="method m-post">POST</span> /api/paper/trade            — open paper trade (manual or signal-follow)
+<span class="method m-post">POST</span> /api/paper/trade/:id/close  — close paper trade at specified exit price
+<span class="method m-del">DEL</span>  /api/paper/trade/:id        — delete paper trade record
+<span class="method m-get">GET</span>  /api/bybit/trades           — Bybit trades (OPEN/CLOSED/ALL filter)
+<span class="method m-get">GET</span>  /api/bybit/account          — Bybit + paper combined account summary
+<span class="method m-get">GET</span>  /api/bybit/positions        — live Bybit positions with unrealized PnL
+<span class="method m-get">GET</span>  /api/bybit/orders           — live Bybit open orders
+<span class="method m-get">GET</span>  /api/bybit/closed-pnl       — Bybit closed PnL from exchange
+<span class="method m-get">GET</span>  /api/bybit/compare          — paper vs Bybit side-by-side comparison</pre>
+
+<h3>Backtesting (BU-04)</h3>
+<pre><span class="method m-post">POST</span> /api/engine/backtest/start         — start backtest
+<span class="method m-get">GET</span>  /api/engine/backtest/status        — poll backtest progress
+<span class="method m-get">GET</span>  /api/engine/backtest/result        — get backtest results
+<span class="method m-post">POST</span> /api/engine/backtest/cancel         — cancel running backtest
+<span class="method m-post">POST</span> /api/engine/validate/walkforward    — walk-forward validation
+<span class="method m-post">POST</span> /api/engine/validate/montecarlo      — Monte Carlo simulation
+<span class="method m-post">POST</span> /api/engine/validate/oos             — out-of-sample test</pre>
+
+<h3>AI Intelligence (BU-05)</h3>
+<pre><span class="method m-post">POST</span> /api/overview/generate       — generate AI market overview (6 symbols)
+<span class="method m-get">GET</span>  /api/overview/latest         — get most recent AI overview
+<span class="method m-post">POST</span> /api/engine/ai/chat          — direct AI chat (ask strategy questions)
+<span class="method m-post">POST</span> /api/engine/probe/compare    — multi-symbol probe comparison
+<span class="method m-post">POST</span> /api/engine/probe/:action     — single-symbol deep probe
+<span class="method m-post">POST</span> /api/engine/strategy/create  — create custom strategy
+<span class="method m-get">GET</span>  /api/engine/strategy         — list saved strategies
+<span class="method m-get">GET</span>  /api/engine/strategy/:id     — get strategy detail</pre>
+
+<h3>Market Data (BU-06)</h3>
+<pre><span class="method m-get">GET</span>  /api/prices                  — live prices for all tracked symbols
+<span class="method m-get">GET</span>  /api/market/:symbol/history  — price history + market intel for symbol
+<span class="method m-get">GET</span>  /api/engine/candles          — OHLCV candle data (query by symbol/interval)
+<span class="method m-get">GET</span>  /api/engine/funding          — funding rate data
+<span class="method m-get">GET</span>  /api/engine/open-interest    — open interest data
+<span class="method m-get">GET</span>  /api/engine/features         — computed technical features
+<span class="method m-get">GET</span>  /api/engine/data/symbols     — list available symbols
+<span class="method m-get">GET</span>  /api/engine/data/intervals   — list available intervals</pre>
+
+<h3>VTC Token (BU-07)</h3>
+<pre><span class="method m-get">GET</span>  /api/vtc/current     — current VTC price + score
+<span class="method m-get">GET</span>  /api/vtc/vector      — performance vector breakdown
+<span class="method m-get">GET</span>  /api/vtc/history     — price history (1H/24H/7D/30D)
+<span class="method m-get">GET</span>  /api/vtc/scores      — historical score points
+<span class="method m-get">GET</span>  /api/vtc/treasury    — supply, circulating, minted, burned
+<span class="method m-get">GET</span>  /api/vtc/audit       — mint/burn audit trail
+<span class="method m-post">POST</span> /api/vtc/mint        — mint tokens (admin)
+<span class="method m-post">POST</span> /api/vtc/burn        — burn tokens</pre>
+
+<h3>System</h3>
+<pre><span class="method m-post">POST</span> /api/refresh              — force sync from Postgres
+<span class="method m-get">GET</span>  /api/engine/health        — AI engine health check
+<span class="method m-post">POST</span> /api/engine/pipeline/:stage — trigger pipeline stage
+<span class="method m-post">POST</span> /api/engine/decision/create — create decision record
+<span class="method m-get">GET</span>  /api/engine/decision/:id    — get decision record
+<span class="method m-post">POST</span> /api/engine/memory/store    — store memory item
+<span class="method m-post">POST</span> /api/engine/memory/search   — search memory</pre>
+
+<h2 id="pipeline">6. Pipeline as a Business Asset</h2>
+<p>The 12-gate pipeline is proprietary IP. Each gate encodes a trading insight that took research and backtesting to develop.</p>
+<table>
+<tr><th>Gate</th><th>Name</th><th>Business Value</th></tr>
+<tr><td>0</td><td>Pre-flight</td><td>Prevents stale data trades</td></tr>
+<tr><td>1</td><td>Data Quality (min 60)</td><td>Input quality assurance</td></tr>
+<tr><td>2</td><td>V2 Filters</td><td>Strategy-specific RSI filtering</td></tr>
+<tr><td>3</td><td>Signal Ranker</td><td>Prioritizes by DQS</td></tr>
+<tr><td>4</td><td>Kelly V7 Sizing</td><td>Risk-adjusted positions, veto at DQS>=85</td></tr>
+<tr><td>5</td><td>Disabled Symbols</td><td>Operational circuit breaker</td></tr>
+<tr><td>6</td><td>Regime Router</td><td>Adapts to market conditions</td></tr>
+<tr><td>7</td><td>Correlation Guard</td><td>Prevents correlated overexposure</td></tr>
+<tr><td>8</td><td>Trade Count (max 8)</td><td>Capital concentration limit</td></tr>
+<tr><td>9</td><td>Directional</td><td>Balances long/short exposure</td></tr>
+<tr><td>10</td><td>Risk Budget (12% max)</td><td>Drawdown protection, crowding detection</td></tr>
+<tr><td>11</td><td>Calibration (0.40/0.35)</td><td>Self-correcting confidence thresholds</td></tr>
+</table>
+<div class="callout"><h4>Proven Performance</h4><p>480 trades, PF 2.58, expectancy $6.05. Stress tested 15 runs. Bybit demo validated 8/8. Live signal approved (XRPUSDT LONG DQS=67).</p></div>
+
+<h2 id="data">7. Data Assets &amp; Monetization</h2>
+<table>
+<tr><th>Asset</th><th>Source</th><th>Monetization</th></tr>
+<tr><td>OHLCV candles</td><td>Bybit + parquet, 6 symbols, 180+ days</td><td>Historical export (Enterprise)</td></tr>
+<tr><td>Order book snapshots</td><td>Bybit WebSocket, real-time</td><td>Order book API (Enterprise)</td></tr>
+<tr><td>Funding rates</td><td>Bybit API</td><td>Funding monitor (Pro+)</td></tr>
+<tr><td>Signal history</td><td>Internal pipeline</td><td>Accuracy API, export</td></tr>
+<tr><td>Paper + Bybit trade records</td><td>Dual execution</td><td>Live track record</td></tr>
+<tr><td>AI overview reports</td><td>AI engine, twice-daily</td><td>AI analysis API (Enterprise)</td></tr>
+<tr><td>VTC token history</td><td>Internal economy</td><td>Public price feed</td></tr>
+<tr><td>Calibration data</td><td>35+ samples, growing</td><td>Model accuracy metrics</td></tr>
+</table>
+<p><strong>Not yet collected:</strong> News/sentiment (CryptoCompare, free), on-chain (Glassnode, paid), social (Twitter/X, paid), Fear &amp; Greed (free).</p>
+
+<h2 id="ai">8. AI/LLM Integration as Competitive Moat</h2>
+<p>AI trader engine (<code>ai-trader-engine/main.py</code>, FastAPI) integrates AI into the trading pipeline.</p>
+<table>
+<tr><th>Capability</th><th>Business Value</th></tr>
+<tr><td>Market regime analysis</td><td>Twice-daily automated analysis, 6 symbols</td></tr>
+<tr><td>Strategy creation</td><td>Natural language to executable strategy</td></tr>
+<tr><td>AI chat</td><td>Users ask strategy questions</td></tr>
+<tr><td>Probe comparison</td><td>Multi-symbol ranking with regime + features</td></tr>
+<tr><td>Decision records</td><td>AI trade rationale stored for audit</td></tr>
+<tr><td>Memory store/search</td><td>Engine learns from past decisions</td></tr>
+</table>
+
+<h2 id="infra">9. Infrastructure &amp; Operations</h2>
+<table>
+<tr><th>Service</th><th>Container</th><th>Port</th><th>Role</th></tr>
+<tr><td>PostgreSQL</td><td>vlthr-postgres</td><td>5432</td><td>Primary database</td></tr>
+<tr><td>Redis</td><td>vlthr-dashboard-redis</td><td>6379</td><td>Cache, rate limits, pub/sub</td></tr>
+<tr><td>Data Ingestion</td><td>vlthr-data-ingestion</td><td>-</td><td>Fetches OHLCV, writes parquet</td></tr>
+<tr><td>Bybit WebSocket</td><td>vlthr-bybit-ws</td><td>8200</td><td>Real-time market data</td></tr>
+<tr><td>Pipeline</td><td>vlthr-pipeline</td><td>8201</td><td>12-gate signal engine, 5-min cycle</td></tr>
+<tr><td>Backend API</td><td>vlthr-dashboard-backend</td><td>3003</td><td>Express.js, 50+ endpoints</td></tr>
+<tr><td>Frontend</td><td>vlthr-dashboard-frontend</td><td>5175</td><td>Vite/React</td></tr>
+<tr><td>AI Trader Engine</td><td>ai_trader_engine</td><td>8002</td><td>FastAPI, AI + backtesting</td></tr>
+<tr><td>Telegram Bot</td><td>vlthr-telegram</td><td>-</td><td>Signal delivery channel</td></tr>
+</table>
+
+<h2 id="roadmap">10. Optimized Expansion Roadmap</h2>
+<h3>Phase 1: Productize (Weeks 1-4)</h3>
+<table>
+<tr><th>Task</th><th>Impact</th></tr>
+<tr><td>JWT auth + subscription tiers</td><td>Enables paid tiers</td></tr>
+<tr><td>Rate limiting by tier</td><td>Enforces tier boundaries</td></tr>
+<tr><td>API key generation + management</td><td>Developer API revenue</td></tr>
+<tr><td>Webhook registration + signal delivery</td><td>Enterprise signal delivery</td></tr>
+<tr><td>Historical data export (CSV/JSON)</td><td>Data export revenue</td></tr>
+<tr><td>OpenAPI spec for all 50+ endpoints</td><td>Frontend can build independently</td></tr>
+</table>
+<h3>Phase 2: Expand Data (Weeks 5-8)</h3>
+<table>
+<tr><th>Task</th><th>Impact</th></tr>
+<tr><td>CryptoCompare news + sentiment</td><td>News-sentiment signals, new BU</td></tr>
+<tr><td>Fear &amp; Greed Index</td><td>Sentiment overlay</td></tr>
+<tr><td>Multi-exchange funding comparison</td><td>Arbitrage detection</td></tr>
+<tr><td>RCA for failed signals</td><td>Post-mortem, learning loop</td></tr>
+<tr><td>Portfolio risk assessment</td><td>Portfolio risk BU</td></tr>
+</table>
+<h3>Phase 3: Scale (Weeks 9-12)</h3>
+<table>
+<tr><th>Task</th><th>Impact</th></tr>
+<tr><td>Migrate demo to live Bybit</td><td>Real money trading</td></tr>
+<tr><td>On-chain metrics (Glassnode)</td><td>Whale movement detection</td></tr>
+<tr><td>Anomaly detection engine</td><td>Flash crash / pump alerts</td></tr>
+<tr><td>Monte Carlo simulation API</td><td>Already built, needs user API</td></tr>
+<tr><td>Cloud deploy (AWS/GCP)</td><td>Production reliability</td></tr>
+</table>
+
+<h2 id="gaps">11. Gap Analysis: What to Build Next</h2>
+<table>
+<tr><th>Capability</th><th>Status</th><th>Priority</th></tr>
+<tr><td>User auth + subscriptions</td><td>Basic token only. Need JWT, registration, payments.</td><td>Critical</td></tr>
+<tr><td>OpenAPI documentation</td><td>Not built. Frontend team needs spec.</td><td>Critical</td></tr>
+<tr><td>API key management</td><td>Not built. Key gen, hashing, scopes, rate limits.</td><td>High</td></tr>
+<tr><td>Webhook delivery</td><td>Not built. Registration, HMAC, retry, delivery log.</td><td>High</td></tr>
+<tr><td>Historical data export</td><td>Not built. CSV/JSON with date range, GDPR.</td><td>Medium</td></tr>
+<tr><td>News + sentiment</td><td>Not built. CryptoCompare ingestion, NLP.</td><td>Medium</td></tr>
+<tr><td>RCA engine</td><td>Not built. Post-hoc analysis, factor attribution.</td><td>Medium</td></tr>
+<tr><td>Portfolio risk</td><td>Not built. VaR, correlation, rebalancing.</td><td>Medium</td></tr>
+<tr><td>Anomaly detection</td><td>Not built. Z-score, volume spikes, classification.</td><td>Low</td></tr>
+</table>
+
+<h2 id="compliance">12. Compliance &amp; Risk</h2>
+<table>
+<tr><th>Area</th><th>Current</th><th>Action Needed</th></tr>
+<tr><td>Disclaimer</td><td>Not implemented</td><td>"Not financial advice" on all signal outputs</td></tr>
+<tr><td>GDPR</td><td>Not implemented</td><td>Retention policy, data export, right to erasure</td></tr>
+<tr><td>Audit trail</td><td>Partial (VTC, AI overviews)</td><td>Full audit log for all trade actions</td></tr>
+<tr><td>API security</td><td>Basic token</td><td>JWT + refresh, API key hashing, tier rate limits</td></tr>
+<tr><td>Bybit key security</td><td>Env variables</td><td>Move to secrets manager</td></tr>
+<tr><td>Live trading</td><td>Demo only</td><td>Kill switch, max daily loss, position limits</td></tr>
+</table>
+
+<h2 id="kpi">13. KPIs &amp; Success Metrics</h2>
+<table>
+<tr><th>Category</th><th>KPI</th><th>Target</th></tr>
+<tr><td rowspan="3"><strong>Pipeline</strong></td><td>Signal approval rate</td><td>5-15% of scanned</td></tr>
+<tr><td>Signal accuracy (T+24h)</td><td>&gt;60% directional</td></tr>
+<tr><td>Pipeline uptime</td><td>&gt;99.5%</td></tr>
+<tr><td rowspan="3"><strong>Trading</strong></td><td>Profit factor</td><td>&gt;2.0 (current: 2.58)</td></tr>
+<tr><td>Expectancy per trade</td><td>&gt;$5.00 (current: $6.05)</td></tr>
+<tr><td>Max drawdown</td><td>&lt;15%</td></tr>
+<tr><td rowspan="3"><strong>Business</strong></td><td>Free to Pro conversion</td><td>5-10%</td></tr>
+<tr><td>Pro to Enterprise conversion</td><td>2-5%</td></tr>
+<tr><td>MRR</td><td>$10K by month 3, $50K by month 6</td></tr>
+<tr><td rowspan="2"><strong>API</strong></td><td>Response time (p95)</td><td>&lt;200ms</td></tr>
+<tr><td>API uptime</td><td>&gt;99.9%</td></tr>
+</table>
+
+<div class="footer">
+<p>VLTHR Business Plan — Generated Jul 21, 2026 — Grounded in codebase audit</p>
+</div>
+
+</div>
+</body>
+</html>

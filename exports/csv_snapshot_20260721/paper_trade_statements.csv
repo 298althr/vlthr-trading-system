@@ -1,0 +1,2 @@
+id,trade_id,action,amount,balance_after,note,created_at
+1,50,ENTRY_FEE,-3.6674,10170.29,LONG BTCUSDT activated (fee=3.67),2026-07-21 10:11:26.90694

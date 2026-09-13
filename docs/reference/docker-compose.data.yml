@@ -1,0 +1,90 @@
+version: '3.8'
+
+# Data Fetcher — runs inside Docker where internet works, writes parquet to host
+# Usage: docker compose -f docker-compose.data.yml run --rm datafetcher
+# Then run market data: docker compose -f docker-compose.data.yml run --rm datafetcher-market
+
+services:
+  datafetcher:
+    image: python:3.11-slim
+    container_name: vlthr-datafetcher
+    working_dir: /app
+    volumes:
+      - "c:/Users/Sav/Documents/VLTHR:/app"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PROXY_URL=${PROXY_URL:-}
+    command: >
+      sh -c "pip install requests pandas pyarrow numpy -q &&
+             python data/bybit/workers/fetch_bybit_data.py"
+    networks:
+      - vlthr-dashboard-net
+
+  datafetcher-market:
+    image: python:3.11-slim
+    container_name: vlthr-datafetcher-market
+    working_dir: /app
+    volumes:
+      - "c:/Users/Sav/Documents/VLTHR:/app"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PROXY_URL=${PROXY_URL:-}
+    command: >
+      sh -c "pip install requests pandas pyarrow numpy -q &&
+             python data/bybit/workers/fetch_bybit_market_data.py"
+    networks:
+      - vlthr-dashboard-net
+
+  datafetcher-enrich:
+    image: python:3.11-slim
+    container_name: vlthr-datafetcher-enrich
+    working_dir: /app
+    volumes:
+      - "c:/Users/Sav/Documents/VLTHR:/app"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PROXY_URL=${PROXY_URL:-}
+    command: >
+      sh -c "pip install requests pandas pyarrow numpy -q &&
+             python data/bybit/workers/fetch_bybit_enrich.py"
+    networks:
+      - vlthr-dashboard-net
+
+  scanner:
+    image: python:3.11-slim
+    container_name: vlthr-scanner
+    working_dir: /app
+    volumes:
+      - "c:/Users/Sav/Documents/VLTHR:/app"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PROXY_URL=${PROXY_URL:-}
+    command: >
+      sh -c "pip install requests pandas pyarrow numpy psycopg2-binary -q &&
+             python departments/strategy_research/BACKTESTER/strategy/signals/scan_signals.py"
+    networks:
+      - vlthr-dashboard-net
+
+  dbsync:
+    image: python:3.11-slim
+    container_name: vlthr-dbsync
+    working_dir: /app
+    volumes:
+      - "c:/Users/Sav/Documents/VLTHR:/app"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PROXY_URL=${PROXY_URL:-}
+    command: >
+      sh -c "pip install requests pandas pyarrow numpy psycopg2-binary -q &&
+             python departments/strategy_research/BACKTESTER/strategy/signals/sync_high_confidence.py"
+    networks:
+      - vlthr-dashboard-net
+
+networks:
+  vlthr-dashboard-net:
+    external: true

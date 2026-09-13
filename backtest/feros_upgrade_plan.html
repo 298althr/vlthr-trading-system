@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FEROS Backtest Upgrade Plan · VLTHR</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #e0e8f0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #121212;
+      border-radius: 36px;
+      padding: 30px 40px 50px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      border: 1px solid #2a2a2a;
+    }
+    h1, h2, h3, h4 {
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+    h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, #f0a050, #f0d050);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.2rem;
+    }
+    h2 {
+      font-size: 2rem;
+      color: #f0c060;
+      border-bottom: 1px solid #3a3a2a;
+      padding-bottom: 8px;
+      margin: 40px 0 20px;
+    }
+    h3 {
+      font-size: 1.4rem;
+      color: #f0c880;
+      margin: 25px 0 12px;
+    }
+    h4 { color: #d0c080; margin-bottom: 8px; }
+    .subtitle {
+      color: #9a9a8a;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      border-left: 4px solid #f0a050;
+      padding-left: 18px;
+    }
+    .tag {
+      display: inline-block;
+      background: #2a2a1a;
+      color: #f0c060;
+      border-radius: 30px;
+      padding: 2px 16px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin: 4px 6px 4px 0;
+      border: 1px solid #4a4a2a;
+    }
+    .card {
+      background: #1a1e24;
+      border-radius: 20px;
+      padding: 22px 28px;
+      margin: 18px 0;
+      border: 1px solid #2a2e34;
+      transition: 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .card:hover {
+      border-color: #5a5a3a;
+      box-shadow: 0 8px 24px rgba(200,150,50,0.08);
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .stat {
+      background: #0e1218;
+      border-radius: 14px;
+      padding: 16px 18px;
+      border-left: 4px solid #f0a050;
+    }
+    .stat .num {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #f0c060;
+    }
+    .stat .label {
+      font-size: 0.85rem;
+      color: #8a8a7a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th {
+      background: #2a2a1a;
+      color: #f0c060;
+      font-weight: 500;
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 2px solid #4a4a2a;
+    }
+    td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #1e2a32;
+    }
+    tr:hover td { background: #16202a; }
+    .badge {
+      display: inline-block;
+      padding: 0 12px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.8;
+    }
+    .badge-green { background: #0a3a2a; color: #70d0a0; }
+    .badge-yellow { background: #3a3a0a; color: #d0c070; }
+    .badge-red { background: #3a1a1a; color: #e07070; }
+    .badge-blue { background: #0a2a4a; color: #70b0f0; }
+    .badge-orange { background: #3a2a0a; color: #f0c060; }
+    pre.ascii {
+      background: #0a0e14;
+      padding: 16px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #b0d4ff;
+      border: 1px solid #1a2a3a;
+      white-space: pre;
+    }
+    pre.code {
+      background: #0a0e14;
+      padding: 14px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #b0d4ff;
+      border: 1px solid #1a2a3a;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 30px 0 20px;
+      border-bottom: 1px solid #2a2e34;
+      padding-bottom: 6px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #8a9aa8;
+      padding: 10px 22px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+    .tab-btn:hover { color: #d0e8ff; background: #1a2a3a; }
+    .tab-btn.active {
+      background: #3a3a1a;
+      color: #f0c060;
+      box-shadow: 0 0 0 1px #5a5a2a;
+    }
+    .tab-content { display: none; animation: fadeUp 0.4s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .footnote {
+      font-size: 0.85rem;
+      color: #7a8a98;
+      padding: 12px 0 4px;
+      border-top: 1px solid #1a222a;
+      margin-top: 20px;
+    }
+    .phase-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #3a3a1a;
+      color: #f0c060;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-right: 10px;
+    }
+    ul { padding-left: 20px; }
+    ol { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+    @media (max-width: 800px) {
+      .container { padding: 20px; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
+      .tab-btn { padding: 6px 14px; font-size: 0.85rem; }
+    }
+    ::-webkit-scrollbar { width: 8px; background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #4a4a2a; border-radius: 10px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;">
+    <div>
+      <h1>FEROS Backtest Upgrade Plan</h1>
+      <div class="subtitle">Feature Engineering Research Operating System · Anti-Overfit Backtest Architecture</div>
+    </div>
+    <div style="color:#6a8a7a; font-size:0.9rem;">v1.0 · 2026-07-16</div>
+  </div>
+
+  <div class="tabs" id="tabContainer">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="problem">Problem</button>
+    <button class="tab-btn" data-tab="architecture">Architecture</button>
+    <button class="tab-btn" data-tab="phases">Phases</button>
+    <button class="tab-btn" data-tab="datasources">Data Sources</button>
+    <button class="tab-btn" data-tab="tools">Open Source Tools</button>
+    <button class="tab-btn" data-tab="validation">Validation</button>
+    <button class="tab-btn" data-tab="protocols">Protocol Mapping</button>
+    <button class="tab-btn" data-tab="timeline">Timeline</button>
+  </div>
+
+  <!-- ========== TAB: OVERVIEW ========== -->
+  <div id="tab-overview" class="tab-content active">
+    <h2>Overview</h2>
+    <p style="font-size:1.1rem; color:#c0d0dc;">This plan upgrades the VLTHR backtest from a single-path bar replay into a FEROS-driven research operating system. The goal is to eliminate overfitting by adding walk-forward optimization, multi-dimensional validation, feature registries, regime-aware testing, and out-of-sample verification before any parameter touches the live pipeline.</p>
+
+    <div class="grid-4">
+      <div class="stat">
+        <div class="num">7</div>
+        <div class="label">Build Phases</div>
+      </div>
+      <div class="stat">
+        <div class="num">12</div>
+        <div class="label">New Data Sources</div>
+      </div>
+      <div class="stat">
+        <div class="num">9</div>
+        <div class="label">Open Source Tools</div>
+      </div>
+      <div class="stat">
+        <div class="num">6</div>
+        <div class="label">Validation Layers</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>What FEROS Changes</h4>
+      <p>The current backtest is a single-pass bar replay with fixed parameters. FEROS converts it into a stateful research system where every feature, indicator, experiment, and calibration is tracked, versioned, and validated across multiple independent dimensions before it reaches production.</p>
+      <p style="margin-top:10px;">The live trading engine only consumes validated calibration JSON. FEROS sits between raw data and the live engine as a research gate.</p>
+    </div>
+
+    <div class="card">
+      <h4>Core Anti-Overfit Principles</h4>
+      <ul>
+        <li><strong>Walk-forward optimization.</strong> Parameters are optimized on a rolling window and tested on the next unseen window. No parameter touches the test set before it is frozen.</li>
+        <li><strong>Feature registry with SHAP importance.</strong> Every feature is tracked with prediction accuracy, confidence, and lifecycle state. Features that drift are deprecated, not silently kept.</li>
+        <li><strong>Multi-dimensional validation.</strong> No single metric validates a feature. Mathematical, statistical, behavioral, and performance validation must converge.</li>
+        <li><strong>Regime-aware testing.</strong> Features and parameters are tested per regime (trending, ranging, volatile, etc.). A feature that works only in one regime is labeled as such, not deployed globally.</li>
+        <li><strong>Out-of-sample and stress validation.</strong> Every parameter set is tested on data it has never seen, under stress conditions (latency, gaps, downtime), before approval.</li>
+        <li><strong>Production shadow mode.</strong> New calibrations run in shadow against live data before activation. Discrepancies are logged.</li>
+        <li><strong>Self-learning loop.</strong> After every pipeline run, the system identifies what knowledge was created, which assumptions failed, and which experiments to run next.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h4>FEROS Architecture (High Level)</h4>
+      <pre class="ascii">
++-----------------------------------------------------------+
+|                     FEROS Core                              |
+|  +---------------------------------------------------+    |
+|  |  Knowledge Graph Engine (Stateful Dependency Graph)|    |
+|  +---------------------------------------------------+    |
+|  +---------------------------------------------------+    |
+|  |  Research Data Lake (Parquet / DuckDB / SQLite)    |    |
+|  +---------------------------------------------------+    |
+|  +---------------------------------------------------+    |
+|  |  Feature Engineering Pipeline (Vectorized Pandas)  |    |
+|  +---------------------------------------------------+    |
+|  +---------------------------------------------------+    |
+|  |  Validation Framework (Multi-dimensional)          |    |
+|  +---------------------------------------------------+    |
+|  +---------------------------------------------------+    |
+|  |  Walk-Forward Experiment Orchestrator              |    |
+|  +---------------------------------------------------+    |
+|  +---------------------------------------------------+    |
+|  |  Calibration & Production Export (JSON)            |    |
+|  +---------------------------------------------------+    |
+|  +---------------------------------------------------+    |
+|  |  Self-Learning Module (Graph Analysis)             |    |
+|  +---------------------------------------------------+    |
++-----------------------------------------------------------+
+       ↓
++-----------------------------------------------------------+
+|              Live Trading Engine (VLTHR Pipeline)           |
+|  (consumes validated calibration JSON only)                 |
++-----------------------------------------------------------+
+      </pre>
+    </div>
+  </div>
+
+  <!-- ========== TAB: PROBLEM ========== -->
+  <div id="tab-problem" class="tab-content">
+    <h2>Problem Statement</h2>
+
+    <div class="card">
+      <h4>Current Backtest Limitations</h4>
+      <table>
+        <tr><th>Limitation</th><th>Impact</th><th>FEROS Solution</th></tr>
+        <tr>
+          <td>Single-pass bar replay with fixed parameters</td>
+          <td>Parameters are curve-fit to the full dataset. No out-of-sample validation.</td>
+          <td>Walk-forward optimization with frozen test windows</td>
+        </tr>
+        <tr>
+          <td>No feature registry or versioning</td>
+          <td>Cannot track which features contribute to performance. Cannot detect drift.</td>
+          <td>Feature table with SHAP importance, lifecycle state, confidence score</td>
+        </tr>
+        <tr>
+          <td>Calibration gate outputs flat 0.5000</td>
+          <td>Gate is effectively disabled. All signals pass regardless of quality.</td>
+          <td>Calibration registry with versioned models, minimum sample enforcement, drift detection</td>
+        </tr>
+        <tr>
+          <td>No regime-aware parameter sets</td>
+          <td>Same SL/TP/Kelly used in trending and ranging markets. Suboptimal in both.</td>
+          <td>Regime table with per-regime calibration. Parameters switch with detected regime.</td>
+        </tr>
+        <tr>
+          <td>No walk-forward or cross-validation</td>
+          <td>Backtest PF 3.10 but live win rate 13%. Classic overfit signature.</td>
+          <td>Rolling window optimization with strict OOS test windows</td>
+        </tr>
+        <tr>
+          <td>No economic event overlay</td>
+          <td>CPI, FOMC, NFP shocks are invisible to the backtest. Live trades hit by them.</td>
+          <td>Economic event table with severity, impact radius, recovery time</td>
+        </tr>
+        <tr>
+          <td>No intermarket features</td>
+          <td>BTC dominance, DXY correlation, equity-crypto linkage all missing.</td>
+          <td>Intermarket data sources and cross-asset feature engineering</td>
+        </tr>
+        <tr>
+          <td>No liquidation/order book flow data</td>
+          <td>Cannot model squeezes, liquidation cascades, or depth-driven exits.</td>
+          <td>Aggtrade and liquidation data ingestion, order book imbalance features</td>
+        </tr>
+        <tr>
+          <td>SL overshoot undetected</td>
+          <td>Trade #411 lost $103 on a $24 SL. Backtest assumes perfect SL fills.</td>
+          <td>Slippage modeling with realistic spread and gap simulation</td>
+        </tr>
+        <tr>
+          <td>No self-learning loop</td>
+          <td>Each backtest run is independent. No knowledge carries forward.</td>
+          <td>Self-learning module: after each run, system identifies next experiments</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>Live vs Backtest Discrepancy (Jul 2026)</h4>
+      <div class="grid-2">
+        <div>
+          <h4 style="color:#e07070;">Live (7-day)</h4>
+          <table>
+            <tr><th>Metric</th><th>Value</th></tr>
+            <tr><td>Win Rate</td><td>13.3%</td></tr>
+            <tr><td>SL Hit Rate</td><td>80%</td></tr>
+            <tr><td>TP Hit Rate</td><td>6.7%</td></tr>
+            <tr><td>Total PnL</td><td>-$550</td></tr>
+            <tr><td>Calibrated Prob</td><td>0.5000 (flat)</td></tr>
+          </table>
+        </div>
+        <div>
+          <h4 style="color:#70d0a0;">Backtest (Aligned)</h4>
+          <table>
+            <tr><th>Metric</th><th>Value</th></tr>
+            <tr><td>Win Rate</td><td>36.1%</td></tr>
+            <tr><td>SL Hit Rate</td><td>63.5%</td></tr>
+            <tr><td>TP Hit Rate</td><td>33.5%</td></tr>
+            <tr><td>Total PnL</td><td>+$532</td></tr>
+            <tr><td>Calibrated Prob</td><td>Variable (gate active)</td></tr>
+          </table>
+        </div>
+      </div>
+      <p style="margin-top:12px;"><span class="badge badge-red">Overfit Detected</span> The 23pp win rate gap between backtest and live is the signature of overfitting. The backtest parameters were selected on the same data they were tested on.</p>
+    </div>
+  </div>
+
+  <!-- ========== TAB: ARCHITECTURE ========== -->
+  <div id="tab-architecture" class="tab-content">
+    <h2>Target Architecture</h2>
+
+    <div class="card">
+      <h4>System Layers</h4>
+      <pre class="ascii">
+Layer 1: Data Lake
+  ├── Bybit OHLCV (1m, 5m, 15m, 1h, 4h, 1d) — existing
+  ├── Bybit Funding Rate / Open Interest — existing
+  ├── Bybit Liquidations — existing (empty)
+  ├── Bybit Order Book Snapshots — existing (empty)
+  ├── Aggregated Trades (aggtrades) — NEW
+  ├── Economic Calendar (FOMC, CPI, NFP, etc.) — NEW
+  ├── Fear & Greed Index — NEW
+  ├── Stablecoin Supply / Cap — NEW
+  ├── BTC Dominance — NEW
+  ├── DXY (Dollar Index) — NEW
+  ├── S&P 500 / NASDAQ — NEW
+  ├── News Sentiment (CryptoPanic / NewsAPI) — NEW
+  └── On-Chain Metrics (Glassnode / Coinglass) — NEW
+
+Layer 2: Feature Engineering Pipeline
+  ├── Price Features (returns, volatility, ATR, Bollinger)
+  ├── Volume Features (VWAP, volume momentum, OBV)
+  ├── Liquidity Features (spread, depth, imbalance)
+  ├── Open Interest Features (OI delta, OI momentum)
+  ├── Funding Features (funding rate z-score, cumulative)
+  ├── Session Features (London/NY/Asia behavior)
+  ├── Regime Features (HMM states, volatility regime)
+  ├── Economic Event Features (pre/post event behavior)
+  ├── Intermarket Features (BTC dominance, DXY correlation)
+  ├── Sentiment Features (Fear/Greed, news sentiment)
+  ├── On-Chain Features (stablecoin supply, exchange flows)
+  └── Decision History Features (past trade outcomes per symbol)
+
+Layer 3: Validation Framework
+  ├── Mathematical Validation (formula correctness, numerical stability)
+  ├── Statistical Validation (distribution, stationarity, mutual information)
+  ├── Behavioral Validation (regime consistency, session consistency)
+  ├── Performance Validation (win rate, PF, Sharpe, Sortino, drawdown)
+  ├── Stress Validation (latency, gaps, downtime, slippage)
+  └── Production Shadow Validation (live comparison, drift detection)
+
+Layer 4: Experiment Orchestrator
+  ├── Walk-Forward Optimization (rolling window, frozen test)
+  ├── Grid Search / Bayesian Optimization (Optuna)
+  ├── Cross-Validation (purged k-fold, combinatorial purged)
+  ├── Regime-Conditional Testing (per-regime parameter sets)
+  └── Monte Carlo Simulation (trade order reshuffling)
+
+Layer 5: Calibration & Export
+  ├── Calibration Registry (versioned, linked to experiment)
+  ├── Production Export (JSON, consumed by live engine)
+  ├── Shadow Mode (run new calibration against live, compare)
+  └── Rollback (revert to previous calibration on drift)
+
+Layer 6: Self-Learning
+  ├── Knowledge Graph (feature → indicator → signal → outcome)
+  ├── Drift Detection (feature drift, concept drift, calibration drift)
+  ├── Experiment Queue (auto-generate next experiments)
+  └── Knowledge Density Metrics (occurrence, activation, success rate)
+      </pre>
+    </div>
+
+    <div class="card">
+      <h4>Walk-Forward Optimization Design</h4>
+      <pre class="ascii">
+Data: Jan 2023 ──────────────────────────────────────── Jul 2026
+
+Window 1:
+  Train:     [Jan 2023 ──────── Jun 2024]  18 months
+  Test:      [Jul 2024 ── Dec 2024]         6 months  (FROZEN)
+
+Window 2:
+  Train:     [Apr 2023 ──────── Sep 2024]  18 months (roll forward 3mo)
+  Test:      [Oct 2024 ── Mar 2025]         6 months  (FROZEN)
+
+Window 3:
+  Train:     [Jul 2023 ──────── Dec 2024]  18 months
+  Test:      [Jan 2025 ── Jun 2025]         6 months  (FROZEN)
+
+Window 4:
+  Train:     [Oct 2023 ──────── Mar 2025]  18 months
+  Test:      [Apr 2025 ── Sep 2025]         6 months  (FROZEN)
+
+Window 5:
+  Train:     [Jan 2024 ──────── Jun 2025]  18 months
+  Test:      [Jul 2025 ── Dec 2025]         6 months  (FROZEN)
+
+Window 6:
+  Train:     [Apr 2024 ──────── Sep 2025]  18 months
+  Test:      [Oct 2025 ── Mar 2026]         6 months  (FROZEN)
+
+Window 7:
+  Train:     [Jul 2024 ──────── Dec 2025]  18 months
+  Test:      [Jan 2026 ── Jun 2026]         6 months  (FROZEN)
+
+Final: Aggregate OOS results across all 7 test windows.
+       Only parameters that are stable across windows are approved.
+      </pre>
+      <p style="margin-top:8px;"><span class="badge badge-yellow">Purging</span> A 1-month purge gap between train and test windows to prevent label leakage from trade hold times.</p>
+    </div>
+
+    <div class="card">
+      <h4>Knowledge Graph Schema</h4>
+      <pre class="ascii">
+Dataset ──→ Feature ──→ Indicator ──→ Signal ──→ Decision
+    │          │           │           │          │
+    │          ↓           ↓           ↓          ↓
+    │     Validation   Calibration   Trade    Outcome
+    │          │           │           │          │
+    │          ↓           ↓           ↓          ↓
+    │     Performance   Version     Execution  Performance
+    │          │           │           │          │
+    └──────────┴───────────┴───────────┴──────────┘
+                        │
+                   Self-Learning
+                   │
+              Next Experiment
+      </pre>
+      <p>Every node stores references to all connected nodes. The graph supports forward traversal (what does this feature produce?) and backward traversal (what produced this trade outcome?).</p>
+    </div>
+  </div>
+
+  <!-- ========== TAB: PHASES ========== -->
+  <div id="tab-phases" class="tab-content">
+    <h2>Build Phases</h2>
+
+    <div class="card">
+      <h3><span class="phase-num">1</span>Data Lake Expansion</h3>
+      <p><strong>Goal:</strong> Ingest all 12 new data sources into the existing Parquet data lake.</p>
+      <ul>
+        <li>Create ingestion scripts for economic calendar, Fear/Greed, BTC dominance, DXY, equities, news sentiment, on-chain metrics</li>
+        <li>Backfill aggtrade and liquidation data from Bybit</li>
+        <li>Store all data in Parquet with standard schema: timestamp, symbol, value, source, pipeline_id, hash</li>
+        <li>Verify data completeness and alignment with existing OHLCV timestamps</li>
+      </ul>
+      <p><span class="badge badge-blue">Protocol</span> GBEGP Phase 0 (environment setup), STBP Section 6 (supply chain vetting for new API clients)</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="phase-num">2</span>Feature Engineering Pipeline</h3>
+      <p><strong>Goal:</strong> Build the feature registry and engineering pipeline.</p>
+      <ul>
+        <li>Create SQLite/DuckDB feature registry with the FEROS schema (feature_id, formula, parameters, dependencies, density, validation_status, confidence, shap_importance, lifecycle_state)</li>
+        <li>Engineer features across all domains: price, volume, liquidity, OI, funding, session, regime, economic, intermarket, sentiment, on-chain, decision history</li>
+        <li>Compute density metrics for every feature: occurrence, activation, success, failure rates</li>
+        <li>Automatically discover and store feature dependencies as a DAG</li>
+      </ul>
+      <p><span class="badge badge-blue">Protocol</span> CCP Section 3 (build one feature at a time, validate before next), RODP (one concern per file)</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="phase-num">3</span>Validation Framework</h3>
+      <p><strong>Goal:</strong> Implement multi-dimensional validation for every feature.</p>
+      <ul>
+        <li>Mathematical validation: formula correctness on synthetic data, numerical stability, boundary testing</li>
+        <li>Statistical validation: distribution analysis, stationarity (ADF test), mutual information, autocorrelation, variance inflation</li>
+        <li>Behavioral validation: regime consistency, session consistency, cross-symbol consistency, market-cycle consistency</li>
+        <li>Performance validation: IC (information coefficient), Sharpe, Sortino, win rate contribution, PF contribution</li>
+        <li>Stress validation: latency, data gaps, downtime, slippage simulation</li>
+        <li>Production shadow: run feature against live data, compare with backtest expectations</li>
+      </ul>
+      <p><span class="badge badge-green">Gate</span> Feature approved only when all 6 validation layers pass with confidence > 0.8</p>
+      <p><span class="badge badge-blue">Protocol</span> PIVP (validation gate per feature), FEROS Decision Framework (no single metric approval)</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="phase-num">4</span>Walk-Forward Experiment Orchestrator</h3>
+      <p><strong>Goal:</strong> Replace single-pass backtest with walk-forward optimization.</p>
+      <ul>
+        <li>Implement rolling window train/test split with 1-month purge gap</li>
+        <li>Integrate Optuna for Bayesian hyperparameter optimization on train windows</li>
+        <li>Implement purged k-fold cross-validation (combinatorial purged cross-validation from Lopez de Prado)</li>
+        <li>Regime-conditional testing: optimize and test parameters per regime separately</li>
+        <li>Monte Carlo simulation: reshuffle trade order 1000x to compute probability of ruin</li>
+        <li>Aggregate OOS results across all windows. Reject parameters with high variance across windows.</li>
+      </ul>
+      <p><span class="badge badge-blue">Protocol</span> SMP Phase 0 (functional inventory of existing backtest before migration), DFDI (decision-first: validate hypothesis before running experiment)</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="phase-num">5</span>Calibration Registry and Export</h3>
+      <p><strong>Goal:</strong> Replace the broken flat-0.5000 calibration with a versioned, validated model.</p>
+      <ul>
+        <li>Build calibration registry: each calibration versioned, linked to experiment and walk-forward window</li>
+        <li>Train calibration model on walk-forward OOS predictions (not in-sample)</li>
+        <li>Enforce minimum sample size (100+ per symbol, up from 5)</li>
+        <li>Export validated calibration as JSON for live pipeline consumption</li>
+        <li>Shadow mode: run new calibration alongside live, log discrepancies for 7 days before activation</li>
+        <li>Rollback mechanism: revert to previous calibration if drift detected</li>
+      </ul>
+      <p><span class="badge badge-blue">Protocol</span> GBEGP Section 3 (dev to production promotion), STBP Section 4 (destructive op gate for calibration swap)</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="phase-num">6</span>Self-Learning Module</h3>
+      <p><strong>Goal:</strong> Close the loop. After every pipeline run, the system learns.</p>
+      <ul>
+        <li>Build knowledge graph in networkx with persistence to SQLite</li>
+        <li>After each experiment: identify what knowledge was created, which assumptions failed, which dependencies changed</li>
+        <li>Drift detection: monitor feature performance over time, flag features with declining IC or confidence</li>
+        <li>Auto-generate experiment queue: based on failures and knowledge gaps, propose next experiments</li>
+        <li>Knowledge density metrics: track occurrence, activation, success rates per feature per regime</li>
+      </ul>
+      <p><span class="badge badge-blue">Protocol</span> RODP Section 7 (progress reports), FEROS Self-Learning tab</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="phase-num">7</span>Live Integration and Shadow Deployment</h3>
+      <p><strong>Goal:</strong> Connect FEROS output to the live pipeline safely.</p>
+      <ul>
+        <li>Docker container for FEROS with volume mounts for data and metadata</li>
+        <li>Live pipeline reads calibration JSON from FEROS export directory</li>
+        <li>Shadow mode: FEROS runs alongside live pipeline, comparing signal quality</li>
+        <li>7-day shadow burn-in before any calibration goes live</li>
+        <li>Automated rollback if live performance deviates from shadow expectations by more than 2 sigma</li>
+        <li>Dashboard: FEROS status, experiment queue, feature health, calibration version</li>
+      </ul>
+      <p><span class="badge badge-blue">Protocol</span> GBEGP Section 3 (promotion), STBP Section 5 (prod posture), PIVP (exit gate before promotion)</p>
+    </div>
+  </div>
+
+  <!-- ========== TAB: DATA SOURCES ========== -->
+  <div id="tab-datasources" class="tab-content">
+    <h2>Data Sources Needed</h2>
+
+    <div class="card">
+      <h4>Existing Data (Already Ingested)</h4>
+      <table>
+        <tr><th>Source</th><th>Data</th><th>Format</th><th>Status</th></tr>
+        <tr><td>Bybit</td><td>OHLCV (1m, 5m, 15m, 1h, 4h, 1d)</td><td>Parquet</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td>Bybit</td><td>Funding Rate (8h)</td><td>Parquet</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td>Bybit</td><td>Open Interest</td><td>Parquet</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td>Bybit</td><td>Liquidations</td><td>Parquet</td><td><span class="badge badge-yellow">Empty</span></td></tr>
+        <tr><td>Bybit</td><td>Order Book Snapshots</td><td>Parquet</td><td><span class="badge badge-yellow">Empty</span></td></tr>
+        <tr><td>Bybit</td><td>LS Ratio</td><td>Parquet</td><td><span class="badge badge-green">Active</span></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>New Data Sources to Add</h4>
+      <table>
+        <tr><th>#</th><th>Source</th><th>Data</th><th>API / Method</th><th>Why Needed</th></tr>
+        <tr>
+          <td>1</td>
+          <td>Bybit</td>
+          <td>Aggregated Trades (aggtrades)</td>
+          <td>Bybit REST API v5 <code>/v5/market/recent-trading</code></td>
+          <td>Tick-level flow analysis, volume profile, sweep detection</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>FRED (St. Louis Fed)</td>
+          <td>DXY (Dollar Index), Treasury Yields</td>
+          <td>FRED API (free, key required)</td>
+          <td>Dollar strength inversely correlates with crypto. Yield shifts drive risk-on/off.</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Yahoo Finance</td>
+          <td>S&P 500, NASDAQ 100, VIX</td>
+          <td><code>yfinance</code> Python library</td>
+          <td>Equity-crypto correlation. VIX as risk appetite proxy.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Trading Economics / Investpy</td>
+          <td>Economic Calendar (CPI, PPI, NFP, FOMC, GDP, PMI)</td>
+          <td>Trading Economics API (free tier) or <code>investpy</code></td>
+          <td>Pre/post event behavior. Avoid trading through high-impact events.</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Alternative.me</td>
+          <td>Crypto Fear & Greed Index</td>
+          <td>REST API (free, no key)</td>
+          <td>Sentiment regime detection. Extreme fear/greed as contrarian signals.</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>CoinGecko</td>
+          <td>BTC Dominance, Stablecoin Market Cap</td>
+          <td>CoinGecko API (free tier, existing script present)</td>
+          <td>BTC dominance drives altcoin rotation. Stablecoin supply = dry powder.</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>CoinGlass</td>
+          <td>Liquidation heatmap, OI aggregated, Funding aggregated</td>
+          <td>CoinGlass API (free tier)</td>
+          <td>Cross-exchange liquidation cascades, OI divergence detection.</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Glassnode (or CryptoQuant)</td>
+          <td>On-chain: exchange flows, SOPR, MVRV, miner reserves</td>
+          <td>Glassnode API (paid) or CryptoQuant (free tier)</td>
+          <td>On-chain accumulation/distribution. Exchange outflows = bullish.</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>CryptoPanic / NewsAPI</td>
+          <td>Crypto news headlines with sentiment scores</td>
+          <td>CryptoPanic API (free) or NewsAPI.org (free tier)</td>
+          <td>News-driven volatility. Sentiment momentum as feature.</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>Binance</td>
+          <td>Long/Short Ratio (top traders), Taker Buy/Sell Volume</td>
+          <td>Binance Futures API (free)</td>
+          <td>Positioning intelligence. Taker buy/sell ratio = order flow pressure.</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>Coinglass / Bybit</td>
+          <td>Funding Rate History (all exchanges, aggregated)</td>
+          <td>Coinglass API or Bybit API</td>
+          <td>Cross-exchange funding arbitrage signals. Extreme funding = reversal risk.</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>DefiLlama</td>
+          <td>TVL (Total Value Locked) per chain, stablecoin supply</td>
+          <td>DefiLlama API (free, no key)</td>
+          <td>DeFi capital flows as macro crypto liquidity indicator.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>Data Storage Schema (FEROS Standard)</h4>
+      <p>Every dataset table must have these columns:</p>
+      <pre class="code">
+CREATE TABLE datasets (
+  dataset_id    TEXT PRIMARY KEY,
+  name          TEXT NOT NULL,
+  source        TEXT NOT NULL,
+  symbol        TEXT,
+  timeframe     TEXT,
+  start_date    TIMESTAMP,
+  end_date      TIMESTAMP,
+  pipeline_id   TEXT,
+  experiment_id TEXT,
+  hash          TEXT,
+  validation_status TEXT,
+  confidence    REAL,
+  created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  version       INTEGER DEFAULT 1,
+  dependencies  JSONB,
+  metadata      JSONB
+);
+      </pre>
+    </div>
+  </div>
+
+  <!-- ========== TAB: TOOLS ========== -->
+  <div id="tab-tools" class="tab-content">
+    <h2>Open Source Tools and Repos</h2>
+
+    <div class="card">
+      <h4>Core Python Libraries</h4>
+      <table>
+        <tr><th>Tool</th><th>Repo / Install</th><th>Purpose</th><th>Phase</th></tr>
+        <tr>
+          <td><strong>DuckDB</strong></td>
+          <td><code>pip install duckdb</code> · <a href="https://github.com/duckdb/duckdb" style="color:#70b0f0;">github.com/duckdb/duckdb</a></td>
+          <td>In-memory analytics over Parquet files. Replaces heavy PostgreSQL queries for research. SQL over Parquet directly.</td>
+          <td>1, 2</td>
+        </tr>
+        <tr>
+          <td><strong>Optuna</strong></td>
+          <td><code>pip install optuna</code> · <a href="https://github.com/optuna/optuna" style="color:#70b0f0;">github.com/optuna/optuna</a></td>
+          <td>Bayesian hyperparameter optimization. Replaces grid search. Tree-structured Parzen Estimator for efficient search.</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td><strong>SHAP</strong></td>
+          <td><code>pip install shap</code> · <a href="https://github.com/shap/shap" style="color:#70b0f0;">github.com/shap/shap</a></td>
+          <td>Feature importance via Shapley values. Identifies which features actually contribute to predictions vs noise.</td>
+          <td>2, 3</td>
+        </tr>
+        <tr>
+          <td><strong>networkx</strong></td>
+          <td><code>pip install networkx</code> · <a href="https://github.com/networkx/networkx" style="color:#70b0f0;">github.com/networkx/networkx</a></td>
+          <td>Knowledge graph construction and traversal. Dependency DAG, circular dependency detection, graph queries.</td>
+          <td>2, 6</td>
+        </tr>
+        <tr>
+          <td><strong>statsmodels</strong></td>
+          <td><code>pip install statsmodels</code> · <a href="https://github.com/statsmodels/statsmodels" style="color:#70b0f0;">github.com/statsmodels/statsmodels</a></td>
+          <td>Statistical tests: ADF (stationarity), cointegration, VIF (variance inflation), mutual information, autocorrelation.</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td><strong>hmmlearn</strong></td>
+          <td><code>pip install hmmlearn</code> · <a href="https://github.com/hmmlearn/hmmlearn" style="color:#70b0f0;">github.com/hmmlearn/hmmlearn</a></td>
+          <td>Hidden Markov Models for regime detection. Goes beyond simple TRENDING/MIXED/RANGING to probabilistic regime states.</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td><strong>yfinance</strong></td>
+          <td><code>pip install yfinance</code> · <a href="https://github.com/ranaroussi/yfinance" style="color:#70b0f0;">github.com/ranaroussi/yfinance</a></td>
+          <td>Equity index data (S&P 500, NASDAQ, VIX) for intermarket features.</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><strong>ccxt</strong></td>
+          <td><code>pip install ccxt</code> · <a href="https://github.com/ccxt/ccxt" style="color:#70b0f0;">github.com/ccxt/ccxt</a></td>
+          <td>Unified exchange API library. Simplifies multi-exchange data ingestion (Bybit, Binance, CoinGlass).</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><strong>vectorbt</strong></td>
+          <td><code>pip install vectorbt</code> · <a href="https://github.com/polakowo/vectorbt" style="color:#70b0f0;">github.com/polakowo/vectorbt</a></td>
+          <td>Vectorized backtesting. 100x faster than bar-by-bar for parameter sweeps. Used in Phase 4 for walk-forward optimization.</td>
+          <td>4</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>Specialized Financial ML Libraries</h4>
+      <table>
+        <tr><th>Tool</th><th>Repo</th><th>Purpose</th><th>Phase</th></tr>
+        <tr>
+          <td><strong>financial-ml</strong></td>
+          <td><a href="https://github.com/hudson-and-thames/research" style="color:#70b0f0;">hudson-and-thames/research</a></td>
+          <td>Lopez de Prado's methods: combinatorial purged cross-validation, triple-barrier labeling, meta-labeling, fractionally differentiated features.</td>
+          <td>3, 4</td>
+        </tr>
+        <tr>
+          <td><strong>ta</strong></td>
+          <td><a href="https://github.com/bukosabino/ta" style="color:#70b0f0;">github.com/bukosabino/ta</a></td>
+          <td>130+ technical indicators. Saves writing each indicator from scratch. Use as feature source, validate each before registry.</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td><strong>scikit-learn</strong></td>
+          <td><a href="https://github.com/scikit-learn/scikit-learn" style="color:#70b0f0;">github.com/scikit-learn/scikit-learn</a></td>
+          <td>Calibration model training (isotonic regression, Platt scaling), cross-validation utilities, feature selection.</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><strong>mlfinlab</strong></td>
+          <td><a href="https://github.com/hudson-and-thames/mlfinlab" style="color:#70b0f0;">github.com/hudson-and-thames/mlfinlab</a></td>
+          <td>Production implementation of Lopez de Prado's Advances in Financial Machine Learning. Purged k-fold, meta-labeling, feature importance.</td>
+          <td>3, 4</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>Infrastructure</h4>
+      <table>
+        <tr><th>Tool</th><th>Purpose</th><th>Phase</th></tr>
+        <tr>
+          <td><strong>DuckDB</strong></td>
+          <td>Replace direct Parquet reads with DuckDB SQL queries over Parquet. Faster aggregation, columnar pruning.</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><strong>SQLite</strong></td>
+          <td>Metadata store: feature registry, experiment registry, calibration registry, validation results. Already in FEROS spec.</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td><strong>Docker</strong></td>
+          <td>FEROS container with volume mounts for data lake and metadata. Isolates research environment from live pipeline.</td>
+          <td>7</td>
+        </tr>
+        <tr>
+          <td><strong>GitHub Actions</strong></td>
+          <td>CI: run validation suites on every PR to FEROS. Block merges that fail walk-forward OOS tests.</td>
+          <td>7</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>requirements.txt for FEROS</h4>
+      <pre class="code">
+# Core
+pandas>=2.0
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.3
+statsmodels>=0.14
+
+# Data Lake
+duckdb>=0.9
+pyarrow>=14.0
+
+# Feature Engineering
+ta>=0.10
+hmmlearn>=0.3
+shap>=0.44
+
+# Optimization
+optuna>=3.4
+vectorbt>=0.26
+
+# Financial ML
+mlfinlab>=0.12
+
+# Graph
+networkx>=3.1
+
+# Data Ingestion
+ccxt>=4.0
+yfinance>=0.2
+requests>=2.31
+
+# Visualization
+matplotlib>=3.7
+plotly>=5.18
+
+# Testing
+pytest>=7.4
+hypothesis>=6.90
+      </pre>
+    </div>
+  </div>
+
+  <!-- ========== TAB: VALIDATION ========== -->
+  <div id="tab-validation" class="tab-content">
+    <h2>Validation Architecture</h2>
+    <p>No single metric validates a feature or parameter set. Evidence must converge from multiple independent sources.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>1. Mathematical Validation</h4>
+        <ul>
+          <li>Formula correctness on synthetic data with known outputs</li>
+          <li>Numerical stability (no overflow, no division by zero)</li>
+          <li>Boundary testing (empty arrays, single values, NaN inputs)</li>
+          <li>Missing value handling (forward fill vs drop vs impute)</li>
+          <li>Precision and overflow checks</li>
+          <li>Unit consistency (percentages vs absolute vs basis points)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>2. Statistical Validation</h4>
+        <ul>
+          <li>Distribution analysis (normal, fat-tailed, bimodal)</li>
+          <li>Stationarity test (Augmented Dickey-Fuller)</li>
+          <li>Mutual information with target variable</li>
+          <li>Correlation and autocorrelation (Ljung-Box)</li>
+          <li>Cointegration with other features (redundancy check)</li>
+          <li>Variance Inflation Factor (VIF < 5 required)</li>
+          <li>Noise-to-signal ratio</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>3. Behavioral Validation</h4>
+        <ul>
+          <li>Regime consistency (does feature behave same in trending vs ranging?)</li>
+          <li>Session consistency (London vs NY vs Asia)</li>
+          <li>Economic event consistency (pre/post FOMC, CPI)</li>
+          <li>Cross-symbol consistency (does feature work on BTC and SOL?)</li>
+          <li>Market-cycle consistency (bull vs bear vs sideways)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>4. Performance Validation</h4>
+        <ul>
+          <li>Win rate, profit factor, expectancy contribution</li>
+          <li>Drawdown, Sharpe ratio, Sortino ratio</li>
+          <li>Recovery factor, MAR ratio</li>
+          <li>Information coefficient (IC) with forward returns</li>
+          <li>Capital efficiency, trade efficiency</li>
+          <li>Calibration accuracy (Brier score, log loss)</li>
+          <li>Signal stability (decay half-life)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>5. Stress Validation</h4>
+        <ul>
+          <li>Latency simulation (1-bar, 2-bar, 3-bar delay)</li>
+          <li>Data gap simulation (5%, 10%, 20% missing bars)</li>
+          <li>Downtime simulation (2h, 4h, 8h outages)</li>
+          <li>Slippage modeling (realistic spread, gap risk on SL)</li>
+          <li>Fee sensitivity (2x, 3x current fee schedule)</li>
+          <li>Liquidation cascade simulation</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>6. Production Shadow Validation</h4>
+        <ul>
+          <li>Run new calibration alongside live for 7 days</li>
+          <li>Compare signal quality: DQS distribution, win rate, PF</li>
+          <li>Log every discrepancy between shadow and live</li>
+          <li>Drift detection: PSI (Population Stability Index) > 0.2 triggers alert</li>
+          <li>Rollback if shadow performance deviates > 2 sigma from backtest expectation</li>
+          <li>No calibration goes live without passing shadow burn-in</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>Approval Gate</h4>
+      <p>A feature or parameter set is approved only when:</p>
+      <ul>
+        <li>All 6 validation layers pass</li>
+        <li>Confidence score > 0.8 across all layers</li>
+        <li>Walk-forward OOS results are stable (variance < 20% across windows)</li>
+        <li>No single metric is used as the sole justification</li>
+        <li>Shadow mode burn-in completes without drift alert</li>
+      </ul>
+      <p><span class="badge badge-green">FEROS Decision Framework</span> Never approve features because they improve one metric. Approve features because they consistently improve the overall decision system.</p>
+    </div>
+  </div>
+
+  <!-- ========== TAB: PROTOCOLS ========== -->
+  <div id="tab-protocols" class="tab-content">
+    <h2>Protocol Mapping</h2>
+    <p>How each existing protocol slots into the FEROS upgrade plan.</p>
+
+    <div class="card">
+      <table>
+        <tr><th>Protocol</th><th>Role in FEROS Upgrade</th><th>Where Applied</th></tr>
+        <tr>
+          <td><strong>GBEGP</strong></td>
+          <td>Environment setup for new tools (DuckDB, Optuna, etc.). Dev/prod separation for FEROS container vs live pipeline. Scope confirmation per phase.</td>
+          <td>Phase 1 (env setup), Phase 7 (promotion)</td>
+        </tr>
+        <tr>
+          <td><strong>RODP</strong></td>
+          <td>File structure for FEROS modules. One concern per file: feature engineering, validation, optimization, calibration each in separate modules. Progress reports to /docs/memory after each phase.</td>
+          <td>All phases</td>
+        </tr>
+        <tr>
+          <td><strong>CCP</strong></td>
+          <td>Build one feature at a time, validate before next. No giant code dumps. Interface first, then body, then validate. Handoff documents between phases.</td>
+          <td>All phases (unit-level)</td>
+        </tr>
+        <tr>
+          <td><strong>PIVP</strong></td>
+          <td>Exit gate after each phase. Dead code sweep, automated debug pass, code review, validation against spec, end-to-end verification. No phase advances without PIVP PASS.</td>
+          <td>After each phase</td>
+        </tr>
+        <tr>
+          <td><strong>STBP</strong></td>
+          <td>Supply chain vetting for all new Python dependencies. Pin versions in requirements.txt. No unvetted packages. API keys handled per Section 3 (never in source, never logged). Calibration swap is a destructive op (Section 4) requiring human confirmation.</td>
+          <td>Phase 1 (deps), Phase 5 (calibration swap), Phase 7 (deploy)</td>
+        </tr>
+        <tr>
+          <td><strong>SMP</strong></td>
+          <td>Phase 0 functional inventory of existing backtest before migrating to FEROS architecture. Characterization tests on old backtest. Incremental migration, never big-bang. Parity checklist per migrated unit.</td>
+          <td>Phase 4 (backtest migration)</td>
+        </tr>
+        <tr>
+          <td><strong>DFDI</strong></td>
+          <td>Decision-first: validate hypothesis before running experiment. Problem discovery before specification. Spec Kit for specification → plan → tasks → implement. PIVP remains the real gate after implement.</td>
+          <td>All phases (hypothesis validation before experiment)</td>
+        </tr>
+        <tr>
+          <td><strong>FEROS</strong></td>
+          <td>The target architecture itself. Stateful everything. Knowledge graph. Multi-dimensional validation. Self-learning loop. Live engine consumes only validated calibration JSON.</td>
+          <td>The entire upgrade</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>DFDI Pipeline for FEROS</h4>
+      <pre class="ascii">
+Problem Discovery
+  ↓ "Live win rate is 13% vs backtest 36%. Overfit."
+Knowledge Construction
+  ↓ "Need walk-forward, feature registry, multi-validation"
+Decision Validation
+  ↓ "Hypothesis: FEROS architecture will close the gap"
+Specification Generation  ← Spec Kit /specify + /clarify
+  ↓ "7-phase plan, 12 data sources, 9 tools"
+Architecture              ← Spec Kit /plan
+  ↓ "Layered architecture: Data → Features → Validation → Export"
+Task Planning             ← Spec Kit /tasks
+  ↓ "Phase-by-phase tasks, CCP unit sequencing"
+Implementation            ← Spec Kit /implement
+  ↓ "One phase at a time, PIVP gate after each"
+Testing / Verification    ← PIVP
+  ↓ "Full validation suite, OOS verification"
+Deployment                ← GBEGP Section 3 + STBP
+  ↓ "Shadow mode, 7-day burn-in, human-approved promotion"
+Monitoring / Learning     ← RODP /docs/memory + FEROS Self-Learning
+  ↓ "Drift detection, auto-experiment queue"
+      </pre>
+    </div>
+  </div>
+
+  <!-- ========== TAB: TIMELINE ========== -->
+  <div id="tab-timeline" class="tab-content">
+    <h2>Timeline and Milestones</h2>
+
+    <div class="card">
+      <table>
+        <tr><th>Phase</th><th>Duration</th><th>Deliverable</th><th>Gate</th></tr>
+        <tr>
+          <td>1. Data Lake Expansion</td>
+          <td>1 week</td>
+          <td>12 new data sources ingested, backfilled, stored in Parquet with FEROS schema</td>
+          <td>PIVP + data completeness check</td>
+        </tr>
+        <tr>
+          <td>2. Feature Engineering Pipeline</td>
+          <td>2 weeks</td>
+          <td>Feature registry in SQLite/DuckDB, 50+ engineered features with density metrics, dependency DAG</td>
+          <td>PIVP + feature unit tests</td>
+        </tr>
+        <tr>
+          <td>3. Validation Framework</td>
+          <td>2 weeks</td>
+          <td>6 validation layers operational, every feature validated, approval gate working</td>
+          <td>PIVP + validation suite pass</td>
+        </tr>
+        <tr>
+          <td>4. Walk-Forward Orchestrator</td>
+          <td>2 weeks</td>
+          <td>7-window walk-forward running, Optuna integrated, OOS results aggregated, old backtest migrated per SMP</td>
+          <td>PIVP + SMP parity checklist</td>
+        </tr>
+        <tr>
+          <td>5. Calibration Registry</td>
+          <td>1 week</td>
+          <td>Versioned calibration model, shadow mode operational, rollback mechanism</td>
+          <td>PIVP + STBP destructive op gate</td>
+        </tr>
+        <tr>
+          <td>6. Self-Learning Module</td>
+          <td>1 week</td>
+          <td>Knowledge graph in networkx, drift detection, auto-experiment queue</td>
+          <td>PIVP</td>
+        </tr>
+        <tr>
+          <td>7. Live Integration</td>
+          <td>1 week</td>
+          <td>FEROS Docker container, live pipeline consuming FEROS calibration JSON, 7-day shadow burn-in started</td>
+          <td>PIVP + GBEGP promotion + STBP prod gate</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>Total: ~10 weeks</h4>
+      <p>Phases 1-3 can partially overlap (data ingestion starts while feature engineering scaffolding is built). Phases 4-5 are sequential (calibration depends on walk-forward results). Phase 6 can start in parallel with Phase 5. Phase 7 is last.</p>
+    </div>
+
+    <div class="card">
+      <h4>Success Criteria</h4>
+      <ul>
+        <li><strong>Walk-forward OOS win rate within 5pp of live win rate.</strong> If backtest says 35% and live delivers 30%, that is acceptable. If backtest says 36% and live delivers 13%, that is overfit.</li>
+        <li><strong>Calibration gate produces non-trivial probabilities.</strong> No more flat 0.5000. Brier score < 0.25 on OOS data.</li>
+        <li><strong>Feature registry tracks at least 50 validated features</strong> with SHAP importance, lifecycle state, and drift monitoring.</li>
+        <li><strong>SL overshoot detected and modeled.</strong> Backtest slippage matches live observed slippage within 20%.</li>
+        <li><strong>Shadow mode runs 7 days</strong> with < 2 sigma deviation from backtest expectations before any calibration goes live.</li>
+        <li><strong>Self-learning loop generates at least 3 experiment proposals</strong> after the first full pipeline run.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h4>Risks and Mitigations</h4>
+      <table>
+        <tr><th>Risk</th><th>Mitigation</th></tr>
+        <tr>
+          <td>Walk-forward reveals that current strategy has no edge OOS</td>
+          <td>Accept the finding. Better to know now than keep losing live. Pivot to new feature sets identified by FEROS.</td>
+        </tr>
+        <tr>
+          <td>New data sources have gaps or API rate limits</td>
+          <td>Backfill aggressively in Phase 1. Use free tiers with rate limiting. Cache everything to Parquet.</td>
+        </tr>
+        <tr>
+          <td>Feature engineering produces too many features (curse of dimensionality)</td>
+          <td>VIF check eliminates redundant features. SHAP importance ranks by contribution. Cap at top 30-50 features by IC.</td>
+        </tr>
+        <tr>
+          <td>Calibration model overfits to walk-forward OOS predictions</td>
+          <td>Use isotonic regression (low capacity). Enforce minimum 100 samples per symbol. Monitor Brier score on live shadow data.</td>
+        </tr>
+        <tr>
+          <td>SMP migration breaks existing backtest functionality</td>
+          <td>Characterization tests on old backtest first. Incremental migration per SMP. Old backtest stays available until parity verified.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div style="margin-top:60px; border-top:1px solid #2a2a1a; padding-top:20px; color:#5a6a5a; font-size:0.85rem; display:flex; justify-content:space-between; flex-wrap:wrap;">
+    <span>FEROS Backtest Upgrade Plan · VLTHR v3</span>
+    <span>Protocols: GBEGP · RODP · CCP · PIVP · STBP · SMP · DFDI · FEROS</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = {
+      overview: document.getElementById('tab-overview'),
+      problem: document.getElementById('tab-problem'),
+      architecture: document.getElementById('tab-architecture'),
+      phases: document.getElementById('tab-phases'),
+      datasources: document.getElementById('tab-datasources'),
+      tools: document.getElementById('tab-tools'),
+      validation: document.getElementById('tab-validation'),
+      protocols: document.getElementById('tab-protocols'),
+      timeline: document.getElementById('tab-timeline')
+    };
+
+    function activateTab(tabId) {
+      Object.values(contents).forEach(el => el.classList.remove('active'));
+      tabs.forEach(btn => btn.classList.remove('active'));
+      const target = contents[tabId];
+      if (target) target.classList.add('active');
+      const activeBtn = Array.from(tabs).find(btn => btn.dataset.tab === tabId);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const tabId = this.dataset.tab;
+        if (tabId && contents[tabId]) {
+          activateTab(tabId);
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

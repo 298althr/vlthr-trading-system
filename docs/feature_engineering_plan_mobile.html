@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<title>Feature Engineering Plan · VLTHR</title>
+<style>
+/* --------------------------------------------------------------------------
+   VLTHR Mobile App Design System
+   Tokens are preserved from the existing design system and redefined for
+   a native-app presentation. No backdrop-filter, no heavy gradients.
+   -------------------------------------------------------------------------- */
+
+:root{
+  /* Existing VLTHR tokens, remapped for app presentation */
+  --bg:#000;
+  --surface:#0a0a0a;
+  --surface-2:#141414;
+  --surface-3:#1a1a1a;
+  --surface-4:#222;
+  --border:#222;
+  --border-light:#2a2a2a;
+  --text:#e8e8e8;
+  --text-2:#a0a0a0;
+  --text-muted:#666;
+  --accent:#e82127;
+  --accent-dim:rgba(232,33,39,.12);
+  --accent-glow:rgba(232,33,39,.25);
+  --blue:#2d7ff9;
+  --green:#00e676;
+  --yellow:#ffd600;
+  --orange:#ff9100;
+  --purple:#b388ff;
+  --red:#ff5252;
+
+  /* App-specific additions */
+  --app-radius:14px;
+  --card-radius:16px;
+  --pill-radius:999px;
+  --gap-xs:6px;
+  --gap-sm:8px;
+  --gap-md:12px;
+  --gap-lg:16px;
+  --gap-xl:24px;
+  --safe-top:env(safe-area-inset-top, 0px);
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+  --header-h:56px;
+  --nav-h:64px;
+
+  /* Typography */
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace;
+  --text-xs:.72rem;
+  --text-sm:.82rem;
+  --text-base:.94rem;
+  --text-lg:1.05rem;
+  --text-xl:1.25rem;
+  --text-2xl:1.6rem;
+  --text-hero:2.2rem;
+
+  /* Motion */
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --duration-fast:150ms;
+  --duration-base:250ms;
+  --duration-slow:500ms;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+  font-size:var(--text-base);
+  overflow-x:hidden;
+  overscroll-behavior-y:none;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+
+/* Scrollbars */
+::-webkit-scrollbar{width:0;height:0}
+
+/* App shell */
+.app-shell{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  background:var(--bg);
+}
+
+/* Status bar */
+.status-bar{
+  height:calc(24px + var(--safe-top));
+  padding:var(--safe-top) var(--gap-md) 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-family:var(--font-mono);
+  font-size:var(--text-xs);
+  color:var(--text-2);
+  background:var(--bg);
+  position:sticky;
+  top:0;
+  z-index:200;
+}
+.status-bar .clock{font-weight:600;letter-spacing:.5px}
+.status-bar .indicators{display:flex;align-items:center;gap:var(--gap-xs)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s var(--ease-out) infinite}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+
+/* Header */
+.app-header{
+  height:var(--header-h);
+  padding:0 var(--gap-md);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:calc(24px + var(--safe-top));
+  z-index:150;
+}
+.app-header .logo{display:flex;align-items:center;gap:var(--gap-sm);font-weight:700;letter-spacing:-.3px;font-size:var(--text-lg)}
+.app-header .logo-mark{width:22px;height:22px;border-radius:6px;background:var(--accent);display:grid;place-items:center;font-size:var(--text-xs);color:#fff;font-weight:800}
+.app-header .menu-btn{
+  width:36px;height:36px;border-radius:var(--app-radius);
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  color:var(--text);
+  display:grid;place-items:center;
+}
+
+/* Main content */
+.app-main{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+}
+.screen{
+  display:none;
+  padding:var(--gap-lg) var(--gap-md) calc(var(--nav-h) + var(--safe-bottom) + var(--gap-lg));
+  animation:screen-in var(--duration-base) var(--ease-out) both;
+}
+.screen.active{display:block}
+@keyframes screen-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Section headings */
+.screen-header{margin-bottom:var(--gap-lg)}
+.screen-eyebrow{
+  font-family:var(--font-mono);
+  font-size:var(--text-xs);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  margin-bottom:var(--gap-sm);
+}
+.screen-title{
+  font-size:var(--text-hero);
+  font-weight:800;
+  letter-spacing:-1px;
+  line-height:1.05;
+  margin-bottom:var(--gap-md);
+}
+.screen-title .word{display:inline-block}
+.screen-desc{color:var(--text-2);font-size:var(--text-lg);line-height:1.5}
+
+/* Cards */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--card-radius);
+  padding:var(--gap-lg);
+  margin-bottom:var(--gap-md);
+  position:relative;
+  overflow:hidden;
+  transition:border-color var(--duration-fast) var(--ease-out),transform var(--duration-fast) var(--ease-out);
+}
+.card:active{transform:scale(.995)}
+.card-reveal{opacity:0;transform:translateY(18px);transition:opacity var(--duration-slow) var(--ease-out),transform var(--duration-slow) var(--ease-out)}
+.card-reveal.visible{opacity:1;transform:translateY(0)}
+.card-title{
+  font-size:var(--text-lg);
+  font-weight:700;
+  margin-bottom:var(--gap-md);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--gap-sm);
+}
+.card-title .icon{width:28px;height:28px;border-radius:8px;background:var(--accent-dim);color:var(--accent);display:grid;place-items:center;font-size:var(--text-sm)}
+
+/* Metrics */
+.metric-row{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:var(--gap-md);
+  margin-bottom:var(--gap-lg);
+}
+.metric-tile{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--card-radius);
+  padding:var(--gap-md);
+  text-align:left;
+  transition:border-color var(--duration-fast) var(--ease-out);
+}
+.metric-tile:hover{border-color:var(--border-light)}
+.metric-value{font-size:var(--text-2xl);font-weight:800;margin-bottom:var(--gap-xs);letter-spacing:-.5px}
+.metric-label{font-family:var(--font-mono);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+
+/* Badges */
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:var(--pill-radius);
+  font-family:var(--font-mono);font-size:var(--text-xs);font-weight:600;letter-spacing:.3px;
+}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.25)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.25)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.25)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.25)}
+
+/* Tables */
+.table-scroller{width:100%;overflow-x:auto;margin-bottom:var(--gap-md);border:1px solid var(--border);border-radius:var(--app-radius);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:var(--text-sm);min-width:360px}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.5px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.compare-bad{color:var(--red)}
+.compare-good{color:var(--green)}
+
+/* Code blocks */
+pre{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--app-radius);
+  padding:var(--gap-md);
+  overflow-x:auto;
+  margin-bottom:var(--gap-md);
+  font-family:var(--font-mono);
+  font-size:var(--text-xs);
+  line-height:1.5;
+  -webkit-overflow-scrolling:touch;
+}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+code{
+  font-family:var(--font-mono);
+  background:var(--surface-3);
+  padding:2px 6px;
+  border-radius:4px;
+  font-size:.85em;
+  color:var(--accent);
+  border:1px solid var(--border);
+}
+
+/* Lists */
+ul,ol{padding-left:var(--gap-lg);margin-bottom:var(--gap-md)}
+li{margin-bottom:var(--gap-sm);color:var(--text-2)}
+li strong{color:var(--text)}
+p{margin-bottom:var(--gap-md);color:var(--text-2)}
+p strong{color:var(--text)}
+
+/* Callouts */
+.callout{
+  border-left:3px solid var(--accent);
+  background:var(--surface);
+  padding:var(--gap-md) var(--gap-lg);
+  border-radius:0 var(--app-radius) var(--app-radius) 0;
+  margin-bottom:var(--gap-md);
+}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:700;margin-bottom:var(--gap-xs);color:var(--text)}
+
+/* Steps */
+.step-list{display:flex;flex-direction:column;gap:var(--gap-md)}
+.step{
+  display:flex;align-items:flex-start;gap:var(--gap-md);
+  padding:var(--gap-md);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--app-radius);
+  transition:border-color var(--duration-fast) var(--ease-out);
+}
+.step:hover{border-color:var(--border-light)}
+.step-num{
+  flex-shrink:0;width:28px;height:28px;border-radius:50%;
+  background:var(--accent-dim);color:var(--accent);
+  display:grid;place-items:center;font-weight:800;font-size:var(--text-xs);
+  border:1px solid rgba(232,33,39,.3);
+}
+.step-title{font-weight:700;margin-bottom:2px;color:var(--text)}
+.step-desc{font-size:var(--text-sm);color:var(--text-2);line-height:1.45}
+
+/* Expandable details */
+.Expandable{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--card-radius);
+  margin-bottom:var(--gap-md);
+  overflow:hidden;
+}
+.Expandable summary{
+  padding:var(--gap-md) var(--gap-lg);
+  cursor:pointer;
+  font-weight:700;
+  list-style:none;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.Expandable summary::-webkit-details-marker{display:none}
+.Expandable summary::after{
+  content:'+';
+  font-family:var(--font-mono);
+  color:var(--accent);
+  font-size:var(--text-lg);
+}
+.Expandable[open] summary::after{content:'−'}
+.Expandable .Expandable-body{padding:0 var(--gap-lg) var(--gap-lg);font-size:var(--text-sm);color:var(--text-2)}
+
+/* Bottom navigation */
+.app-nav{
+  position:fixed;
+  bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;
+  height:calc(var(--nav-h) + var(--safe-bottom));
+  padding:var(--gap-xs) var(--gap-md) calc(var(--gap-sm) + var(--safe-bottom));
+  background:rgba(10,10,10,.96);
+  border-top:1px solid var(--border);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:150;
+}
+.nav-btn{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;
+  padding:var(--gap-xs) 0;
+  background:transparent;
+  border:none;
+  color:var(--text-muted);
+  font-family:var(--font);
+  font-size:.65rem;
+  font-weight:600;
+  cursor:pointer;
+  border-radius:var(--app-radius);
+  transition:color var(--duration-fast) var(--ease-out),background var(--duration-fast) var(--ease-out);
+}
+.nav-btn .nav-icon{
+  width:22px;height:22px;
+  display:grid;place-items:center;
+  border-radius:6px;
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  font-weight:700;
+  background:transparent;
+  transition:background var(--duration-fast) var(--ease-out),color var(--duration-fast) var(--ease-out);
+}
+.nav-btn.active{color:var(--accent)}
+.nav-btn.active .nav-icon{background:var(--accent-dim);color:var(--accent)}
+
+/* Footer */
+.app-footer{
+  text-align:center;
+  padding:var(--gap-xl) var(--gap-md);
+  color:var(--text-muted);
+  font-size:var(--text-xs);
+  font-family:var(--font-mono);
+}
+
+/* Time display optimization */
+.time-pill{
+  display:inline-flex;align-items:center;gap:var(--gap-xs);
+  padding:var(--gap-xs) var(--gap-sm);
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--pill-radius);
+  font-family:var(--font-mono);
+  font-size:var(--text-xs);
+  color:var(--text-2);
+}
+
+/* Screen-specific hero */
+.hero-meta{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:var(--gap-md);
+  margin-top:var(--gap-lg);
+}
+
+/* Hide on desktop since this is a mobile-only document */
+@media (min-width:768px){
+  body{background:#0a0a0a}
+  .app-shell{box-shadow:0 0 60px rgba(0,0,0,.5)}
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <div class="status-bar" aria-hidden="true">
+    <span class="clock" id="clock">09:41</span>
+    <span class="indicators"><span class="status-dot"></span><span>LIVE</span></span>
+  </div>
+
+  <header class="app-header">
+    <div class="logo"><span class="logo-mark">V</span><span>VLTHR Plan</span></div>
+    <button class="menu-btn" aria-label="Menu">☰</button>
+  </header>
+
+  <main class="app-main" id="main">
+
+<!-- SCREEN 0: OVERVIEW -->
+<section class="screen active" id="screen-0" aria-label="Overview">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Mission</div>
+    <h1 class="screen-title"><span class="word">Feature</span> <span class="word">Engineering</span> <span class="word" style="color:var(--accent)">Plan</span></h1>
+    <p class="screen-desc">Schema update for per-table feature engineering. Frontend redesign for minimal compute. TypeScript, dark mode, single accent.</p>
+  </div>
+
+  <div class="metric-row card-reveal">
+    <div class="metric-tile">
+      <div class="metric-value">6</div>
+      <div class="metric-label">Data Tables</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">12+</div>
+      <div class="metric-label">Engineered Features</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">300</div>
+      <div class="metric-label">CSS Lines Target</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">120</div>
+      <div class="metric-label">KB gzip Bundle</div>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Frontend Compute: 500% Over Budget</span><span class="icon">!</span></div>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Metric</th><th>Current</th><th>Target</th></tr></thead>
+        <tbody>
+          <tr><td>CSS lines</td><td class="compare-bad">2,494</td><td class="compare-good">300</td></tr>
+          <tr><td>TS/TSX lines</td><td class="compare-bad">5,902</td><td class="compare-good">2,500</td></tr>
+          <tr><td>backdrop-filter</td><td class="compare-bad">23 elements</td><td class="compare-good">0</td></tr>
+          <tr><td>GPU layers</td><td class="compare-bad">50+</td><td class="compare-good">0</td></tr>
+          <tr><td>Page lazy loading</td><td class="compare-bad">No</td><td class="compare-good">Yes</td></tr>
+          <tr><td>Animation count</td><td class="compare-bad">14 keyframes</td><td class="compare-good">2</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Root Causes</span><span class="icon">⚡</span></div>
+    <ol>
+      <li><strong>Glassmorphism everywhere.</strong> <code>backdrop-filter: blur(20px)</code> on 23 elements. Each creates a GPU layer.</li>
+      <li><strong>One 2,494-line CSS file.</strong> Duplicate rules, unused selectors, 6 gradient layers.</li>
+      <li><strong>No code splitting.</strong> All 7 pages load eagerly.</li>
+      <li><strong>No virtualization.</strong> Signal lists render all rows.</li>
+      <li><strong>SSE over-fetching.</strong> Every 5-minute update replaces all state.</li>
+    </ol>
+  </div>
+
+  <div class="callout callout-danger card-reveal">
+    <div class="callout-title">The 500% Problem</div>
+    <p>The frontend uses 5x planned compute because glassmorphism creates GPU layers on every surface. The fix is architectural. Remove all backdrop-filter, cut CSS to 300 lines, lazy-load pages, and use flat surfaces with one accent color.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Feature Engineering Gap</span><span class="icon">◈</span></div>
+    <p>The system collects 6 data types but only computes features on OHLCV. The other 5 data types have no engineered features exposed to the frontend. Model state stores checkpoints but no feature importance or prediction confidence is surfaced.</p>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Data Type</th><th>Current Features</th><th>Gap</th></tr></thead>
+        <tbody>
+          <tr><td>OHLCV</td><td>RSI, ATR, ADX, EMA, BB, VWAP, log_ret</td><td>Exposed only in backtest</td></tr>
+          <tr><td>Funding rate</td><td class="compare-bad">None</td><td>No engineering</td></tr>
+          <tr><td>Open interest</td><td class="compare-bad">None</td><td>No engineering</td></tr>
+          <tr><td>Orderbook L2</td><td class="compare-bad">None</td><td>No engineering</td></tr>
+          <tr><td>LS ratio</td><td class="compare-bad">None</td><td>No engineering</td></tr>
+          <tr><td>Model state</td><td class="compare-bad">None exposed</td><td>No UI for model health</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<!-- SCREEN 1: SCHEMA -->
+<section class="screen" id="screen-1" aria-label="Schema">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Architecture</div>
+    <h1 class="screen-title">Feature <span style="color:var(--accent)">Schema</span></h1>
+    <p class="screen-desc">One engineered feature per ingestion table, plus model state. Each feature is computed by the ai-trader-engine and stored in a new <code>feature_store</code> PostgreSQL table.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>New Table: feature_store</span><span class="badge badge-accent">SQL</span></div>
+    <pre><code>CREATE TABLE IF NOT EXISTS feature_store (
+    id              BIGSERIAL PRIMARY KEY,
+    run_time        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    symbol          VARCHAR(16) NOT NULL,
+    data_source     VARCHAR(32) NOT NULL,
+    feature_name    VARCHAR(64) NOT NULL,
+    feature_value   DOUBLE PRECISION,
+    feature_metadata JSONB,
+    is_enabled      BOOLEAN DEFAULT TRUE,
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_feature_store_source
+    ON feature_store(data_source);
+CREATE INDEX idx_feature_store_symbol
+    ON feature_store(symbol, run_time DESC);
+CREATE INDEX idx_feature_store_enabled
+    ON feature_store(is_enabled) WHERE is_enabled = TRUE;</code></pre>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Feature Definitions</span><span class="badge badge-blue">6 Sources</span></div>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Source</th><th>Feature</th><th>Lookback</th></tr></thead>
+        <tbody>
+          <tr><td><strong>OHLCV</strong></td><td><code>price_momentum</code></td><td>20 bars</td></tr>
+          <tr><td><strong>Funding</strong></td><td><code>funding_zscore</code></td><td>30 days</td></tr>
+          <tr><td><strong>Open interest</strong></td><td><code>oi_momentum</code></td><td>6 bars</td></tr>
+          <tr><td><strong>Orderbook</strong></td><td><code>ob_imbalance_ratio</code></td><td>Snapshot</td></tr>
+          <tr><td><strong>LS ratio</strong></td><td><code>ls_ratio_shift</code></td><td>6 bars</td></tr>
+          <tr><td><strong>Model state</strong></td><td><code>model_confidence</code></td><td>50 predictions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <details class="Expandable card-reveal">
+    <summary>OHLCV: price_momentum</summary>
+    <div class="Expandable-body">
+      <p><strong>Formula:</strong> <code>(close[-1] - close[-N]) / close[-N] * 100</code></p>
+      <p><strong>Purpose:</strong> Detect trend direction strength. Already partially computed as log_ret but not exposed live.</p>
+    </div>
+  </details>
+
+  <details class="Expandable card-reveal">
+    <summary>Funding: funding_zscore</summary>
+    <div class="Expandable-body">
+      <p><strong>Formula:</strong> <code>(current - mean_30d) / std_30d</code></p>
+      <p><strong>Purpose:</strong> Detect extreme funding (squeeze risk). Z &gt; 2 = extreme. Drives crowding detection.</p>
+    </div>
+  </details>
+
+  <details class="Expandable card-reveal">
+    <summary>Open Interest: oi_momentum</summary>
+    <div class="Expandable-body">
+      <p><strong>Formula:</strong> <code>(oi[-1] - oi[-6]) / oi[-6] * 100</code></p>
+      <p><strong>Purpose:</strong> Rising OI + rising price = new longs. Falling OI + rising price = short squeeze.</p>
+    </div>
+  </details>
+
+  <details class="Expandable card-reveal">
+    <summary>Orderbook: ob_imbalance_ratio</summary>
+    <div class="Expandable-body">
+      <p><strong>Formula:</strong> <code>sum(bid_size L1-L5) / (sum(bid_size) + sum(ask_size))</code></p>
+      <p><strong>Purpose:</strong> Buy/sell pressure from top 5 levels. &gt; 0.6 = bid-heavy.</p>
+    </div>
+  </details>
+
+  <details class="Expandable card-reveal">
+    <summary>LS Ratio: ls_ratio_shift</summary>
+    <div class="Expandable-body">
+      <p><strong>Formula:</strong> <code>buyRatio[-1] - buyRatio[-6]</code></p>
+      <p><strong>Purpose:</strong> Change in trader positioning. Positive shift = traders going long. Contrarian signal when extreme.</p>
+    </div>
+  </details>
+
+  <details class="Expandable card-reveal">
+    <summary>Model: model_confidence</summary>
+    <div class="Expandable-body">
+      <p><strong>Formula:</strong> <code>1 - brier_score</code> from predictions table</p>
+      <p><strong>Purpose:</strong> Online ML model health. Confidence &lt; 0.55 = model in shadow, do not trust predictions.</p>
+    </div>
+  </details>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>New Table: feature_config</span><span class="badge badge-green">Config</span></div>
+    <p>Frontend-managed configuration for each feature. Enable/disable, adjust lookback, set thresholds.</p>
+    <pre><code>CREATE TABLE IF NOT EXISTS feature_config (
+    id              SERIAL PRIMARY KEY,
+    data_source     VARCHAR(32) NOT NULL UNIQUE,
+    feature_name    VARCHAR(64) NOT NULL,
+    is_enabled      BOOLEAN DEFAULT TRUE,
+    lookback_bars   INTEGER DEFAULT 20,
+    threshold_high  DOUBLE PRECISION,
+    threshold_low   DOUBLE PRECISION,
+    description     TEXT,
+    updated_at      TIMESTAMPTZ DEFAULT NOW()
+);</code></pre>
+    <p>Seed data: one row per data source with defaults from the table above.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Data Flow</span><span class="icon">→</span></div>
+    <pre><code>data-ingestion → Parquet files (6 data types)
+                      │
+                      ▼
+ai-trader-engine → /features/compute
+                      │
+                      ▼
+PostgreSQL → feature_store
+             feature_config
+                      │
+                      ▼
+backend → /api/features/*
+                      │
+                      ▼
+frontend → Feature Manager</code></pre>
+  </div>
+
+  <div class="callout callout-info card-reveal">
+    <div class="callout-title">Why One Feature Per Table</div>
+    <p>Starting with one engineered feature per data source proves the pipeline end-to-end. Adding more features per table later is a config insert, not an architecture change.</p>
+  </div>
+</section>
+
+
+<!-- SCREEN 2: API -->
+<section class="screen" id="screen-2" aria-label="API">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Interface</div>
+    <h1 class="screen-title">Backend <span style="color:var(--accent)">API</span></h1>
+    <p class="screen-desc">Three new endpoint groups: feature compute in ai-trader-engine, feature read/write in backend, and SSE feature stream.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>ai-trader-engine</span><span class="badge badge-blue">FastAPI</span></div>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Endpoint</th><th>Method</th></tr></thead>
+        <tbody>
+          <tr><td><code>/features/compute</code></td><td>POST</td></tr>
+          <tr><td><code>/features/compute/all</code></td><td>POST</td></tr>
+          <tr><td><code>/features/history</code></td><td>GET</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>/features/compute</strong> computes all enabled features for a symbol. Body: <code>{ symbol, data_sources? }</code>.</p>
+    <p><strong>/features/compute/all</strong> computes for all symbols. Called by pipeline on each run.</p>
+    <p><strong>/features/history</strong> returns feature history. Query: <code>symbol, data_source, limit</code>.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>backend</span><span class="badge badge-accent">Express</span></div>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Endpoint</th><th>Method</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/features/latest</code></td><td>GET</td></tr>
+          <tr><td><code>/api/features/config</code></td><td>GET / PUT</td></tr>
+          <tr><td><code>/api/features/toggle</code></td><td>POST</td></tr>
+          <tr><td><code>/api/features/history/:symbol/:source</code></td><td>GET</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>/api/features/latest</strong> returns latest values for all symbols.</p>
+    <p><strong>/api/features/config</strong> reads or updates config rows.</p>
+    <p><strong>/api/features/toggle</strong> enables or disables a feature.</p>
+    <p><strong>/api/features/history/:symbol/:source</strong> returns sparkline data. Query: <code>limit=50</code>.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>SSE Event Type</span><span class="badge badge-yellow">Stream</span></div>
+    <p>Add a <code>features</code> event to the existing SSE stream. Fired when pipeline computes new features.</p>
+    <pre><code>// backend/src/server.cjs SSE handler
+const features = await pool.query(
+  `SELECT symbol, data_source, feature_name,
+          feature_value, feature_metadata
+   FROM feature_store
+   WHERE is_enabled = TRUE
+     AND run_time > NOW() - INTERVAL '10 minutes'
+   ORDER BY run_time DESC`
+);
+broadcast({ type: 'features', features: features.rows });</code></pre>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Pipeline Integration</span><span class="badge badge-green">Step 9.5</span></div>
+    <p>Add one step to the pipeline iteration, after scoring and before snapshot:</p>
+    <pre><code># portfolio_orchestrator.py, after Step 9 (upsert)
+from feature_engineer import compute_all_features
+compute_all_features(conn, symbols, PARQUET_DATA_ROOT)</code></pre>
+    <p>New file: <code>pipeline/engine/feature_engineer.py</code>. Pure functions. No external deps beyond pandas and numpy.</p>
+  </div>
+</section>
+
+<!-- SCREEN 3: FRONTEND -->
+<section class="screen" id="screen-3" aria-label="Frontend">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Experience</div>
+    <h1 class="screen-title">Frontend <span style="color:var(--accent)">Redesign</span></h1>
+    <p class="screen-desc">Replace the current glassmorphism SPA with a minimal dark-mode app. One accent color. Flat surfaces. Lazy-loaded pages.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Before vs After</span><span class="badge badge-accent">Design</span></div>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Property</th><th>Current</th><th>New</th></tr></thead>
+        <tbody>
+          <tr><td>Theme</td><td class="compare-bad">Glassmorphism</td><td class="compare-good">Flat dark</td></tr>
+          <tr><td>Accent colors</td><td class="compare-bad">6</td><td class="compare-good">1 (#e82127)</td></tr>
+          <tr><td>backdrop-filter</td><td class="compare-bad">23 elements</td><td class="compare-good">0</td></tr>
+          <tr><td>Gradients</td><td class="compare-bad">6 layers</td><td class="compare-good">0</td></tr>
+          <tr><td>Shadows</td><td class="compare-bad">Every card</td><td class="compare-good">Border only</td></tr>
+          <tr><td>Animations</td><td class="compare-bad">14 keyframes</td><td class="compare-good">2</td></tr>
+          <tr><td>CSS total</td><td class="compare-bad">2,494 lines</td><td class="compare-good">~300 lines</td></tr>
+          <tr><td>Font</td><td class="compare-bad">External</td><td class="compare-good">System stack</td></tr>
+          <tr><td>Icons</td><td class="compare-bad">50+</td><td class="compare-good">10 inline SVG</td></tr>
+          <tr><td>Transitions</td><td class="compare-bad">0.3s bezier</td><td class="compare-good">0.15s ease</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>New Token System</span><span class="badge badge-blue">CSS</span></div>
+    <pre><code>:root {
+  --bg: #000;
+  --surface: #0a0a0a;
+  --surface-2: #141414;
+  --border: #222;
+  --text: #e8e8e8;
+  --text-2: #a0a0a0;
+  --text-muted: #666;
+  --accent: #e82127;
+  --gap: 16px;
+  --radius: 8px;
+  --font: system-ui, sans-serif;
+  --font-mono: 'SF Mono', Consolas, monospace;
+}</code></pre>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Lazy Loading</span><span class="badge badge-green">React.lazy</span></div>
+    <pre><code>// App.tsx
+import { lazy, Suspense } from 'react';
+
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const SignalsPage   = lazy(() => import('./pages/SignalsPage'));
+const BacktestPage  = lazy(() => import('./pages/BacktestPage'));
+const PaperPage     = lazy(() => import('./pages/PaperPage'));
+const FeaturesPage  = lazy(() => import('./pages/FeaturesPage'));
+
+// Only the active page is in the initial bundle.</code></pre>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Feature Manager Page</span><span class="badge badge-accent">New</span></div>
+    <p>New <code>FeaturesPage.tsx</code> tab. Shows a table of all 6 data sources with their engineered feature. The user can:</p>
+    <ul>
+      <li><strong>View latest value</strong> per symbol per feature</li>
+      <li><strong>Toggle on/off</strong> via a button</li>
+      <li><strong>Adjust lookback</strong> via a number input</li>
+      <li><strong>Set thresholds</strong> for high/low alerts</li>
+      <li><strong>See sparkline</strong> of last 50 values (inline SVG)</li>
+    </ul>
+    <p>Component target: 120 lines. Sparkline is a 60-line inline SVG component.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Button Component</span><span class="badge badge-yellow">TSX</span></div>
+    <pre><code>// components/Button.tsx — 30 lines
+import { ButtonHTMLAttributes } from 'react';
+
+interface Props extends ButtonHTMLAttributes&lt;HTMLButtonElement&gt; {
+  variant?: 'primary' | 'ghost';
+  size?: 'sm' | 'md';
+}
+
+export function Button({ variant = 'primary', size = 'md', ...props }: Props) {
+  return (
+    &lt;button
+      {...props}
+      style={{
+        padding: size === 'sm' ? '6px 12px' : '10px 20px',
+        background: variant === 'primary' ? '#e82127' : 'transparent',
+        color: variant === 'primary' ? '#fff' : '#e8e8e8',
+        border: '1px solid #222',
+        borderRadius: 8,
+        cursor: 'pointer',
+        fontSize: 14,
+        ...props.style,
+      }}
+    /&gt;
+  );
+}</code></pre>
+    <p>Inline styles for components. CSS file only for layout.</p>
+  </div>
+
+  <div class="callout callout-info card-reveal">
+    <div class="callout-title">Abstract Background</div>
+    <p>For visual identity without GPU cost, use a single static SVG pattern as a CSS background-image. No blur, no animation.</p>
+  </div>
+</section>
+
+<!-- SCREEN 4: RESOURCE BUDGET -->
+<section class="screen" id="screen-4" aria-label="Budget">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Metrics</div>
+    <h1 class="screen-title">Resource <span style="color:var(--accent)">Budget</span></h1>
+    <p class="screen-desc">Current usage versus target. The goal is to move from 500% over budget to approximately 100%.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Current Usage</span><span class="badge badge-red">Live</span></div>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Resource</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td>GPU layers (blur)</td><td class="compare-bad">50+</td></tr>
+          <tr><td>CSS parse</td><td class="compare-bad">2,494 lines</td></tr>
+          <tr><td>JS bundle</td><td class="compare-bad">5,902 lines TS</td></tr>
+          <tr><td>DOM nodes</td><td class="compare-bad">500+ per render</td></tr>
+          <tr><td>Re-renders</td><td class="compare-bad">Full tree on SSE</td></tr>
+          <tr><td>Font download</td><td class="compare-bad">Inter + JetBrains Mono</td></tr>
+          <tr><td>Animation frames</td><td class="compare-bad">14 keyframes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Target Usage</span><span class="badge badge-green">Goal</span></div>
+    <div class="table-scroller">
+      <table>
+        <thead><tr><th>Resource</th><th>Target</th></tr></thead>
+        <tbody>
+          <tr><td>GPU layers</td><td class="compare-good">0</td></tr>
+          <tr><td>CSS parse</td><td class="compare-good">~300 lines (~6 KB)</td></tr>
+          <tr><td>JS bundle (initial)</td><td class="compare-good">~40 KB gzip</td></tr>
+          <tr><td>JS bundle (per page)</td><td class="compare-good">~5-15 KB gzip</td></tr>
+          <tr><td>DOM nodes</td><td class="compare-good">50 per render</td></tr>
+          <tr><td>Re-renders</td><td class="compare-good">Only changed tab</td></tr>
+          <tr><td>Font download</td><td class="compare-good">0 KB</td></tr>
+          <tr><td>Animation frames</td><td class="compare-good">2 keyframes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout callout-success card-reveal">
+    <div class="callout-title">Expected Improvement</div>
+    <p>Initial bundle: 200 KB to 40 KB gzip (80% reduction). GPU layers: 50+ to 0. CSS: 50 KB to 6 KB. This brings compute from 500% of budget to approximately 100%.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Vite Config</span><span class="badge badge-blue">Build</span></div>
+    <pre><code>// vite.config.ts
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+        },
+      },
+    },
+    target: 'es2020',
+    minify: 'esbuild',
+  },
+});</code></pre>
+  </div>
+</section>
+
+<!-- SCREEN 5: IMPLEMENTATION STEPS -->
+<section class="screen" id="screen-5" aria-label="Build">
+  <div class="screen-header">
+    <div class="screen-eyebrow">Roadmap</div>
+    <h1 class="screen-title">Build <span style="color:var(--accent)">Plan</span></h1>
+    <p class="screen-desc">Five phases across 5.5 days. Phases 1 and 2 can overlap. Phase 3 is the largest.</p>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Phase 1: Database Schema</span><span class="badge badge-accent">1 day</span></div>
+    <div class="step-list">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Add feature_store and feature_config tables</div><div class="step-desc">Two CREATE TABLE statements in db_migration.py. Seed feature_config with 6 rows.</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Create pipeline/engine/feature_engineer.py</div><div class="step-desc">Pure functions: price_momentum, funding_zscore, oi_momentum, ob_imbalance, ls_ratio_shift, model_confidence. Each reads Parquet or PG and writes to feature_store.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Phase 2: Backend API</span><span class="badge badge-blue">1 day</span></div>
+    <div class="step-list">
+      <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Add feature endpoints to ai-trader-engine/main.py</div><div class="step-desc">POST /features/compute, POST /features/compute/all, GET /features/history.</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Add feature endpoints to backend/src/server.cjs</div><div class="step-desc">GET /api/features/latest, GET/PUT /api/features/config, POST /api/features/toggle, GET /api/features/history/:symbol/:source. Add features event to SSE.</div></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Add feature computation step to pipeline orchestrator</div><div class="step-desc">Call compute_all_features() after Step 9 (upsert).</div></div></div>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Phase 3: Frontend Redesign</span><span class="badge badge-yellow">2 days</span></div>
+    <div class="step-list">
+      <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-title">Replace index.css with 300-line version</div><div class="step-desc">Delete glassmorphism, gradients, blur, shadows, and extra animations. Keep layout utilities only.</div></div></div>
+      <div class="step"><div class="step-num">7</div><div class="step-content"><div class="step-title">Add React.lazy to all page imports</div><div class="step-desc">Wrap each page in lazy(). Add Suspense fallback. Update Vite config for manualChunks.</div></div></div>
+      <div class="step"><div class="step-num">8</div><div class="step-content"><div class="step-title">Create Button.tsx component</div><div class="step-desc">30-line TypeScript component. Primary and ghost variants. Inline styles.</div></div></div>
+      <div class="step"><div class="step-num">9</div><div class="step-content"><div class="step-title">Create FeaturesPage.tsx</div><div class="step-desc">120-line table of 6 data sources. Toggle buttons, lookback and threshold inputs, inline SVG sparkline.</div></div></div>
+      <div class="step"><div class="step-num">10</div><div class="step-content"><div class="step-title">Add features tab to App.tsx</div><div class="step-desc">New tab with inline SVG icon. Lazy-loaded FeaturesPage.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Phase 4: Optimization</span><span class="badge badge-green">1 day</span></div>
+    <div class="step-list">
+      <div class="step"><div class="step-num">11</div><div class="step-content"><div class="step-title">Add React.memo to all page components</div><div class="step-desc">Wrap each page export in memo(). Prevents re-render when SSE updates other tabs.</div></div></div>
+      <div class="step"><div class="step-num">12</div><div class="step-content"><div class="step-title">Virtualize signal and trade lists</div><div class="step-desc">Cap visible items at 10. Render only viewport plus 2 buffer rows.</div></div></div>
+      <div class="step"><div class="step-num">13</div><div class="step-content"><div class="step-title">Remove external font imports</div><div class="step-desc">Delete Inter and JetBrains Mono from index.html. Use system font stack.</div></div></div>
+      <div class="step"><div class="step-num">14</div><div class="step-content"><div class="step-title">Update Vite config for code splitting</div><div class="step-desc">Add manualChunks for react-vendor. Set target to es2020. Enable esbuild minify.</div></div></div>
+    </div>
+  </div>
+
+  <div class="card card-reveal">
+    <div class="card-title"><span>Phase 5: Verification</span><span class="badge badge-blue">0.5 day</span></div>
+    <div class="step-list">
+      <div class="step"><div class="step-num">15</div><div class="step-content"><div class="step-title">Build and measure bundle size</div><div class="step-desc">Run npm run build. Initial chunk should be under 40 KB gzip. Each page chunk under 15 KB.</div></div></div>
+      <div class="step"><div class="step-num">16</div><div class="step-content"><div class="step-title">Test feature computation end-to-end</div><div class="step-desc">Run pipeline once. Verify feature_store has 6 rows per symbol. Check /api/features/latest returns data.</div></div></div>
+      <div class="step"><div class="step-num">17</div><div class="step-content"><div class="step-title">Profile with Chrome DevTools</div><div class="step-desc">Record 30 seconds. Verify 0 GPU layers. No layout thrashing. JS heap under 20 MB.</div></div></div>
+    </div>
+  </div>
+
+  <div class="callout callout-info card-reveal">
+    <div class="callout-title">Total Timeline</div>
+    <p>5.5 days. Phase 1 and 2 can overlap. Phase 3 is the largest (2 days). Phase 4 and 5 are half-day each.</p>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="app-footer">
+    <div class="time-pill"><span>Updated</span><span id="updated-time">Jul 2026</span></div>
+    <p style="margin-top:8px">VLTHR Feature Engineering and Frontend Optimization Plan</p>
+  </footer>
+
+  <nav class="app-nav" role="tablist" aria-label="Sections">
+    <button class="nav-btn active" role="tab" aria-selected="true" onclick="switchScreen(0)"><span class="nav-icon">01</span>Overview</button>
+    <button class="nav-btn" role="tab" aria-selected="false" onclick="switchScreen(1)"><span class="nav-icon">02</span>Schema</button>
+    <button class="nav-btn" role="tab" aria-selected="false" onclick="switchScreen(2)"><span class="nav-icon">03</span>API</button>
+    <button class="nav-btn" role="tab" aria-selected="false" onclick="switchScreen(3)"><span class="nav-icon">04</span>UI</button>
+    <button class="nav-btn" role="tab" aria-selected="false" onclick="switchScreen(4)"><span class="nav-icon">05</span>Budget</button>
+    <button class="nav-btn" role="tab" aria-selected="false" onclick="switchScreen(5)"><span class="nav-icon">06</span>Build</button>
+  </nav>
+
+</div>
+
+<script>
+(function(){
+  const screens = document.querySelectorAll('.screen');
+  const buttons = document.querySelectorAll('.nav-btn');
+  const clockEl = document.getElementById('clock');
+  const updatedEl = document.getElementById('updated-time');
+
+  function switchScreen(i){
+    screens.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    buttons.forEach((b, idx) => {
+      const active = idx === i;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  window.switchScreen = switchScreen;
+
+  function updateClock(){
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    if (clockEl) clockEl.textContent = h + ':' + m;
+    if (updatedEl) updatedEl.textContent = now.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Scroll reveal for cards
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.card-reveal').forEach(el => observer.observe(el));
+})();
+</script>
+
+</body>
+</html>

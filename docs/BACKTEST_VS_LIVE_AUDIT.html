@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLTHR Audit: Why The Backtest Wins And The Live Test Loses</title>
+<style>
+  :root{
+    --bg:#0b0f17; --panel:#131a26; --panel2:#1a2333; --line:#26324a;
+    --ink:#e8eef8; --muted:#9fb0c9; --dim:#6f819e;
+    --good:#3ddc97; --bad:#ff6b6b; --warn:#ffcf5c; --accent:#5b9dff; --accent2:#b48bff;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65;font-size:16px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header.hero{padding:70px 0 40px;border-bottom:1px solid var(--line);
+    background:radial-gradient(1200px 400px at 50% -80px,rgba(91,157,255,.18),transparent);}
+  .tag{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:6px 14px;margin-bottom:18px}
+  h1{font-size:40px;line-height:1.15;margin:0 0 14px;font-weight:800;letter-spacing:-.02em}
+  h1 span{color:var(--accent)}
+  .sub{color:var(--muted);font-size:19px;max-width:760px}
+  .meta{color:var(--dim);font-size:13px;margin-top:20px}
+  nav{position:sticky;top:0;z-index:30;background:rgba(11,15,23,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;gap:6px;flex-wrap:wrap;padding:10px 20px}
+  nav a{color:var(--muted);text-decoration:none;font-size:13px;padding:7px 12px;border-radius:8px}
+  nav a:hover{background:var(--panel2);color:var(--ink)}
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:28px;margin:0 0 8px;letter-spacing:-.01em}
+  h3{font-size:20px;margin:30px 0 10px;color:var(--ink)}
+  .lead{color:var(--muted);font-size:17px;max-width:820px;margin-bottom:8px}
+  p{color:#cdd8ea}
+  .kicker{color:var(--accent2);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:26px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+  .card .lbl{color:var(--dim);font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+  .card .big{font-size:34px;font-weight:800;margin:6px 0 2px}
+  .card .cmp{font-size:13px;color:var(--muted)}
+  .up{color:var(--good)} .down{color:var(--bad)} .mid{color:var(--warn)}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:15px;background:var(--panel);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  th{background:var(--panel2);color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:none}
+  td.n{font-variant-numeric:tabular-nums;text-align:right}
+  .chart{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 22px 12px;margin:20px 0;box-shadow:var(--shadow)}
+  .chart h4{margin:0 0 4px;font-size:16px}
+  .chart .cap{color:var(--dim);font-size:13px;margin-bottom:18px}
+  .bar-row{display:grid;grid-template-columns:120px 1fr 96px;align-items:center;gap:12px;margin:9px 0}
+  .bar-row .name{color:var(--muted);font-size:13px}
+  .track{background:var(--panel2);border-radius:8px;height:26px;overflow:hidden;position:relative}
+  .fill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;font-size:12px;color:#0b0f17;font-weight:700;white-space:nowrap}
+  .fill.bt{background:linear-gradient(90deg,#5b9dff,#7ab6ff)}
+  .fill.lv{background:linear-gradient(90deg,#ff6b6b,#ff9a8b)}
+  .fill.g{background:linear-gradient(90deg,#3ddc97,#6ff0b8)}
+  .fill.w{background:linear-gradient(90deg,#ffcf5c,#ffe29a)}
+  .val{text-align:right;font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:6px 0 2px;font-size:13px;color:var(--muted)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle}
+  .flow{display:flex;flex-direction:column;gap:0;margin:22px 0}
+  .node{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:12px;padding:14px 18px;position:relative}
+  .node .t{font-weight:700}
+  .node .d{color:var(--muted);font-size:14px}
+  .node.risk{border-left-color:var(--warn)}
+  .node.exit{border-left-color:var(--bad)}
+  .node.ai{border-left-color:var(--accent2);background:linear-gradient(180deg,rgba(180,139,255,.10),transparent)}
+  .arrow{align-self:center;color:var(--dim);font-size:20px;padding:6px 0}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:760px){.split{grid-template-columns:1fr}h1{font-size:30px}}
+  .finding{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:18px 0;box-shadow:var(--shadow)}
+  .finding .head{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:800;letter-spacing:.06em;padding:4px 10px;border-radius:999px;text-transform:uppercase}
+  .pill.bug{background:rgba(255,107,107,.16);color:#ff8f8f;border:1px solid rgba(255,107,107,.35)}
+  .pill.gap{background:rgba(255,207,92,.16);color:#ffdd8a;border:1px solid rgba(255,207,92,.35)}
+  .pill.note{background:rgba(91,157,255,.16);color:#9cc4ff;border:1px solid rgba(91,157,255,.35)}
+  .finding .num{font-size:13px;color:var(--dim);font-weight:700}
+  .finding h4{margin:0;font-size:18px}
+  .finding .why{color:var(--muted);font-size:14px;margin-top:8px}
+  .finding .why b{color:var(--ink)}
+  code{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:13px;color:#cfe0ff;font-family:"SF Mono",Menlo,Consolas,monospace}
+  pre{background:#0e1420;border:1px solid var(--line);border-radius:14px;padding:18px;overflow:auto;font-size:13px;color:#cfe0ff;line-height:1.55}
+  pre.prompt{border-left:4px solid var(--accent2)}
+  .callout{background:linear-gradient(180deg,rgba(61,220,151,.08),transparent);border:1px solid var(--line);border-left:4px solid var(--good);border-radius:12px;padding:16px 20px;margin:18px 0}
+  .callout.bad{background:linear-gradient(180deg,rgba(255,107,107,.08),transparent);border-left-color:var(--bad)}
+  .callout.warn{background:linear-gradient(180deg,rgba(255,207,92,.08),transparent);border-left-color:var(--warn)}
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:18px 0}
+  ol.steps li{position:relative;padding:14px 14px 14px 56px;background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:10px 0}
+  ol.steps li:before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:14px;width:28px;height:28px;
+    background:var(--accent);color:#04101f;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800}
+  .foot{color:var(--dim);font-size:13px;padding:36px 0 60px}
+  .rank{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0}
+  .rank .score{font-size:26px;font-weight:800;width:56px;text-align:center}
+  .rank .txt b{color:var(--ink)} .rank .txt{color:var(--muted);font-size:14px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+  .seq{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:15px;letter-spacing:2px;word-break:break-all}
+  .seq .L{color:var(--bad)} .seq .W{color:var(--good);font-weight:800}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a href="#summary">Summary</a>
+  <a href="#scoreboard">Scoreboard</a>
+  <a href="#backtest">Backtest Results</a>
+  <a href="#live">Live Results</a>
+  <a href="#pipelines">The Two Pipelines</a>
+  <a href="#gaps">The Gaps</a>
+  <a href="#rank">Root Cause</a>
+  <a href="#ai">AI Node Plan</a>
+  <a href="#actions">Action Plan</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <span class="tag">VLTHR Systems Audit</span>
+  <h1>Why the backtest <span>wins</span> and the live test <span>loses</span></h1>
+  <p class="sub">This report checks the practice test (the backtest) against the real running system (live paper trading). It finds where the two do not match, explains each gap in plain words, and gives an exact plan to fix it. It also shows how to add one smart review step, run by an AI, to the practice test.</p>
+  <div class="meta">Made on July 13, 2026. Sources: <code>backtest/backtest_phase2_results.csv</code>, <code>backtest/backtest_runner.py</code>, the live Postgres database, <code>pipeline/engine/portfolio_orchestrator.py</code>, and <code>backend/src/server.cjs</code>. Every number here comes from those files. Nothing is made up.</div>
+</div></header>
+
+<!-- ============ SUMMARY ============ -->
+<section id="summary"><div class="wrap">
+  <span class="kicker">The Short Version</span>
+  <h2>What we found</h2>
+  <p class="lead">The practice test says the system makes money. The real system is losing money. The gap is not bad luck. It is caused by a few clear differences between how the practice test pretends trades happen and how trades really happen.</p>
+
+  <div class="callout bad">
+    <b>The single biggest reason:</b> The practice test is too kind about when a trade wins. On a 15 minute price bar that touches both the profit target and the stop loss, the practice test always books it as a win. The real system, which watches price all the time, books most of those as a loss. This one choice turns a winning practice test into a losing real system.
+  </div>
+
+  <p>On top of that, the practice test was scored on the same six months of data that its settings were built from. That is like writing an exam after seeing the answer key. When the real system met a fresh month it had never seen (July), the edge fell apart. The practice test itself was already fading month by month, from a 60.7% win rate in January down to 52.3% in June. July continued that slide.</p>
+
+  <p>There are also real differences in the code. The live system moves the stop loss around while a trade is open. The practice test does not. The live system holds some coins far longer than the practice test allows. The live system has an extra safety check the practice test never runs. Each of these pushes the live result away from the practice result.</p>
+</div></section>
+
+<!-- ============ SCOREBOARD ============ -->
+<section id="scoreboard"><div class="wrap">
+  <span class="kicker">Side By Side</span>
+  <h2>The scoreboard</h2>
+  <p class="lead">Backtest is the practice test over six months (Jan to Jun 2026). Live is the real paper trading from July 5 to July 13, 2026. Same settings, very different results.</p>
+
+  <div class="cards">
+    <div class="card"><div class="lbl">Win rate</div><div class="big up">56.4%</div><div class="cmp">Live: <span class="down">23.9%</span> &nbsp;(32.5 points worse)</div></div>
+    <div class="card"><div class="lbl">Profit factor</div><div class="big up">1.56</div><div class="cmp">Live: <span class="down">0.34</span> &nbsp;(needs 1.0 to break even)</div></div>
+    <div class="card"><div class="lbl">Total money</div><div class="big up">+$8,434</div><div class="cmp">Live: <span class="down">-$494</span> &nbsp;on a $10,000 start</div></div>
+    <div class="card"><div class="lbl">Profit target hit</div><div class="big up">45.0%</div><div class="cmp">Live: <span class="down">8.7%</span> &nbsp;(5 times fewer)</div></div>
+    <div class="card"><div class="lbl">Stop loss hit</div><div class="big mid">24.9%</div><div class="cmp">Live: <span class="down">58.7%</span> &nbsp;(more than double)</div></div>
+    <div class="card"><div class="lbl">Trades counted</div><div class="big">1,441</div><div class="cmp">Live: only <span class="mid">46</span> closed so far</div></div>
+  </div>
+
+  <div class="chart">
+    <h4>How trades ended</h4>
+    <div class="cap">The practice test ends most trades at the profit target. The real system ends most trades at the stop loss. This flip is the heart of the problem.</div>
+    <div class="legend"><span><i style="background:#5b9dff"></i>Backtest</span><span><i style="background:#ff6b6b"></i>Live</span></div>
+    <div class="bar-row"><div class="name">Won (target)</div><div class="track"><div class="fill bt" style="width:45%">45.0%</div></div><div class="val">Backtest</div></div>
+    <div class="bar-row"><div class="name"></div><div class="track"><div class="fill lv" style="width:8.7%">8.7%</div></div><div class="val">Live</div></div>
+    <div class="bar-row"><div class="name">Lost (stop)</div><div class="track"><div class="fill bt" style="width:24.9%">24.9%</div></div><div class="val">Backtest</div></div>
+    <div class="bar-row"><div class="name"></div><div class="track"><div class="fill lv" style="width:58.7%">58.7%</div></div><div class="val">Live</div></div>
+    <div class="bar-row"><div class="name">Ran out of time</div><div class="track"><div class="fill bt" style="width:29.8%">29.8%</div></div><div class="val">Backtest</div></div>
+    <div class="bar-row"><div class="name"></div><div class="track"><div class="fill lv" style="width:32.6%">32.6%</div></div><div class="val">Live</div></div>
+  </div>
+</div></section>
+
+<!-- ============ BACKTEST RESULTS ============ -->
+<section id="backtest"><div class="wrap">
+  <span class="kicker">The Practice Test</span>
+  <h2>What the backtest said</h2>
+  <p class="lead">The practice test ran three versions of the pipeline over the same six months. The final version is called <code>treatment_b_phase2</code>. All numbers below are from its 1,441 finished trades.</p>
+
+  <div class="chart">
+    <h4>Win rate by month</h4>
+    <div class="cap">Even inside the practice test, the win rate was slipping every month. It started strong in January and kept falling toward June. This is an early warning that the edge was fading before live trading began.</div>
+    <svg viewBox="0 0 720 240" width="100%" height="240" role="img" aria-label="Win rate by month line chart">
+      <line x1="50" y1="20" x2="50" y2="200" stroke="#26324a"/>
+      <line x1="50" y1="200" x2="700" y2="200" stroke="#26324a"/>
+      <line x1="50" y1="110" x2="700" y2="110" stroke="#1a2333" stroke-dasharray="4 4"/>
+      <text x="14" y="24" fill="#6f819e" font-size="11">62%</text>
+      <text x="14" y="114" fill="#6f819e" font-size="11">56%</text>
+      <text x="14" y="204" fill="#6f819e" font-size="11">50%</text>
+      <!-- points scaled: y = 200 - (wr-50)/12*180 ; Jan60.7 Feb58.2 Mar58.6 Apr54.7 May54.3 Jun52.3 -->
+      <polyline fill="none" stroke="#5b9dff" stroke-width="3"
+        points="110,39.5 218,77 326,71 434,129.5 542,135.5 650,165.5"/>
+      <g fill="#5b9dff">
+        <circle cx="110" cy="39.5" r="5"/><circle cx="218" cy="77" r="5"/><circle cx="326" cy="71" r="5"/>
+        <circle cx="434" cy="129.5" r="5"/><circle cx="542" cy="135.5" r="5"/><circle cx="650" cy="165.5" r="5"/>
+      </g>
+      <g fill="#e8eef8" font-size="12" text-anchor="middle">
+        <text x="110" y="26">60.7</text><text x="218" y="64">58.2</text><text x="326" y="58">58.6</text>
+        <text x="434" y="150">54.7</text><text x="542" y="156">54.3</text><text x="650" y="186">52.3</text>
+      </g>
+      <g fill="#9fb0c9" font-size="12" text-anchor="middle">
+        <text x="110" y="220">Jan</text><text x="218" y="220">Feb</text><text x="326" y="220">Mar</text>
+        <text x="434" y="220">Apr</text><text x="542" y="220">May</text><text x="650" y="220">Jun</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="split">
+    <div class="chart">
+      <h4>Win rate by confidence score</h4>
+      <div class="cap">In the practice test, all confidence bands won more than half the time. Higher scores were fine. Remember this. In live trading it flips upside down.</div>
+      <div class="bar-row"><div class="name">Score 50 to 64</div><div class="track"><div class="fill g" style="width:59.4%">59.4%</div></div><div class="val">720 trades</div></div>
+      <div class="bar-row"><div class="name">Score 65 to 74</div><div class="track"><div class="fill g" style="width:53.6%">53.6%</div></div><div class="val">455 trades</div></div>
+      <div class="bar-row"><div class="name">Score 75 to 84</div><div class="track"><div class="fill g" style="width:53.1%">53.1%</div></div><div class="val">262 trades</div></div>
+    </div>
+    <div class="chart">
+      <h4>Win rate by trade direction</h4>
+      <div class="cap">Both buying (long) and selling (short) made money in the practice test. Selling was the stronger side.</div>
+      <div class="bar-row"><div class="name">Buy (long)</div><div class="track"><div class="fill g" style="width:52.7%">52.7%</div></div><div class="val">+$2,570</div></div>
+      <div class="bar-row"><div class="name">Sell (short)</div><div class="track"><div class="fill g" style="width:59.1%">59.1%</div></div><div class="val">+$5,873</div></div>
+    </div>
+  </div>
+
+  <h3>How the practice test decides a trade is done</h3>
+  <p>The practice test walks forward one 15 minute price bar at a time. For each open trade it looks at the high and low of that one bar. The exact order of checks matters a lot, so here is the real code from <code>backtest_runner.py</code>:</p>
+<pre>if is_long:
+    if trade.tp_price &gt; 0 and high &gt;= trade.tp_price:
+        reason = "TP_HIT"      # profit target checked FIRST
+    elif trade.sl_price &gt; 0 and low &lt;= trade.sl_price:
+        reason = "SL_HIT"      # stop loss checked only if target missed</pre>
+  <p>Read it closely. If a single 15 minute bar swings enough to touch both the profit target and the stop loss, the code always picks the profit target. It never asks which one happened first inside that bar. This is the "too kind" rule. It hands free wins to the practice test.</p>
+</div></section>
+
+<!-- ============ LIVE RESULTS ============ -->
+<section id="live"><div class="wrap">
+  <span class="kicker">The Real System</span>
+  <h2>What live trading did</h2>
+  <p class="lead">These numbers come straight from the live database on July 13, 2026. There are 46 closed trades, 2 still open, and 101 that were set up but never actually started (they expired first).</p>
+
+  <div class="cards">
+    <div class="card"><div class="lbl">Closed trades</div><div class="big">46</div><div class="cmp">11 wins, 35 losses</div></div>
+    <div class="card"><div class="lbl">Money so far</div><div class="big down">-$494</div><div class="cmp">Account equity about $8,503</div></div>
+    <div class="card"><div class="lbl">Set up but never filled</div><div class="big mid">101</div><div class="cmp">More than double the trades that filled</div></div>
+  </div>
+
+  <div class="chart">
+    <h4>The win and loss order (oldest on the left)</h4>
+    <div class="cap">This is the real streak the owner was worried about. W is a win, L is a loss. Long runs of losses are easy to see.</div>
+    <div class="seq" id="seq"></div>
+  </div>
+
+  <div class="split">
+    <div class="chart">
+      <h4>Win rate by confidence score (live)</h4>
+      <div class="cap">This is the alarm bell. The highest confidence trades (75 to 84) did the worst and lost the most money. In the practice test these were fine. The scoring does not work on new data.</div>
+      <div class="bar-row"><div class="name">Score 50 to 64</div><div class="track"><div class="fill lv" style="width:22.2%">22.2%</div></div><div class="val">-$152</div></div>
+      <div class="bar-row"><div class="name">Score 65 to 74</div><div class="track"><div class="fill lv" style="width:30.8%">30.8%</div></div><div class="val">-$69</div></div>
+      <div class="bar-row"><div class="name">Score 75 to 84</div><div class="track"><div class="fill lv" style="width:20.0%">20.0%</div></div><div class="val">-$273</div></div>
+    </div>
+    <div class="chart">
+      <h4>Win rate by trade direction (live)</h4>
+      <div class="cap">Both sides lost. Buying did worst, which fits a flat or falling July market.</div>
+      <div class="bar-row"><div class="name">Buy (long)</div><div class="track"><div class="fill lv" style="width:16.7%">16.7%</div></div><div class="val">-$381</div></div>
+      <div class="bar-row"><div class="name">Sell (short)</div><div class="track"><div class="fill lv" style="width:31.8%">31.8%</div></div><div class="val">-$113</div></div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <b>One fair point for the owner:</b> a run of 5 losses then 1 win is upsetting, but the practice test itself had a worst losing run of 10 in a row. So the streak length alone is not proof of a broken system. The real proof is the win rate falling from 56% to 24% and the money going negative.
+  </div>
+</div></section>
+
+<!-- ============ PIPELINES ============ -->
+<section id="pipelines"><div class="wrap">
+  <span class="kicker">How Each One Works</span>
+  <h2>The two pipelines, step by step</h2>
+  <p class="lead">Both pipelines share the same brain for scoring signals. They differ in how a trade starts, how the stop is managed, and how a trade ends. Here they are as simple flowcharts.</p>
+
+  <div class="split">
+    <div>
+      <h3>The practice test (backtest)</h3>
+      <div class="flow">
+        <div class="node"><div class="t">1. Load history</div><div class="d">Read past 15 minute price bars for all five coins.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node"><div class="t">2. Score each coin</div><div class="d">Give every coin a quality score from 0 to 100.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node risk"><div class="t">3. Safety checks</div><div class="d">Regime check, one trade per coin, daily limits, risk budget, block score 85 and up.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node"><div class="t">4. Wait one bar, then start</div><div class="d">Start the trade at the next bar close price. Almost always starts.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node exit"><div class="t">5. Check exit each bar</div><div class="d">Use the bar high and low. Check profit target first, stop loss second. Stop never moves.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node"><div class="t">6. Write results to a file</div><div class="d">Save every signal and every trade to the CSV.</div></div>
+      </div>
+    </div>
+    <div>
+      <h3>The real system (live)</h3>
+      <div class="flow">
+        <div class="node"><div class="t">1. Pull fresh prices</div><div class="d">Data service pulls new bars every 60 seconds.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node"><div class="t">2. Score each coin</div><div class="d">Same brain, every 15 minutes.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node risk"><div class="t">3. Safety checks PLUS one more</div><div class="d">Same checks, and an extra calibration check the practice test does not run.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node"><div class="t">4. Set up, then confirm later</div><div class="d">Create a pending trade. Next run may cancel it. 101 were cancelled this way.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node exit"><div class="t">5. Watch price all the time</div><div class="d">Check every 15 seconds using one live price. Stop loss is moved while open. Some coins held far longer.</div></div>
+        <div class="arrow">&#8595;</div>
+        <div class="node"><div class="t">6. Save to database</div><div class="d">Update the trade, the account, and the logs.</div></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ GAPS ============ -->
+<section id="gaps"><div class="wrap">
+  <span class="kicker">Where They Break Apart</span>
+  <h2>The gaps, one by one</h2>
+  <p class="lead">Each item below is a real difference found in the code and data. A red tag means a bug or unfair assumption. A yellow tag means a design gap where live and practice were built differently. A blue tag is context worth knowing.</p>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 1</span><span class="pill bug">Bug / Unfair</span><h4>The practice test hands free wins on wild bars</h4></div>
+    <p class="why"><b>What happens:</b> On a 15 minute bar that touches both the target and the stop, the practice test always calls it a win because it checks the target first. The real system, watching price all the time, will often hit the stop first and call it a loss.</p>
+    <p class="why"><b>Why it matters:</b> This is the main reason the practice test shows 45% targets hit while live shows only 8.7%. It alone can turn a winning test into a losing system. <b>Fix:</b> in the practice test, when both are inside one bar, resolve using finer 1 minute data, or assume the worst case (stop first). Found in <code>backtest_runner.py</code> lines 541 to 554.</p>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 2</span><span class="pill bug">Bug / Unfair</span><h4>Scored on the same data used to build the settings</h4></div>
+    <p class="why"><b>What happens:</b> The coin settings, score weights, and thresholds were all tuned on Jan to Jun 2026, and then the practice test was scored on that very same Jan to Jun 2026. The tool has a "walk forward" option that trains on early data and tests on later unseen data, but the saved results did not use it.</p>
+    <p class="why"><b>Why it matters:</b> The 56% win rate is a memory score, not a prediction score. The monthly slide from 60.7% to 52.3% shows the memory already wearing off. July, which the settings never saw, dropped to 24%. <b>Fix:</b> only trust results from data the settings never touched.</p>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 3</span><span class="pill gap">Design Gap</span><h4>The live system moves the stop loss, the practice test does not</h4></div>
+    <p class="why"><b>What happens:</b> The live code in <code>server.cjs</code> (function <code>computeDynamicSL</code>) moves the stop toward break even once a trade is 75% of the way to target, and tightens the stop every hour after hour 3. The practice test keeps the same stop for the whole trade.</p>
+    <p class="why"><b>Why it matters:</b> In a choppy market, moving the stop closer means normal price noise stops the trade out before it can reach target. The practice test never suffers this. So live loses trades the practice test would have won. <b>Fix:</b> either add the same moving stop to the practice test, or turn the moving stop off live until it is proven in a fair test.</p>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 4</span><span class="pill bug">Bug / Drift</span><h4>Some coins are held much longer in live than in the practice test</h4></div>
+    <p class="why"><b>What happens:</b> The Python settings say every coin closes after 12 hours at most. The live backend uses its own list: Bitcoin 12 hours, Ethereum 24 hours, Solana 12 hours, XRP 12 hours, BNB 48 hours. So Ethereum and BNB run two to four times longer live than in the practice test.</p>
+    <p class="why"><b>Why it matters:</b> Longer holding in a sideways market gives price more chances to hit the stop. The two systems are not testing the same rules. <b>Fix:</b> make one shared list of max hold hours and use it in both places. Found in <code>server.cjs</code> line 280 versus <code>portfolio_config.py</code>.</p>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 5</span><span class="pill gap">Design Gap</span><h4>Live has an extra safety check the practice test skips</h4></div>
+    <p class="why"><b>What happens:</b> Live Step 4 runs a calibration check that blocks a signal if its past success rate is too low. The practice test has no such check. Early on, the live check has too little history to work well, so weak signals slip through anyway.</p>
+    <p class="why"><b>Why it matters:</b> The two systems approve different trades, so their results cannot line up. <b>Fix:</b> add the same calibration check to the practice test, and only turn it on live once it has enough history to help.</p>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 6</span><span class="pill gap">Design Gap</span><h4>Live cancels many trades before they start</h4></div>
+    <p class="why"><b>What happens:</b> Live sets up a trade, then waits for the next run to confirm it. Between those two moments the score can drop, a gate can fail, or the size can be too small, so the trade is cancelled. This happened 101 times, more than double the 46 that actually filled. The practice test almost always fills.</p>
+    <p class="why"><b>Why it matters:</b> Live only trades a smaller and different set of signals. The trades that do survive may be the ones where price already moved against the plan. <b>Fix:</b> log why each one cancels, and make the fill rule the same in both systems.</p>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 7</span><span class="pill gap">Design Gap</span><h4>The live system keeps changing its own settings</h4></div>
+    <p class="why"><b>What happens:</b> Two functions, <code>tune_tp_from_history</code> and <code>tune_regime_from_history</code>, change the target and stop sizes based on recent closed trades. With only 46 trades, these change the rules based on a very small and unlucky sample. The practice test uses fixed settings.</p>
+    <p class="why"><b>Why it matters:</b> The live rules drift away from the tested rules, so the practice test no longer describes the live system. <b>Fix:</b> freeze these auto changes until there are at least 100 closed live trades.</p>
+  </div>
+
+  <div class="finding">
+    <div class="head"><span class="num">Gap 8</span><span class="pill note">Context</span><h4>Neither system charges for slippage, and percent math differs</h4></div>
+    <p class="why"><b>What happens:</b> The live code stores a slippage number but does not subtract it from the trade result. The practice test ignores slippage too. Also, the two systems measure percent gain against different bases, so percent numbers cannot be compared directly.</p>
+    <p class="why"><b>Why it matters:</b> Both are a little too optimistic on costs. This is small next to Gaps 1 to 4, but it should be fixed for a clean comparison. <b>Fix:</b> subtract a real slippage cost in both, and use the same percent base.</p>
+  </div>
+</div></section>
+
+<!-- ============ RANK ============ -->
+<section id="rank"><div class="wrap">
+  <span class="kicker">What To Blame Most</span>
+  <h2>Root cause, ranked</h2>
+  <p class="lead">Not every gap matters the same. Here is how much each one likely drives the loss, from most to least. Fix from the top down.</p>
+
+  <div class="rank"><div class="score down">1</div><div class="txt"><b>Too-kind exit rule in the practice test (Gap 1).</b> This is why the target-hit rate is 45% on paper and 8.7% in real life. Biggest single driver.</div></div>
+  <div class="rank"><div class="score down">2</div><div class="txt"><b>Scored on its own training data (Gap 2).</b> The 56% was never a real forecast. The monthly slide proves the edge was already fading.</div></div>
+  <div class="rank"><div class="score mid">3</div><div class="txt"><b>Moving stop loss live only (Gap 3).</b> In a choppy month this stops out good trades early. Present live, absent in the test.</div></div>
+  <div class="rank"><div class="score mid">4</div><div class="txt"><b>Different max hold times (Gap 4).</b> Ethereum and BNB run far longer live, adding stop-outs the test never sees.</div></div>
+  <div class="rank"><div class="score">5</div><div class="txt"><b>Different gates and self-tuning (Gaps 5 to 7).</b> These make the live system trade a different set of signals under different rules than the one that was tested.</div></div>
+
+  <div class="callout">
+    <b>The plain conclusion:</b> The logic of the idea is not clearly broken. The problem is that the practice test was both too kind and graded on its own homework, while the live system quietly runs different rules. Close those gaps and the two will finally tell the same story. Only then can you trust either one.
+  </div>
+</div></section>
+
+<!-- ============ AI NODE ============ -->
+<section id="ai"><div class="wrap">
+  <span class="kicker">Your Idea, Made Real</span>
+  <h2>Adding one AI review step to the practice test</h2>
+  <p class="lead">Yes, this is possible, and it is a good idea if you keep it in one place with a clear job. The AI should not trade. It should read the finished practice test, compare it to the live results, and write back a short, structured review. Think of it as a smart referee, not a player.</p>
+
+  <h3>Where it goes in the pipeline</h3>
+  <p>Put it right after the practice test finishes and the metrics are counted, and before any settings get changed. It reads. It never touches money or live rules directly.</p>
+  <div class="flow">
+    <div class="node"><div class="t">Run the practice test</div><div class="d">Produce the CSV and the counted metrics as usual.</div></div>
+    <div class="arrow">&#8595;</div>
+    <div class="node"><div class="t">Pull the live results</div><div class="d">Read the same numbers from the live database for the recent period.</div></div>
+    <div class="arrow">&#8595;</div>
+    <div class="node ai"><div class="t">AI REVIEW NODE (the new step)</div><div class="d">Receive both sets of numbers plus the current settings. Return a fixed, structured report: what matches, what does not, likely cause, and safe suggestions. No free trading.</div></div>
+    <div class="arrow">&#8595;</div>
+    <div class="node"><div class="t">Human reads the report</div><div class="d">A person approves or rejects each suggestion before anything changes.</div></div>
+    <div class="arrow">&#8595;</div>
+    <div class="node risk"><div class="t">Apply approved changes only</div><div class="d">Settings change only after a human says yes.</div></div>
+  </div>
+
+  <h3>Give the pipeline to the AI in order of usefulness</h3>
+  <p>The AI works better when it sees the pieces ranked by how much they affect results. Feed it this order:</p>
+  <ol class="steps">
+    <li><b>Exit rules.</b> How a trade ends. This drives most of the gap, so it comes first.</li>
+    <li><b>Testing honesty.</b> Whether the score used unseen data. Second most important.</li>
+    <li><b>Stop loss handling.</b> Fixed versus moving. Third.</li>
+    <li><b>Trade timing.</b> Fill rules and max hold time. Fourth.</li>
+    <li><b>Gates and scoring.</b> Which signals are allowed and how they are scored. Fifth.</li>
+    <li><b>Costs.</b> Fees, funding, slippage. Last, because it is smallest here.</li>
+  </ol>
+
+  <h3>The master prompt for the AI review step</h3>
+  <p>This is the exact set of instructions to give the AI. It is written so the AI stays in its lane and always returns the same clean shape of answer.</p>
+<pre class="prompt">ROLE
+You are the Backtest Review Engineer for the VLTHR trading pipeline.
+You are a referee, not a trader. You never place trades. You never
+change settings. You only read numbers and return one structured report.
+
+WHAT YOU RECEIVE (as JSON)
+1. backtest_metrics: win_rate, profit_factor, expectancy, max_drawdown,
+   tp_hit_rate, sl_hit_rate, time_exit_rate, per_month, per_symbol,
+   per_side, per_dqs_band, exit_reason_counts.
+2. live_metrics: the same fields from the live database for the recent period.
+3. config: the current settings (per-symbol stop and target, kelly bands,
+   regime thresholds, max hold hours, gates that are on).
+4. known_gaps: a list of code differences already found between backtest
+   and live (exit ordering, moving stop, hold-time drift, extra gates,
+   self-tuning, fills).
+
+HOW TO THINK (in this order of importance)
+1. Exit rules first. Compare tp_hit_rate and sl_hit_rate. If the backtest
+   target rate is far above live, suspect the too-kind intrabar rule.
+2. Testing honesty. Check if results came from unseen (out-of-sample) data.
+   If not, mark the win rate as "memory, not forecast".
+3. Stop loss handling. Check if the moving stop exists live but not in test.
+4. Trade timing. Compare fill rate and max hold hours between the two.
+5. Gates and scoring. Check if the same gates ran in both. Check if a
+   higher confidence band wins less in live than in backtest (a red flag
+   that scoring does not generalize).
+6. Costs. Note any missing slippage or fee.
+
+RULES
+- Use only the numbers given. Never invent data. If a number is missing,
+  say "not provided" and move on.
+- Prefer the simplest cause that explains the biggest gap.
+- Every suggestion must be small, reversible, and testable.
+- Never suggest changing a setting based on fewer than 100 live trades.
+- Do not use jargon. Write for a smart beginner.
+
+WHAT YOU RETURN (strict JSON, no extra text)
+{
+  "verdict": "PASS" or "FAIL",
+  "headline": "one plain sentence",
+  "biggest_gap": {"metric": "...", "backtest": 0, "live": 0, "likely_cause": "..."},
+  "matches": ["things that line up"],
+  "mismatches": [{"metric":"...","backtest":0,"live":0,"cause":"...","severity":"high|medium|low"}],
+  "suspected_bugs": [{"where":"file and idea","why":"plain reason","confidence":"high|medium|low"}],
+  "safe_suggestions": [{"change":"...","expected_effect":"...","how_to_test":"...","needs_human_ok":true}],
+  "do_not_do": ["risky ideas to avoid right now"]
+}
+</pre>
+
+  <h3>How to build it, in plain steps</h3>
+  <ol class="steps">
+    <li>Add a small Python file, for example <code>backtest/ai_review_node.py</code>. It has one job: gather the JSON inputs and call the AI.</li>
+    <li>Reuse the numbers you already compute in <code>compute_metrics</code>. Add a second function that reads the same fields from the live database.</li>
+    <li>Send both, plus the settings and the known gaps list, to the AI using the master prompt above.</li>
+    <li>Force the AI to reply in the strict JSON shape. If it does not, reject and retry once. Never let it run without the shape.</li>
+    <li>Save the report to a file and print the headline and verdict at the end of the backtest run.</li>
+    <li>Never let the AI change a setting on its own. A human reads the report and approves changes by hand.</li>
+    <li>Keep the AI key out of the code. Read it from an environment variable so it never leaks.</li>
+  </ol>
+
+  <div class="callout warn">
+    <b>Important guardrail:</b> the AI review is a helper, not a boss. It points at likely problems and suggests safe tests. It must not tune the live system by itself, because tuning on a tiny live sample is exactly one of the problems we found (Gap 7).
+  </div>
+</div></section>
+
+<!-- ============ ACTIONS ============ -->
+<section id="actions"><div class="wrap">
+  <span class="kicker">Do This Next</span>
+  <h2>The action plan</h2>
+  <p class="lead">Work top to bottom. Do not change trading settings until the two systems agree on a fair test. The goal is a permanent fix, not a quick patch.</p>
+
+  <ol class="steps">
+    <li><b>Fix the too-kind exit rule (Gap 1).</b> In the practice test, when a bar touches both target and stop, resolve it with 1 minute data or assume the stop hit first. Re-run and expect the paper win rate to fall closer to reality.</li>
+    <li><b>Re-run the test on unseen data only (Gap 2).</b> Train settings on Jan to Apr, then test on May to July with the walk forward option. Trust only that out-of-sample score.</li>
+    <li><b>Make the two systems match (Gaps 3, 4, 5).</b> Either add the moving stop, the extra gate, and the real max hold times to the practice test, or turn them off live. One shared rule set, both places.</li>
+    <li><b>Freeze the self-tuning (Gap 7).</b> Turn off <code>tune_tp_from_history</code> and <code>tune_regime_from_history</code> until there are at least 100 closed live trades.</li>
+    <li><b>Add the AI review step.</b> Build the one node from the section above so every future test comes with an automatic, plain-language health check.</li>
+    <li><b>Only then, decide.</b> If the fair test still loses in July conditions, the idea needs new settings. If the fair test wins but live still loses, the problem is execution, and the AI report will point right at it.</li>
+  </ol>
+
+  <div class="callout">
+    <b>Bottom line:</b> The system is not doomed. It has been grading itself with a friendly ruler while quietly running different rules in real life. Straighten the ruler, match the rules, and add the AI referee. After that, the backtest and the live results will finally speak the same language, and you can trust what they say.
+  </div>
+</div></section>
+
+<div class="wrap foot">
+  <p><b>How the numbers were made.</b> Backtest numbers come from the 1,441 finished trades tagged <code>treatment_b_phase2</code> in <code>backtest/backtest_phase2_results.csv</code>, counted with simple text tools. Live numbers come from the <code>paper_trades</code> and <code>paper_account</code> tables in the live Postgres database on July 13, 2026. Code behavior was read directly from <code>backtest/backtest_runner.py</code>, <code>pipeline/engine/portfolio_orchestrator.py</code>, <code>pipeline/engine/portfolio_config.py</code>, and <code>backend/src/server.cjs</code>. This page is fully offline. All charts are drawn from these fixed numbers.</p>
+</div>
+
+<script>
+  // Render the real win/loss sequence (oldest to newest), no external libs, works offline.
+  var seq = "LLWWLWLLLWLLWLLLLLWLLWLLLLLWLLLLWLLLLLWLLLLLWL";
+  var el = document.getElementById('seq');
+  if (el) {
+    var html = "";
+    for (var i = 0; i < seq.length; i++) {
+      var c = seq[i];
+      html += '<span class="' + c + '">' + c + '</span>';
+    }
+    el.innerHTML = html;
+  }
+</script>
+
+</body>
+</html>

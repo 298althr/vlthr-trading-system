@@ -1,0 +1,47 @@
+{
+  "BTCUSDT": {
+    "separate": [
+      "asian",
+      "london"
+    ],
+    "mergeable": [
+      "ny_late",
+      "ny_open"
+    ]
+  },
+  "ETHUSDT": {
+    "separate": [
+      "london",
+      "ny_late",
+      "ny_open"
+    ],
+    "mergeable": []
+  },
+  "SOLUSDT": {
+    "separate": [],
+    "mergeable": [
+      "asian",
+      "london",
+      "ny_late",
+      "ny_open"
+    ]
+  },
+  "XRPUSDT": {
+    "separate": [],
+    "mergeable": [
+      "asian",
+      "london",
+      "ny_late",
+      "ny_open"
+    ]
+  },
+  "BNBUSDT": {
+    "separate": [],
+    "mergeable": [
+      "asian",
+      "london",
+      "ny_late",
+      "ny_open"
+    ]
+  }
+}

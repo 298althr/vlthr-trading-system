@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLTHR Hourly Service Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg-card: #111827;
+  --border: #1e293b;
+  --border-light: #334155;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-bright: #f8fafc;
+  --gold: #f5a623;
+  --cyan: #06b6d4;
+  --red: #ef4444;
+  --green: #22c55e;
+  --orange: #f97316;
+  --yellow: #eab300;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+
+.header {
+  text-align: center;
+  padding: 60px 24px 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  letter-spacing: 3px;
+  color: var(--text-bright);
+  margin-bottom: 8px;
+}
+.header .subtitle {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+.header .meta {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.header .meta-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.header .meta-item strong { color: var(--gold); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+.stat-card .stat-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 1px;
+}
+.stat-card .stat-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.stat-card.green .stat-value { color: var(--green); }
+.stat-card.cyan .stat-value { color: var(--cyan); }
+.stat-card.orange .stat-value { color: var(--orange); }
+.stat-card.red .stat-value { color: var(--red); }
+.stat-card.gold .stat-value { color: var(--gold); }
+
+.section { margin-bottom: 48px; }
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.svc-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.svc-card.healthy { border-left: 4px solid var(--green); }
+.svc-card.running { border-left: 4px solid var(--cyan); }
+.svc-card.warning { border-left: 4px solid var(--orange); }
+.svc-card.error { border-left: 4px solid var(--red); }
+
+.svc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.svc-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: var(--text-bright);
+  font-weight: 600;
+}
+.svc-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.svc-badge.healthy { background: rgba(34,197,94,0.15); color: var(--green); }
+.svc-badge.running { background: rgba(6,182,212,0.15); color: var(--cyan); }
+.svc-badge.warning { background: rgba(249,115,22,0.15); color: var(--orange); }
+.svc-badge.error { background: rgba(239,68,68,0.15); color: var(--red); }
+.svc-port {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-top: 12px;
+}
+.data-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+.data-table td.green { color: var(--green); }
+.data-table td.red { color: var(--red); }
+.data-table td.orange { color: var(--orange); }
+.data-table td.cyan { color: var(--cyan); }
+.data-table td.yellow { color: var(--yellow); }
+.data-table tr:hover { background: rgba(255,255,255,0.02); }
+
+.svc-detail {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+.svc-evidence {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+.svc-evidence .green { color: var(--green); }
+.svc-evidence .red { color: var(--red); }
+.svc-evidence .cyan { color: var(--cyan); }
+.svc-evidence .orange { color: var(--orange); }
+.svc-evidence .gold { color: var(--gold); }
+
+.kv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.kv-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+.kv-item .kv-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.kv-item .kv-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--text-bright);
+  margin-top: 2px;
+}
+.kv-item .kv-value.green { color: var(--green); }
+.kv-item .kv-value.red { color: var(--red); }
+.kv-item .kv-value.orange { color: var(--orange); }
+.kv-item .kv-value.gold { color: var(--gold); }
+
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+.footer .footer-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .header h1 { font-size: 2.2rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .data-table { font-size: 0.72rem; }
+  .data-table td, .data-table th { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>VLTHR Hourly Service Monitor</h1>
+  <div class="subtitle">Snapshot 1. All 8 active services. Ngrok shut down.</div>
+  <div class="meta">
+    <div class="meta-item"><strong>Time:</strong> 2026-07-14 19:22 UTC</div>
+    <div class="meta-item"><strong>Uptime:</strong> 22 minutes</div>
+    <div class="meta-item"><strong>Services:</strong> 8 (ngrok removed)</div>
+    <div class="meta-item"><strong>Pipeline:</strong> 5-min loop</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="stats-grid">
+    <div class="stat-card green"><div class="stat-value">5</div><div class="stat-label">Healthy</div></div>
+    <div class="stat-card cyan"><div class="stat-value">2</div><div class="stat-label">Running</div></div>
+    <div class="stat-card red"><div class="stat-value">1</div><div class="stat-label">Network Error</div></div>
+    <div class="stat-card gold"><div class="stat-value">68</div><div class="stat-label">Total Signals</div></div>
+    <div class="stat-card green"><div class="stat-value">156</div><div class="stat-label">Paper Trades</div></div>
+    <div class="stat-card red"><div class="stat-value">-$744</div><div class="stat-label">Realized PnL</div></div>
+    <div class="stat-card orange"><div class="stat-value">20.4%</div><div class="stat-label">Win Rate</div></div>
+    <div class="stat-card green"><div class="stat-value">0</div><div class="stat-label">Open Trades</div></div>
+  </div>
+
+  <!-- 1. POSTGRES -->
+  <div class="section">
+    <h2 class="section-title">1. Postgres (TimescaleDB)</h2>
+    <div class="svc-card healthy">
+      <div class="svc-header">
+        <span class="svc-name">vlthr-postgres</span>
+        <span class="svc-badge healthy">HEALTHY</span>
+        <span class="svc-port">5432 internal</span>
+      </div>
+      <div class="svc-detail">Database is the core data store. 67 tables. All services connect to it. 8 active connections.</div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">Tables</div><div class="kv-value">67</div></div>
+        <div class="kv-item"><div class="kv-label">Active Connections</div><div class="kv-value">8</div></div>
+        <div class="kv-item"><div class="kv-label">DB Size</div><div class="kv-value">100 MB</div></div>
+        <div class="kv-item"><div class="kv-label">pg_isready</div><div class="kv-value green">Accepting</div></div>
+      </div>
+      <div class="svc-evidence">Key tables with row counts:
+  high_confidence_signals: <span class="green">68 rows</span>
+  paper_trades:            <span class="green">156 rows</span>
+  pipeline_trace:          <span class="green">7,167 rows</span>
+  signal_state:            <span class="green">26 rows</span>
+  watchlist_current:       <span class="green">40 rows</span>
+  portfolio_snapshot:      <span class="green">1,630 rows</span>
+  ingestion_log:           <span class="green">56,314 rows</span></div>
+    </div>
+  </div>
+
+  <!-- 2. REDIS -->
+  <div class="section">
+    <h2 class="section-title">2. Redis (Cache)</h2>
+    <div class="svc-card running">
+      <div class="svc-header">
+        <span class="svc-name">vlthr-dashboard-redis</span>
+        <span class="svc-badge running">RUNNING</span>
+        <span class="svc-port">6379 internal</span>
+      </div>
+      <div class="svc-detail">In-memory cache. No data stored yet (dbsize=0). Used for pipeline state and caching. No healthcheck configured.</div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">PING</div><div class="kv-value green">PONG</div></div>
+        <div class="kv-item"><div class="kv-label">Keys</div><div class="kv-value">0</div></div>
+        <div class="kv-item"><div class="kv-label">Memory Used</div><div class="kv-value">1,012 KB</div></div>
+        <div class="kv-item"><div class="kv-label">Max Memory</div><div class="kv-value">256 MB</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. DATA INGESTION -->
+  <div class="section">
+    <h2 class="section-title">3. Data Ingestion (Bybit OHLCV)</h2>
+    <div class="svc-card healthy">
+      <div class="svc-header">
+        <span class="svc-name">vlthr-data-ingestion</span>
+        <span class="svc-badge healthy">HEALTHY</span>
+        <span class="svc-port">internal only</span>
+      </div>
+      <div class="svc-detail">Ingests OHLCV data from Bybit for 6 symbols across 7 timeframes. 1m bars update every 60s. Higher timeframes update less frequently. All data has zero gaps. Telegram alert delivery failing (network unreachable to api.telegram.org). Intermittent DB write timeouts for ingestion_log (non-fatal, data still flows to parquet files).</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Symbol</th><th>TF</th><th>Bars</th><th>Gaps</th><th>Status</th><th>Last Fetch (UTC)</th><th>Age</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>BTCUSDT</td><td>1m</td><td class="green">50,943</td><td class="green">0</td><td class="green">ok</td><td>19:13:35</td><td>~7 min ago</td></tr>
+          <tr><td>BTCUSDT</td><td>5m</td><td class="green">371,749</td><td class="green">0</td><td class="green">ok</td><td>19:03:53</td><td>~17 min ago</td></tr>
+          <tr><td>BTCUSDT</td><td>15m</td><td class="green">123,916</td><td class="green">0</td><td class="green">ok</td><td>19:00:20</td><td>~21 min ago</td></tr>
+          <tr><td>BTCUSDT</td><td>30m</td><td class="green">61,958</td><td class="green">0</td><td class="green">ok</td><td>18:59:10</td><td>~22 min ago</td></tr>
+          <tr><td>BTCUSDT</td><td>1h</td><td class="green">30,979</td><td class="green">0</td><td class="green">ok</td><td>18:58:41</td><td>~23 min ago</td></tr>
+          <tr><td>BTCUSDT</td><td>4h</td><td class="green">7,745</td><td class="green">0</td><td class="green">ok</td><td>18:58:26</td><td>~23 min ago</td></tr>
+          <tr><td>BTCUSDT</td><td>1d</td><td class="green">560</td><td class="green">0</td><td class="green">ok</td><td>19:03:54</td><td>~17 min ago</td></tr>
+          <tr><td>ETHUSDT</td><td>1m</td><td class="green">47,752</td><td class="green">0</td><td class="green">ok</td><td>19:14:06</td><td>~7 min ago</td></tr>
+          <tr><td>ETHUSDT</td><td>5m</td><td class="green">371,750</td><td class="green">0</td><td class="green">ok</td><td>19:08:57</td><td>~12 min ago</td></tr>
+          <tr><td>ETHUSDT</td><td>15m</td><td class="green">123,917</td><td class="green">0</td><td class="green">ok</td><td>19:06:00</td><td>~15 min ago</td></tr>
+          <tr><td>ETHUSDT</td><td>30m</td><td class="green">61,959</td><td class="green">0</td><td class="green">ok</td><td>19:05:03</td><td>~16 min ago</td></tr>
+          <tr><td>ETHUSDT</td><td>1h</td><td class="green">30,980</td><td class="green">0</td><td class="green">ok</td><td>19:04:34</td><td>~17 min ago</td></tr>
+          <tr><td>ETHUSDT</td><td>4h</td><td class="green">7,745</td><td class="green">0</td><td class="green">ok</td><td>19:04:18</td><td>~17 min ago</td></tr>
+          <tr><td>ETHUSDT</td><td>1d</td><td class="green">560</td><td class="green">0</td><td class="green">ok</td><td>19:08:58</td><td>~12 min ago</td></tr>
+          <tr><td>SOLUSDT</td><td>1m</td><td class="green">50,938</td><td class="green">0</td><td class="green">ok</td><td>19:11:56</td><td>~9 min ago</td></tr>
+          <tr><td>SOLUSDT</td><td>5m</td><td class="green">371,608</td><td class="green">0</td><td class="green">ok</td><td>07:23:51</td><td class="orange">~12h ago</td></tr>
+          <tr><td>SOLUSDT</td><td>15m</td><td class="green">123,917</td><td class="green">0</td><td class="green">ok</td><td>19:10:59</td><td>~10 min ago</td></tr>
+          <tr><td>SOLUSDT</td><td>30m</td><td class="green">61,959</td><td class="green">0</td><td class="green">ok</td><td>19:10:09</td><td>~11 min ago</td></tr>
+          <tr><td>SOLUSDT</td><td>1h</td><td class="green">30,980</td><td class="green">0</td><td class="green">ok</td><td>19:09:40</td><td>~12 min ago</td></tr>
+          <tr><td>SOLUSDT</td><td>4h</td><td class="green">7,745</td><td class="green">0</td><td class="green">ok</td><td>19:09:24</td><td>~12 min ago</td></tr>
+          <tr><td>SOLUSDT</td><td>1d</td><td class="green">560</td><td class="green">0</td><td class="green">ok</td><td>00:44:14</td><td class="orange">~18h ago</td></tr>
+          <tr><td>XRPUSDT</td><td>1m</td><td class="green">50,939</td><td class="green">0</td><td class="green">ok</td><td>19:12:20</td><td>~8 min ago</td></tr>
+          <tr><td>XRPUSDT</td><td>5m</td><td class="green">371,609</td><td class="green">0</td><td class="green">ok</td><td>07:28:29</td><td class="orange">~12h ago</td></tr>
+          <tr><td>XRPUSDT</td><td>15m</td><td class="green">123,872</td><td class="green">0</td><td class="green">ok</td><td>07:56:36</td><td class="orange">~11h ago</td></tr>
+          <tr><td>XRPUSDT</td><td>30m</td><td class="green">61,937</td><td class="green">0</td><td class="green">ok</td><td>08:04:02</td><td class="orange">~11h ago</td></tr>
+          <tr><td>XRPUSDT</td><td>1h</td><td class="green">30,969</td><td class="green">0</td><td class="green">ok</td><td>08:10:03</td><td class="orange">~11h ago</td></tr>
+          <tr><td>XRPUSDT</td><td>4h</td><td class="green">7,743</td><td class="green">0</td><td class="green">ok</td><td>08:11:44</td><td class="orange">~11h ago</td></tr>
+          <tr><td>XRPUSDT</td><td>1d</td><td class="green">560</td><td class="green">0</td><td class="green">ok</td><td>00:44:16</td><td class="orange">~18h ago</td></tr>
+          <tr><td>BNBUSDT</td><td>1m</td><td class="green">50,940</td><td class="green">0</td><td class="green">ok</td><td>19:12:43</td><td>~8 min ago</td></tr>
+          <tr><td>BNBUSDT</td><td>5m</td><td class="green">371,610</td><td class="green">0</td><td class="green">ok</td><td>07:33:09</td><td class="orange">~12h ago</td></tr>
+          <tr><td>BNBUSDT</td><td>15m</td><td class="green">123,872</td><td class="green">0</td><td class="green">ok</td><td>07:59:26</td><td class="orange">~11h ago</td></tr>
+          <tr><td>BNBUSDT</td><td>30m</td><td class="green">61,937</td><td class="green">0</td><td class="green">ok</td><td>08:04:49</td><td class="orange">~11h ago</td></tr>
+          <tr><td>BNBUSDT</td><td>1h</td><td class="green">30,969</td><td class="green">0</td><td class="green">ok</td><td>08:10:27</td><td class="orange">~11h ago</td></tr>
+          <tr><td>BNBUSDT</td><td>4h</td><td class="green">7,743</td><td class="green">0</td><td class="green">ok</td><td>08:11:51</td><td class="orange">~11h ago</td></tr>
+          <tr><td>BNBUSDT</td><td>1d</td><td class="green">560</td><td class="green">0</td><td class="green">ok</td><td>00:44:18</td><td class="orange">~18h ago</td></tr>
+          <tr><td>DOGEUSDT</td><td>1m</td><td class="green">50,940</td><td class="green">0</td><td class="green">ok</td><td>19:13:11</td><td>~7 min ago</td></tr>
+          <tr><td>DOGEUSDT</td><td>5m</td><td class="green">371,611</td><td class="green">0</td><td class="green">ok</td><td>07:38:10</td><td class="orange">~12h ago</td></tr>
+          <tr><td>DOGEUSDT</td><td>15m</td><td class="green">123,872</td><td class="green">0</td><td class="green">ok</td><td>08:01:03</td><td class="orange">~11h ago</td></tr>
+          <tr><td>DOGEUSDT</td><td>30m</td><td class="green">61,937</td><td class="green">0</td><td class="green">ok</td><td>08:05:38</td><td class="orange">~11h ago</td></tr>
+          <tr><td>DOGEUSDT</td><td>1h</td><td class="green">30,969</td><td class="green">0</td><td class="green">ok</td><td>08:10:52</td><td class="orange">~11h ago</td></tr>
+          <tr><td>DOGEUSDT</td><td>4h</td><td class="green">7,743</td><td class="green">0</td><td class="green">ok</td><td>08:11:59</td><td class="orange">~11h ago</td></tr>
+          <tr><td>DOGEUSDT</td><td>1d</td><td class="green">560</td><td class="green">0</td><td class="green">ok</td><td>00:44:20</td><td class="orange">~18h ago</td></tr>
+        </tbody>
+      </table>
+      <div class="svc-evidence"><span class="green">Data Quality: ALL ZERO GAPS across 42 symbol/timeframe pairs.</span>
+
+<span class="orange">Warning: SOLUSDT, XRPUSDT, BNBUSDT, DOGEUSDT 5m+ timeframes last fetched 11-18h ago.
+These higher timeframes update on a slower schedule (every few hours).
+1m bars for all 6 symbols are fresh (within last 10 minutes).</span>
+
+<span class="orange">Warning: Intermittent DB write timeout for ingestion_log.
+Data still flows to parquet files. Non-fatal.</span>
+
+<span class="red">Warning: Bybit API timeout on SOLUSDT/D and XRPUSDT/1m (retrying).
+Network instability to external APIs.</span></div>
+    </div>
+  </div>
+
+  <!-- 4. PIPELINE -->
+  <div class="section">
+    <h2 class="section-title">4. Pipeline (Signal Scanner + Portfolio Orchestrator)</h2>
+    <div class="svc-card healthy">
+      <div class="svc-header">
+        <span class="svc-name">vlthr-pipeline</span>
+        <span class="svc-badge healthy">HEALTHY</span>
+        <span class="svc-port">8200</span>
+      </div>
+      <div class="svc-detail">Runs every 5 minutes. Scans for trading signals, applies 6 gates (data quality, regime, correlation, crowding, calibration, risk), and upserts approved signals. Last iteration scanned 1 signal, V7 Kelly veto rejected it (DQS 85, negative edge). 0 invariant breaches.</div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">Loop Interval</div><div class="kv-value">300s (5 min)</div></div>
+        <div class="kv-item"><div class="kv-label">Last Run Age</div><div class="kv-value">~8 min ago</div></div>
+        <div class="kv-item"><div class="kv-label">Startup Time</div><div class="kv-value">18:58:18 UTC</div></div>
+        <div class="kv-item"><div class="kv-label">Status</div><div class="kv-value green">ALIVE</div></div>
+        <div class="kv-item"><div class="kv-label">Total Signals (HCS)</div><div class="kv-value">68</div></div>
+        <div class="kv-item"><div class="kv-label">Excellent Grade</div><div class="kv-value">22</div></div>
+        <div class="kv-item"><div class="kv-label">Good Grade</div><div class="kv-value">14</div></div>
+        <div class="kv-item"><div class="kv-label">Pipeline Traces</div><div class="kv-value">7,167</div></div>
+        <div class="kv-item"><div class="kv-label">Watchlist Items</div><div class="kv-value">40</div></div>
+        <div class="kv-item"><div class="kv-label">Signal States Tracked</div><div class="kv-value">26</div></div>
+        <div class="kv-item"><div class="kv-label">Invariant Breaches</div><div class="kv-value green">0</div></div>
+        <div class="kv-item"><div class="kv-label">Brain Available</div><div class="kv-value green">True</div></div>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Run Time (UTC)</th><th>Status</th><th>Scanned</th><th>Approved</th><th>Duration</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>19:13:45</td><td class="green">OK</td><td>1</td><td>0</td><td>6,053ms</td></tr>
+          <tr><td>19:08:39</td><td class="green">OK</td><td>1</td><td>0</td><td>5,751ms</td></tr>
+          <tr><td>19:03:33</td><td class="green">OK</td><td>1</td><td>0</td><td>10,020ms</td></tr>
+          <tr><td>18:58:23</td><td class="orange">ABORTED</td><td>0</td><td>0</td><td>600ms</td></tr>
+        </tbody>
+      </table>
+      <div class="svc-evidence">Last iteration detail:
+  Signals scanned: 1
+  Signals passing ranker gate (>=50): 1
+  <span class="red">[BTCUSDT] REJECTED - V7 Kelly veto: Kelly=0 for DQS 85 (negative edge)</span>
+  Signals approved: 0
+  Upserted: 0
+  Invariant breaches: 0
+
+<span class="cyan">The V7 veto is working as designed. DQS >= 85 signals have 46.8% win rate
+(worse than overall), so Kelly is set to 0, which vetoes the trade.
+This is correct behavior, not a bug.</span>
+
+<span class="orange">Note: 3 of 6 symbols are currently DISABLED for low win rate:
+  BTCUSDT:  disabled until 2026-07-13 22:16 (expired, should re-enable)
+  ETHUSDT:  disabled until 2026-07-15 19:03 (24h from now)
+  SOLUSDT:  disabled until 2026-07-13 06:23 (expired, should re-enable)
+Only BNBUSDT, XRPUSDT, DOGEUSDT are enabled.</span></div>
+    </div>
+  </div>
+
+  <!-- 5. BACKEND -->
+  <div class="section">
+    <h2 class="section-title">5. Backend (Express API + Trade Monitor)</h2>
+    <div class="svc-card warning">
+      <div class="svc-header">
+        <span class="svc-name">vlthr-dashboard-backend</span>
+        <span class="svc-badge warning">RUNNING (DB TIMEOUTS)</span>
+        <span class="svc-port">3002 external</span>
+      </div>
+      <div class="svc-detail">Express API server. Serves dashboard data, trade monitoring, auto-close logic. API endpoints respond 200. Sync loop experiencing intermittent DB connection timeouts (ETIMEDOUT to postgres). Non-fatal, auto-retries. Healthcheck shows unhealthy due to stale config (fixed in compose, needs restart).</div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">API Status</div><div class="kv-value green">200 OK</div></div>
+        <div class="kv-item"><div class="kv-label">Endpoint</div><div class="kv-value">/api/vtc/treasury</div></div>
+        <div class="kv-item"><div class="kv-label">Sync State</div><div class="kv-value">hcs:10 wl:3 pt:0</div></div>
+        <div class="kv-item"><div class="kv-label">Open Trades</div><div class="kv-value green">0</div></div>
+        <div class="kv-item"><div class="kv-label">DB Timeouts</div><div class="kv-value orange">Intermittent</div></div>
+        <div class="kv-item"><div class="kv-label">Market Intel</div><div class="kv-value">7 symbols</div></div>
+      </div>
+      <div class="svc-evidence">Recent backend activity:
+  <span class="green">[Server] Backend listening on http://0.0.0.0:3001</span>
+  <span class="green">[Server] DB_URL: configured</span>
+  <span class="green">[Server] Market intel engine started for 7 symbols</span>
+  <span class="orange">[Sync Error] connect ETIMEDOUT 172.18.0.3:5432 (repeating)</span>
+  <span class="red">[Telegram Alert] Failed: Unsupported start tag "br" (HTML parse bug)</span>
+
+Auto-close events (last session):
+  Trade 413 (BTCUSDT LONG) closed at 62514.2 - TIME_EXIT
+  Trade 412 (SOLUSDT LONG) closed at 75.05 - TIME_EXIT
+  Trade 411 (ETHUSDT SHORT) closed at 1873.89 - SL_HIT
+
+<span class="cyan">Backend is functional. API serves data. DB timeouts are intermittent
+and auto-retry. Telegram alert HTML bug needs fixing (br tags).</span></div>
+    </div>
+  </div>
+
+  <!-- 6. FRONTEND -->
+  <div class="section">
+    <h2 class="section-title">6. Frontend (React SPA + nginx)</h2>
+    <div class="svc-card running">
+      <div class="svc-header">
+        <span class="svc-name">vlthr-dashboard-frontend</span>
+        <span class="svc-badge running">RUNNING</span>
+        <span class="svc-port">5174 external</span>
+      </div>
+      <div class="svc-detail">nginx serving React SPA build. HTTP 200. Healthcheck unhealthy due to IPv6 localhost resolution (fixed to 127.0.0.1 in compose, needs restart). Accessible at http://localhost:5174.</div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">HTTP Status</div><div class="kv-value green">200</div></div>
+        <div class="kv-item"><div class="kv-label">URL</div><div class="kv-value">http://localhost:5174</div></div>
+        <div class="kv-item"><div class="kv-label">nginx</div><div class="kv-value">1.31.2</div></div>
+        <div class="kv-item"><div class="kv-label">Workers</div><div class="kv-value">4</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. AI TRADER ENGINE -->
+  <div class="section">
+    <h2 class="section-title">7. AI Trader Engine (FastAPI Backtest)</h2>
+    <div class="svc-card healthy">
+      <div class="svc-header">
+        <span class="svc-name">ai_trader_engine</span>
+        <span class="svc-badge healthy">HEALTHY</span>
+        <span class="svc-port">8001 external</span>
+      </div>
+      <div class="svc-detail">FastAPI backtest engine. Health endpoint responding. Pipeline available flag true. No strategies loaded or backtests run yet (idle, waiting for requests).</div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">Status</div><div class="kv-value green">healthy</div></div>
+        <div class="kv-item"><div class="kv-label">Pipeline Available</div><div class="kv-value green">true</div></div>
+        <div class="kv-item"><div class="kv-label">Strategies Loaded</div><div class="kv-value">0</div></div>
+        <div class="kv-item"><div class="kv-label">Backtests Total</div><div class="kv-value">0</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. TELEGRAM -->
+  <div class="section">
+    <h2 class="section-title">8. Telegram (3-Bot Polling Service)</h2>
+    <div class="svc-card error">
+      <div class="svc-header">
+        <span class="svc-name">vlthr-telegram</span>
+        <span class="svc-badge error">NETWORK ERROR</span>
+        <span class="svc-port">internal only</span>
+      </div>
+      <div class="svc-detail">3 Telegram bots (data, trading, devops) are polling but cannot reach api.telegram.org. Error: "Network is unreachable" on port 443. This is a DNS or network firewall issue. Bots auto-retry every 15s. Same network issue prevents data-ingestion from sending Telegram alerts.</div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">Data Bot</div><div class="kv-value red">FAIL</div></div>
+        <div class="kv-item"><div class="kv-label">Trading Bot</div><div class="kv-value red">FAIL</div></div>
+        <div class="kv-item"><div class="kv-label">DevOps Bot</div><div class="kv-value red">FAIL</div></div>
+        <div class="kv-item"><div class="kv-label">Error</div><div class="kv-value red">Network unreachable</div></div>
+        <div class="kv-item"><div class="kv-label">Target</div><div class="kv-value">api.telegram.org:443</div></div>
+        <div class="kv-item"><div class="kv-label">Retry</div><div class="kv-value">Every 15s</div></div>
+      </div>
+      <div class="svc-evidence"><span class="red">Error getting updates: api.telegram.org:443</span>
+<span class="red">Caused by NewConnectionError: [Errno 101] Network is unreachable</span>
+
+<span class="orange">Test DNS resolution:
+  docker exec vlthr-telegram python3 -c "import socket; print(socket.getaddrinfo('api.telegram.org', 443))"
+
+If DNS fails, add to docker-compose.yml under telegram service:
+  dns: [8.8.8.8, 1.1.1.1]
+
+If DNS works but connection fails, check firewall for outbound 443.</span></div>
+    </div>
+  </div>
+
+  <!-- PAPER TRADING SUMMARY -->
+  <div class="section">
+    <h2 class="section-title">Paper Trading Summary</h2>
+    <div class="svc-card warning">
+      <div class="svc-header">
+        <span class="svc-name">Paper Account Performance</span>
+        <span class="svc-badge warning">DRAWDOWN</span>
+      </div>
+      <div class="kv-grid">
+        <div class="kv-item"><div class="kv-label">Balance</div><div class="kv-value">$9,256.08</div></div>
+        <div class="kv-item"><div class="kv-label">Equity</div><div class="kv-value">$9,256.08</div></div>
+        <div class="kv-item"><div class="kv-label">Margin Used</div><div class="kv-value green">$0.00</div></div>
+        <div class="kv-item"><div class="kv-label">Total PnL</div><div class="kv-value red">-$149.34</div></div>
+        <div class="kv-item"><div class="kv-label">Realized PnL</div><div class="kv-value red">-$743.94</div></div>
+        <div class="kv-item"><div class="kv-label">Total Trades</div><div class="kv-value">54 closed</div></div>
+        <div class="kv-item"><div class="kv-label">Win Rate</div><div class="kv-value orange">20.37%</div></div>
+        <div class="kv-item"><div class="kv-label">Open Trades</div><div class="kv-value green">0</div></div>
+        <div class="kv-item"><div class="kv-label">Expired Trades</div><div class="kv-value">102</div></div>
+        <div class="kv-item"><div class="kv-label">Funding Paid</div><div class="kv-value">-$0.02</div></div>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr><th>ID</th><th>Symbol</th><th>Side</th><th>Status</th><th>Net PnL %</th><th>Exit Reason</th><th>Hours Held</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>413</td><td>BTCUSDT</td><td>LONG</td><td class="red">CLOSED</td><td class="red">-2.49%</td><td>TIME_EXIT</td><td>13.21</td></tr>
+          <tr><td>412</td><td>SOLUSDT</td><td>LONG</td><td class="red">CLOSED</td><td class="red">-1.12%</td><td>TIME_EXIT</td><td>14.22</td></tr>
+          <tr><td>411</td><td>ETHUSDT</td><td>SHORT</td><td class="red">CLOSED</td><td class="red">-20.65%</td><td>SL_HIT</td><td>17.28</td></tr>
+          <tr><td>410</td><td>SOLUSDT</td><td>SHORT</td><td class="red">CLOSED</td><td class="red">-4.80%</td><td>SL_HIT</td><td>2.78</td></tr>
+          <tr><td>409</td><td>SOLUSDT</td><td>SHORT</td><td>EXPIRED</td><td>-</td><td>-</td><td>-</td></tr>
+        </tbody>
+      </table>
+      <div class="svc-evidence"><span class="red">Win rate is 20.37% (11 wins / 54 closed trades). This is well below the backtest expectation of 56.4%.</span>
+<span class="red">Realized PnL is -$743.94. Account balance dropped from $10,000 to $9,256.08.</span>
+
+<span class="orange">3 symbols disabled for LOW_WIN_RATE:
+  BTCUSDT: disabled 2026-07-12 (ban expired, should re-enable)
+  ETHUSDT: disabled 2026-07-14 19:03 (24h ban, active)
+  SOLUSDT: disabled 2026-07-12 (ban expired, should re-enable)
+
+The system is correctly detecting poor performance and disabling symbols.
+However, with 3 of 6 symbols disabled, signal generation is limited.</span>
+
+<span class="cyan">Portfolio snapshot (last):
+  Account balance: $9,256.08
+  Active trades: 0
+  Daily trades: 3
+  Total open risk: $0.00 (0%)</span></div>
+    </div>
+  </div>
+
+  <!-- WHAT TO DO -->
+  <div class="section">
+    <h2 class="section-title">What To Do Next</h2>
+    <div class="svc-card warning">
+      <div class="svc-detail" style="font-size: 0.95rem; line-height: 2;">
+        <ol style="margin: 0 0 0 20px; color: var(--text-dim);">
+          <li><strong style="color:var(--red)">Fix Telegram network.</strong> Test DNS: <code style="color:var(--gold);">docker exec vlthr-telegram python3 -c "import socket; print(socket.getaddrinfo('api.telegram.org', 443))"</code>. If it fails, add <code style="color:var(--gold);">dns: [8.8.8.8, 1.1.1.1]</code> to telegram service in docker-compose.yml.</li>
+          <li><strong style="color:var(--orange)">Fix Telegram alert HTML bug.</strong> Replace <code style="color:var(--red);">&lt;br&gt;</code> with <code style="color:var(--green);">\n</code> in backend/src/server.cjs Telegram alert functions.</li>
+          <li><strong style="color:var(--orange)">Restart containers</strong> to apply healthcheck fixes and remove ngrok: <code style="color:var(--gold);">docker compose down && docker compose up -d</code></li>
+          <li><strong style="color:var(--text-bright)">Monitor DB timeouts.</strong> Backend sync loop getting ETIMEDOUT to postgres. If frequency increases, check pg connection pool settings.</li>
+          <li><strong style="color:var(--text-bright)">Check symbol re-enablement.</strong> BTCUSDT and SOLUSDT disable bans have expired. Pipeline should re-enable them on next iteration. Verify in next snapshot.</li>
+          <li><strong style="color:var(--text-bright)">Review win rate.</strong> Current 20.37% is far below backtest 56.4%. The system is correctly disabling underperforming symbols. Consider whether market conditions have shifted or if calibration needs updating.</li>
+          <li><strong style="color:var(--text-bright)">Access dashboard.</strong> Open <code style="color:var(--gold);">http://localhost:5174</code> in browser. Use TOTP setup with <code style="color:var(--gold);">x-setup-token</code> header matching DASHBOARD_AUTH_KEYS.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div>VLTHR Hourly Service Monitor. Snapshot 1.</div>
+  <div class="footer-meta">Time: 2026-07-14 19:22 UTC | Uptime: 22 min | Services: 8 | Healthy: 5 | Running: 2 | Error: 1 | Pipeline: 5-min loop | Paper PnL: -$744</div>
+</div>
+
+</body>
+</html>

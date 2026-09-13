@@ -1,0 +1,333 @@
+# ==============================================================================
+# VLTHR Production Stack — Master Docker Compose (Self-Contained)
+# ==============================================================================
+# This is the single entry point for the entire VLTHR production system.
+# All data, code, and config live inside this DEVOPS folder.
+# No external paths or VLTHR_ROOT needed — fully portable.
+#
+# Usage:
+#   cd /path/to/DEVOPS
+#   docker compose up -d --build
+#
+# Prerequisites:
+#   - Docker + Docker Compose installed
+#   - .env file with your secrets (copy from .env.example)
+#   - UFW rules configured for Docker bridge (see docs/SETUP.md)
+#
+# Services:
+#   postgres         — TimescaleDB (pg15) database
+#   redis            — Redis cache for backend
+#   data-ingestion   — Bybit OHLCV ingestion (1m/5m/15m/1h/4h)
+#   pipeline         — Portfolio orchestrator (5-min loop)
+#   backend          — Express API server + trade monitoring
+#   frontend         — Vite SPA (React+TS) served via nginx
+#   ngrok            — Public HTTPS tunnel for mobile/PWA access
+#   telegram         — Telegram bot polling service (3-bot architecture)
+# ==============================================================================
+
+services:
+  # ── DATABASE ──────────────────────────────────────────────────────────────
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: vlthr-postgres
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-your_postgres_password}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+    volumes:
+      - vlthr_pgdata:/var/lib/postgresql/data
+      - ./postgres/db_migration.py:/docker-entrypoint-initdb.d/db_migration.py:ro
+    networks:
+      - vlthr-net
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── CACHE ─────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: vlthr-dashboard-redis
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      - vlthr-net
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 64M
+
+  # ── DATA INGESTION ────────────────────────────────────────────────────────
+  # Workers live in ./data-ingestion/workers/, data lives in ./data/
+  # Container working dir is /app, workers at /app/workers/, data at /app/data/
+  data-ingestion:
+    build:
+      context: ./data-ingestion
+      dockerfile: Dockerfile
+    container_name: vlthr-data-ingestion
+    env_file:
+      - .env
+    environment:
+      - DATA_ROOT=/app/data
+    volumes:
+      - ./data-ingestion/workers:/app/workers:ro
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    working_dir: /app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - vlthr-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "data_scheduler.py"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    entrypoint: ["/bin/bash", "/app/workers/run_ingestion.sh"]
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
+
+  # ── WEBSOCKET DATA SERVICE (Phase 3) ──────────────────────────────────────
+  # Real-time market data from Bybit public WebSocket
+  # Writes klines, tickers, orderbooks to /app/data/bybit/ws/
+  bybit-ws:
+    build:
+      context: ./pipeline
+      dockerfile: Dockerfile
+    container_name: vlthr-bybit-ws
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATA_ROOT=/app/data
+    volumes:
+      - ./pipeline/engine:/app/engine:ro
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+      - ./logs/ws:/app/logs
+    command: ["python", "/app/engine/bybit_ws.py", "--data-root", "/app/data", "--log-level", "INFO"]
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - vlthr-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os; os.kill(1, 0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 256M
+
+  # ── PIPELINE (Signal Engine) ──────────────────────────────────────────────
+  # Engine code at ./pipeline/engine/, departments at ./departments/
+  # Container: engine at /app/engine/, departments at /app/departments/, data at /app/data/
+  pipeline:
+    build:
+      context: ./pipeline
+      dockerfile: Dockerfile
+    container_name: vlthr-pipeline
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL=redis://vlthr-dashboard-redis:6379
+      - PYTHONUNBUFFERED=1
+      - PIPELINE_HEALTH_PORT=8200
+      - DISABLE_PREFECT=true
+      - PARQUET_DATA_ROOT=/app/data
+      - DB_URL=postgresql://postgres:${POSTGRES_PASSWORD:-your_postgres_password}@vlthr-postgres:5432/postgres
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    ports:
+      - "8201:8200"
+    volumes:
+      - ./pipeline/engine:/app/engine:ro
+      - ./departments:/app/departments:ro
+      - ./data:/app/data:ro
+      - ./.env:/app/.env:ro
+      - ./logs/pipeline:/app/logs
+    command: ["python", "-m", "engine.run_pipeline", "--loop", "--interval", "300"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - vlthr-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8200/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
+
+  # ── BACKEND (Express API + Trade Monitor) ─────────────────────────────────
+  # Backend source at ./backend/, parquet data at ./data/
+  # Container: backend code at /app/, data at /data/, engine at /engine/ (for refresh route)
+
+  # ── CALIBRATION CRON (daily at 00:00 UTC) ────────────────────────────────
+  calibration-cron:
+    build:
+      context: ./pipeline
+      dockerfile: Dockerfile
+    container_name: vlthr-calibration-cron
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DB_URL=postgresql://postgres:${POSTGRES_PASSWORD:-your_postgres_password}@vlthr-postgres:5432/postgres
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    volumes:
+      - ./pipeline/engine:/app/engine
+      - ./.env:/app/.env:ro
+      - ./logs/calibration:/app/logs
+    command: ["python", "-m", "engine.daily_calibration_cron"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vlthr-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vlthr-dashboard-backend
+    ports:
+      - "3003:3001"
+    env_file:
+      - .env
+    environment:
+      - PORT=3001
+      - PARQUET_DATA_ROOT=/data
+      - ENGINE_ROOT=/engine
+      - REDIS_URL=redis://vlthr-dashboard-redis:6379
+      - DB_URL=postgresql://postgres:${POSTGRES_PASSWORD:-your_postgres_password}@vlthr-postgres:5432/postgres
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    volumes:
+      - ./data:/data:ro
+      - ./pipeline:/engine/paper_trade_unzipped/vlthr-signal-dashboard:ro
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - vlthr-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http=require('http');const r=http.get('http://127.0.0.1:3001/api/vtc/treasury',res=>{process.exit(res.statusCode===200?0:1)});r.on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 256M
+
+  # ── FRONTEND (Vite SPA + nginx) ───────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vlthr-dashboard-frontend
+    ports:
+      - "5175:80"
+    depends_on:
+      - backend
+    networks:
+      - vlthr-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 64M
+
+  # ── TELEGRAM (3-Bot Polling Service) ──────────────────────────────────────
+  telegram:
+    build:
+      context: ./telegram
+      dockerfile: Dockerfile
+    container_name: vlthr-telegram
+    env_file:
+      - .env
+    environment:
+      - DB_URL=postgresql://postgres:${POSTGRES_PASSWORD:-your_postgres_password}@vlthr-postgres:5432/postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - vlthr-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import os; os.kill(1, 0)"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+
+# ── NETWORK ─────────────────────────────────────────────────────────────────
+networks:
+  vlthr-net:
+    driver: bridge
+    name: vlthr-dashboard-net
+
+# ── VOLUMES ─────────────────────────────────────────────────────────────────
+volumes:
+  vlthr_pgdata:

@@ -1,0 +1,258 @@
+{
+  "signals": [],
+  "history": [
+    {
+      "id": "HIST-2",
+      "asset": "SOLUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-3",
+      "asset": "XRPUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-4",
+      "asset": "DOGEUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-5",
+      "asset": "BTCUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-6",
+      "asset": "SOLUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-7",
+      "asset": "XRPUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-8",
+      "asset": "BNBUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-9",
+      "asset": "DOGEUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-10",
+      "asset": "SOLUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-11",
+      "asset": "XRPUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-12",
+      "asset": "DOGEUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-13",
+      "asset": "BTCUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-14",
+      "asset": "BNBUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-15",
+      "asset": "BNBUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-16",
+      "asset": "ETHUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-17",
+      "asset": "BNBUSDT",
+      "type": "WAIT",
+      "grade": "WATCH",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-18",
+      "asset": "BNBUSDT",
+      "type": "WAIT",
+      "grade": "WATCH",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-19",
+      "asset": "BNBUSDT",
+      "type": "WAIT",
+      "grade": "WATCH",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-20",
+      "asset": "BTCUSDT",
+      "type": "WAIT",
+      "grade": "WATCH",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    },
+    {
+      "id": "HIST-1",
+      "asset": "BTCUSDT",
+      "type": "WAIT",
+      "grade": "MEDIUM",
+      "price": 0,
+      "status": "Executed",
+      "pnl": "--",
+      "time": "12:40 PM",
+      "timestamp": 1780947655073
+    }
+  ],
+  "paper": {
+    "account": {
+      "id": 1,
+      "balance": "9365.79",
+      "equity": "10000",
+      "margin_used": "634.21",
+      "total_pnl": "0",
+      "total_trades": 0,
+      "win_rate": "0",
+      "updated_at": "2026-06-08T19:58:47.510Z"
+    },
+    "activeTrades": [
+      {
+        "id": 1,
+        "signal_id": "SIG-TEST-001",
+        "symbol": "BTCUSDT",
+        "side": "LONG",
+        "order_type": "MARKET",
+        "entry_price": "63421",
+        "exit_price": null,
+        "qty": "0.1",
+        "leverage": 10,
+        "pnl": "0",
+        "pnl_pct": "0",
+        "status": "OPEN",
+        "entry_time": "2026-06-08T20:13:49.404Z",
+        "exit_time": null,
+        "bybit_order_id": null,
+        "created_at": "2026-06-08T20:13:49.404Z"
+      }
+    ],
+    "history": []
+  }
+}

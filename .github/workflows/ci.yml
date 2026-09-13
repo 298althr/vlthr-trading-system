@@ -1,0 +1,166 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    name: Risk Logic Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --no-cache-dir \
+            "pandas>=1.5.0" \
+            "numpy>=1.23.0" \
+            "scikit-learn>=1.2.0" \
+            "psycopg2-binary>=2.9.0" \
+            pytest
+
+      - name: Run risk logic tests
+        working-directory: pipeline/engine
+        run: python test_risk_logic.py
+
+      - name: Run pattern tests
+        working-directory: pipeline/engine
+        run: python -m pytest patterns/test_patterns.py -v
+
+  import-check:
+    name: Import Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --no-cache-dir \
+            "pandas>=1.5.0" \
+            "numpy>=1.23.0" \
+            "scikit-learn>=1.2.0" \
+            "psycopg2-binary>=2.9.0" \
+            pyarrow \
+            redis \
+            structlog \
+            pydantic
+
+      - name: Verify config imports
+        working-directory: pipeline/engine
+        run: |
+          python -c "from portfolio_config import *; print('portfolio_config OK')"
+          python -c "from portfolio_gates import RiskBudgetLedger, TradeCountGuard, CorrelationGuard; print('portfolio_gates OK')"
+          python -c "from adaptive_scorer import score_signal_adaptive; print('adaptive_scorer OK')"
+          python -c "from regime_router import classify_regime, compute_efficiency_ratio; print('regime_router OK')"
+          python -c "from dynamic_sl import *; print('dynamic_sl OK')"
+
+      - name: Verify backtest runner imports
+        working-directory: backtest
+        run: |
+          python -c "from backtest_runner import *; print('backtest_runner OK')"
+
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check for hardcoded secrets
+        run: |
+          # Scan all source files except .env.example, docs, and config templates
+          # for hardcoded secret patterns
+          EXIT_CODE=0
+          
+          # Build a list of source files to scan, excluding templates and docs
+          FILES_TO_SCAN=$(find . \
+            -name "*.py" -o -name "*.cjs" -o -name "*.js" -o -name "*.ts" -o -name "*.tsx" \
+            -o -name "*.json" -o -name "*.yml" -o -name "*.yaml" \
+            | grep -v node_modules \
+            | grep -v .git/ \
+            | grep -v __pycache__ \
+            | grep -v rag_chunks \
+            | grep -v "\.env\.example" \
+            | grep -v "ADDITIONAL_USE_GRANT" \
+            | grep -v "LICENSE" \
+            | grep -v "docs/" \
+            | grep -v "workflows/" \
+            | grep -v "ngrok/" \
+          )
+          
+          for pattern in \
+            "TELEGRAM_BOT_TOKEN.*[0-9]{10}:AA" \
+            "BYBIT_DEMO_API_KEY.*[A-Za-z0-9]{15,}" \
+            "BYBIT_DEMO_API_SECRET.*[A-Za-z0-9]{15,}" \
+            "JWT_SECRET.*[A-Za-z0-9+]{10,}" \
+            "NGROK_AUTHTOKEN.*[A-Za-z0-9_]{20,}" \
+            "DEEPSEEK_API_KEY.*sk-[a-z0-9]{20,}" \
+            "NVIDIA_API_KEY.*nvapi-[A-Za-z0-9_-]{20,}"
+          do
+            echo "Checking pattern: $pattern"
+            MATCHES=$(echo "$FILES_TO_SCAN" | xargs grep -En "$pattern" 2>/dev/null || true)
+            if [ -n "$MATCHES" ]; then
+              echo "ERROR: Potential hardcoded secret found matching: $pattern"
+              echo "$MATCHES"
+              EXIT_CODE=1
+            fi
+          done
+          
+          # Check that .env is not tracked
+          if git ls-files --error-unmatch .env 2>/dev/null; then
+            echo "ERROR: .env is tracked by git!"
+            EXIT_CODE=1
+          fi
+          
+          # Check that backend/.env is not tracked
+          if git ls-files --error-unmatch backend/.env 2>/dev/null; then
+            echo "ERROR: backend/.env is tracked by git!"
+            EXIT_CODE=1
+          fi
+          
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "No hardcoded secrets detected."
+          fi
+          
+          exit $EXIT_CODE
+
+  lint:
+    name: Python Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile all Python files
+        run: |
+          find pipeline/ backtest/ telegram/ data-ingestion/ -name "*.py" -print0 | xargs -0 python -m py_compile
+
+      - name: Check for files over 1000 lines (warning only)
+        run: |
+          # Warn about large files but do not fail CI
+          # Archives (backtest_v2/, phase1_archive/) are excluded
+          for f in $(find . -name "*.py" -o -name "*.cjs" -o -name "*.ts" -o -name "*.tsx" \
+            | grep -v node_modules | grep -v .git \
+            | grep -v backtest_v2 | grep -v phase1_archive); do
+            LINES=$(wc -l < "$f")
+            if [ "$LINES" -gt 1000 ]; then
+              echo "WARNING: $f has $LINES lines (limit: 1000). Consider splitting by responsibility."
+            fi
+          done
+          echo "File size check complete (warnings only, does not fail CI)."

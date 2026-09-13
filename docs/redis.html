@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redis Cache · VLTHR</title>
+<style>
+:root{--bg:#000;--surface:#0a0a0a;--surface-2:#141414;--surface-3:#1a1a1a;--border:#222;--border-light:#2a2a2a;--text:#e8e8e8;--text-2:#a0a0a0;--text-muted:#666;--accent:#e82127;--accent-dim:rgba(232,33,39,.15);--accent-glow:rgba(232,33,39,.4);--blue:#2d7ff9;--green:#00e676;--yellow:#ffd600;--orange:#ff9100;--purple:#b388ff;--red:#ff5252;--radius:12px;--radius-sm:8px;--transition:.3s cubic-bezier(.4,0,.2,1);--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 32px}
+.hero{position:relative;padding:80px 0 60px;text-align:center;background:radial-gradient(ellipse at center,var(--surface-2) 0%,var(--bg) 70%);border-bottom:1px solid var(--border);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,var(--accent-dim) 0%,transparent 50%);animation:pulse-glow 6s ease-in-out infinite;pointer-events:none}
+@keyframes pulse-glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:3em;font-weight:700;letter-spacing:-1px;margin-bottom:12px;position:relative;animation:fade-up .8s ease-out}
+.hero h1 .accent{color:var(--accent)}
+.hero .subtitle{font-size:1.2em;color:var(--text-2);margin-bottom:24px;position:relative;animation:fade-up .8s ease-out .1s both}
+.hero .meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;animation:fade-up .8s ease-out .2s both}
+.hero .meta-item{text-align:center}
+.hero .meta-item .label{font-size:.75em;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero .meta-item .value{font-size:1.3em;font-weight:600;color:var(--text)}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tab-bar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:16px 24px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:.9em;font-weight:500;cursor:pointer;white-space:nowrap;transition:var(--transition);border-bottom:2px solid transparent;position:relative}
+.tab-btn:hover{color:var(--text);background:var(--surface-2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-num{font-size:.75em;opacity:.5;margin-right:4px}
+.tab-content{display:none;padding:48px 0;animation:fade-in .4s ease-out}
+.tab-content.active{display:block}
+@keyframes fade-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h2{font-size:2em;font-weight:700;letter-spacing:-.5px;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:1.4em;font-weight:600;margin-top:40px;margin-bottom:16px;color:var(--text)}
+h4{font-size:1.15em;font-weight:600;margin-top:28px;margin-bottom:10px;color:var(--text-2)}
+p{margin-bottom:14px;color:var(--text)}
+ul,ol{margin-bottom:16px;padding-left:24px}
+li{margin-bottom:6px;color:var(--text)}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);background:var(--surface-3);padding:2px 8px;border-radius:4px;font-size:.88em;color:var(--accent);border:1px solid var(--border)}
+pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin-bottom:20px;font-size:.85em}
+pre code{background:none;border:none;padding:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.9em;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface-3);color:var(--text-2);font-weight:600;text-transform:uppercase;font-size:.8em;letter-spacing:.5px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;transition:var(--transition)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.card-title{font-size:1.1em;font-weight:600;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78em;font-weight:600;letter-spacing:.3px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.badge-red{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.3)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow);border:1px solid rgba(255,214,0,.3)}
+.badge-blue{background:rgba(45,127,249,.12);color:var(--blue);border:1px solid rgba(45,127,249,.3)}
+.badge-purple{background:rgba(179,136,255,.12);color:var(--purple);border:1px solid rgba(179,136,255,.3)}
+.badge-accent{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(232,33,39,.3)}
+.badge-orange{background:rgba(255,145,0,.12);color:var(--orange);border:1px solid rgba(255,145,0,.3)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:20px}
+.callout-warn{border-color:var(--yellow)}
+.callout-danger{border-color:var(--red)}
+.callout-success{border-color:var(--green)}
+.callout-info{border-color:var(--blue)}
+.callout-title{font-weight:600;margin-bottom:8px;color:var(--text)}
+.metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;transition:var(--transition)}
+.metric-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-tile .metric-value{font-size:2em;font-weight:700;margin-bottom:4px}
+.metric-tile .metric-label{font-size:.8em;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85em}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>Redis <span class="accent">Cache</span></h1>
+  <p class="subtitle">In-memory cache for the backend API and pipeline. LRU eviction, no persistence, 256 MB cap.</p>
+  <div class="meta">
+    <div class="meta-item"><div class="label">Service</div><div class="value">redis</div></div>
+    <div class="meta-item"><div class="label">Image</div><div class="value">redis:7-alpine</div></div>
+    <div class="meta-item"><div class="label">Container</div><div class="value">vlthr-dashboard-redis</div></div>
+    <div class="meta-item"><div class="label">Max Memory</div><div class="value">256 MB</div></div>
+  </div>
+</section>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)"><span class="tab-num">01</span>Overview</button>
+  <button class="tab-btn" onclick="switchTab(1)"><span class="tab-num">02</span>Configuration</button>
+  <button class="tab-btn" onclick="switchTab(2)"><span class="tab-num">03</span>Consumers</button>
+  <button class="tab-btn" onclick="switchTab(3)"><span class="tab-num">04</span>Docker Config</button>
+</div>
+
+<div class="container">
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content active" id="tab-0">
+  <h2>Overview</h2>
+  <p>Redis 7 (Alpine) serves as the in-memory cache layer for the VLTHR stack. The backend Express API uses it to cache API responses and reduce PostgreSQL load. The pipeline service uses it for ephemeral state coordination.</p>
+
+  <div class="grid-4">
+    <div class="metric-tile"><div class="metric-value" style="color:var(--accent)">7</div><div class="metric-label">Redis Version</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--blue)">256</div><div class="metric-label">Max Memory (MB)</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--green)">LRU</div><div class="metric-label">Eviction Policy</div></div>
+    <div class="metric-tile"><div class="metric-value" style="color:var(--orange)">0</div><div class="metric-label">Persistence</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Design Decisions</div>
+    <table>
+      <thead><tr><th>Decision</th><th>Value</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Max memory</td><td>256 MB</td><td>Cache-only workload. Sufficient for API response caching without competing with PostgreSQL buffer pool.</td></tr>
+        <tr><td>Eviction policy</td><td>allkeys-lru</td><td>Evict least recently used keys when memory is full. No key is permanent. All data is re-derivable from PostgreSQL or Parquet.</td></tr>
+        <tr><td>Persistence</td><td>None (save "")</td><td>Cache data is ephemeral. No RDB snapshots, no AOF. Container restart clears all keys. No data loss risk because nothing in Redis is authoritative.</td></tr>
+        <tr><td>Append-only file</td><td>Disabled</td><td>No durability needed for cache. Avoids disk I/O overhead.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Docker Service</div>
+    Runs as <code>vlthr-dashboard-redis</code> container. Image: <code>redis:7-alpine</code>. Configuration loaded from <code>redis/redis.conf</code>. No health check defined (Redis is inherently reliable). Restart policy: <code>unless-stopped</code>.
+  </div>
+</div>
+
+<!-- TAB 1: CONFIGURATION -->
+<div class="tab-content" id="tab-1">
+  <h2>Configuration</h2>
+  <p>The Redis configuration file is mounted read-only from <code>redis/redis.conf</code>.</p>
+
+  <div class="card">
+    <div class="card-title">redis.conf</div>
+    <pre><code># VLTHR Redis Configuration
+# Used by dashboard backend for caching
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+appendonly no
+save ""</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Directive Breakdown</div>
+    <table>
+      <thead><tr><th>Directive</th><th>Value</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td>maxmemory</td><td>256mb</td><td>Redis will not use more than 256 MB of RAM. When exceeded, eviction kicks in.</td></tr>
+        <tr><td>maxmemory-policy</td><td>allkeys-lru</td><td>When memory is full, evict the least recently accessed key from any keyspace.</td></tr>
+        <tr><td>appendonly</td><td>no</td><td>Disable Append-Only File. No write-ahead log. No durability guarantee.</td></tr>
+        <tr><td>save</td><td>"" (empty)</td><td>Disable RDB snapshots. No background saves to disk. Pure in-memory operation.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">No Persistence</div>
+    Redis holds no authoritative data. All cached values can be recomputed from PostgreSQL or Parquet files. A container restart clears the cache. Downstream services must handle cache misses gracefully.
+  </div>
+</div>
+
+<!-- TAB 2: CONSUMERS -->
+<div class="tab-content" id="tab-2">
+  <h2>Consumers</h2>
+
+  <div class="card">
+    <div class="card-title">Backend (Express API)</div>
+    <p>The backend Express server connects to Redis via <code>REDIS_URL=redis://vlthr-dashboard-redis:6379</code>. Used for caching API responses to reduce PostgreSQL query load on repeated dashboard requests.</p>
+    <ul>
+      <li><strong>Connection:</strong> <code>redis://vlthr-dashboard-redis:6379</code></li>
+      <li><strong>Use case:</strong> Cache treasury data, trade lists, signal summaries</li>
+      <li><strong>Cache invalidation:</strong> TTL-based or manual flush on new pipeline run</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pipeline</div>
+    <p>The pipeline orchestrator connects to Redis for ephemeral state coordination between pipeline runs. Stores transient data that does not need PostgreSQL durability.</p>
+    <ul>
+      <li><strong>Connection:</strong> <code>REDIS_URL=redis://vlthr-dashboard-redis:6379</code></li>
+      <li><strong>Use case:</strong> Cross-run state, deduplication keys, rate limiting counters</li>
+      <li><strong>Depends on:</strong> Redis service started (no health check required)</li>
+    </ul>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Connection URL</div>
+    Both consumers use the same connection string: <code>redis://vlthr-dashboard-redis:6379</code>. The hostname resolves via Docker's internal DNS on the <code>vlthr-dashboard-net</code> bridge network.
+  </div>
+</div>
+
+<!-- TAB 3: DOCKER CONFIG -->
+<div class="tab-content" id="tab-3">
+  <h2>Docker Configuration</h2>
+
+  <div class="card">
+    <div class="card-title">Service Definition</div>
+    <pre><code>redis:
+  image: redis:7-alpine
+  container_name: vlthr-dashboard-redis
+  command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+  volumes:
+    - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+  networks:
+    - vlthr-net
+  restart: unless-stopped</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Volume Mount</div>
+    <table>
+      <thead><tr><th>Host Path</th><th>Container Path</th><th>Mode</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>./redis/redis.conf</td><td>/usr/local/etc/redis/redis.conf</td><td>ro</td><td>Redis configuration</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Notable Choices</div>
+    <ul>
+      <li><strong>No port exposed:</strong> Redis is only accessible within the Docker network. No host port mapping.</li>
+      <li><strong>No health check:</strong> Redis Alpine is lightweight and reliable. The <code>unless-stopped</code> restart policy handles rare failures.</li>
+      <li><strong>No volume for data:</strong> No persistence means no data volume needed. Configuration is the only mount.</li>
+      <li><strong>Alpine image:</strong> Minimal footprint (~30 MB). Fast startup. No shell access for attack surface.</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  VLTHR Redis Cache Documentation · Generated Jul 2026 · <a href="../docker-compose.yml" style="color:var(--accent)">docker-compose.yml</a>
+</div>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.tab-content').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handoff: Session + Regime-Aware Parameterization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff; --bg-secondary: #f7f7f8; --bg-tertiary: #ececf1;
+    --border: #e5e5e5; --border-strong: #d0d0d0;
+    --text: #1a1a1a; --text-secondary: #6e6e80; --text-muted: #9a9aaf;
+    --accent: #10a37f; --accent-light: #d4f4e9; --accent-dark: #0d8a6a;
+    --warning: #f59e0b; --warning-light: #fef3c7;
+    --danger: #ef4444; --danger-light: #fee2e2;
+    --info: #3b82f6; --info-light: #dbeafe;
+    --purple: #8b5cf6; --purple-light: #ede9fe;
+    --code-bg: #f7f7f8; --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; line-height:1.7; font-size:15px; max-width:920px; margin:0 auto; padding:48px 24px 80px; }
+  h1 { font-size:2.2rem; font-weight:700; letter-spacing:-0.03em; margin-bottom:8px; }
+  h2 { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin:48px 0 16px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+  h3 { font-size:1.15rem; font-weight:600; margin:28px 0 12px; }
+  h4 { font-size:0.95rem; font-weight:600; margin:20px 0 8px; color:var(--text-secondary); }
+  p { margin-bottom:14px; }
+  .subtitle { color:var(--text-secondary); font-size:0.95rem; margin-bottom:8px; }
+  .date { color:var(--text-muted); font-size:0.82rem; font-family:'JetBrains Mono',monospace; }
+  .card { background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:16px; box-shadow:var(--shadow); }
+  .card-accent { border-left:3px solid var(--accent); }
+  .card-warning { border-left:3px solid var(--warning); background:var(--warning-light); border-color:var(--warning); }
+  .card-danger { border-left:3px solid var(--danger); background:var(--danger-light); border-color:var(--danger); }
+  .card-info { border-left:3px solid var(--info); background:var(--info-light); border-color:var(--info); }
+  .badge { display:inline-block; padding:3px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; }
+  .badge-pass { background:var(--accent-light); color:var(--accent-dark); }
+  .badge-fail { background:var(--danger-light); color:#991b1b; }
+  .badge-warn { background:var(--warning-light); color:#92400e; }
+  .badge-info { background:var(--info-light); color:#1e40af; }
+  .badge-done { background:var(--accent); color:white; }
+  .badge-pending { background:var(--bg-tertiary); color:var(--text-secondary); }
+  table { width:100%; border-collapse:collapse; font-size:0.88rem; margin:12px 0; }
+  th { text-align:left; padding:10px 14px; color:var(--text-secondary); font-weight:500; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:2px solid var(--border); background:var(--bg-secondary); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); }
+  tr:hover td { background:var(--bg-secondary); }
+  .code { font-family:'JetBrains Mono',monospace; font-size:0.82rem; background:var(--code-bg); padding:2px 6px; border-radius:4px; color:var(--accent-dark); }
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:0.82rem; line-height:1.5; margin:12px 0; }
+  .gate-box { background:var(--accent-light); border:1px solid var(--accent); border-radius:8px; padding:12px 16px; margin:12px 0; font-size:0.88rem; }
+  .gate-box strong { color:var(--accent-dark); }
+  .danger-box { background:var(--danger-light); border:1px solid var(--danger); border-radius:8px; padding:12px 16px; margin:12px 0; font-size:0.88rem; }
+  .warning-box { background:var(--warning-light); border:1px solid var(--warning); border-radius:8px; padding:12px 16px; margin:12px 0; font-size:0.88rem; }
+  .info-box { background:var(--info-light); border:1px solid var(--info); border-radius:8px; padding:12px 16px; margin:12px 0; font-size:0.88rem; }
+  ul, ol { margin:8px 0 16px 24px; }
+  li { margin-bottom:6px; }
+  .tag { display:inline-block; padding:1px 6px; border-radius:3px; font-size:0.72rem; font-weight:600; font-family:'JetBrains Mono',monospace; }
+  .tag-file { background:var(--bg-tertiary); color:var(--text-secondary); }
+  .tag-line { background:var(--accent-light); color:var(--accent-dark); }
+  hr { border:none; border-top:1px solid var(--border); margin:32px 0; }
+  .status-pill { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:0.78rem; font-weight:600; }
+  .status-pill::before { content:""; width:8px; height:8px; border-radius:50%; }
+  .status-done { background:var(--accent-light); color:var(--accent-dark); }
+  .status-done::before { background:var(--accent); }
+  .status-pending { background:var(--warning-light); color:#92400e; }
+  .status-pending::before { background:var(--warning); }
+  .status-blocked { background:var(--danger-light); color:#991b1b; }
+  .status-blocked::before { background:var(--danger); }
+  .timeline-item { padding:12px 0; border-bottom:1px solid var(--border); }
+  .timeline-item:last-child { border-bottom:none; }
+  .timeline-item .ts { font-size:0.78rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
+  .toc { background:var(--bg-secondary); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin:24px 0; }
+  .toc-title { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-bottom:12px; }
+  .toc ol { list-style:none; counter-reset:toc; }
+  .toc li { counter-increment:toc; padding:4px 0; font-size:0.9rem; }
+  .toc li::before { content:counter(toc) "."; color:var(--accent); font-weight:600; margin-right:8px; }
+  .toc a { color:var(--text); text-decoration:none; }
+  .toc a:hover { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<h1>Handoff: Session + Regime-Aware Parameterization + Pattern/Feature Spec</h1>
+<p class="subtitle">Full context for next agent to execute the session+regime plan and pattern/feature implementation</p>
+<p class="date">July 22, 2026 06:50 UTC (updated)</p>
+
+<div class="toc">
+  <div class="toc-title">Contents</div>
+  <ol>
+    <li><a href="#status">Current Status and Gate</a></li>
+    <li><a href="#state-before">State When This Session Started</a></li>
+    <li><a href="#state-now">State Now (What Changed)</a></li>
+    <li><a href="#decisions">Decisions Made This Session</a></li>
+    <li><a href="#open-items">Open Items and Pending Work</a></li>
+    <li><a href="#do-not-touch">Do Not Touch List</a></li>
+    <li><a href="#plan">The Plan to Execute</a></li>
+    <li><a href="#codebase">Codebase Map for This Work</a></li>
+    <li><a href="#evidence">Evidence and File Links</a></li>
+  </ol>
+</div>
+
+<!-- ====== STATUS ====== -->
+<h2 id="status">1. Current Status and Gate</h2>
+
+<div class="card card-accent">
+  <p><span class="status-pill status-done">DONE</span> Backtest performance gap analysis (3 root causes identified)</p>
+  <p><span class="status-pill status-done">DONE</span> 3 live pipeline fixes applied (TP multipliers, dynamic SL, exit detection)</p>
+  <p><span class="status-pill status-done">DONE</span> Session + regime-aware parameterization plan written and validated</p>
+  <p><span class="status-pill status-done">DONE</span> Pattern recognition & feature engineering spec written (all 7 sections, 2,310 lines)</p>
+  <p><span class="status-pill status-pending">PENDING</span> Pipeline container rebuild (fixes applied to source, not yet deployed)</p>
+  <p><span class="status-pill status-pending">PENDING</span> Phase 0-4 implementation of session+regime plan</p>
+  <p><span class="status-pill status-pending">PENDING</span> Phase 1-6 implementation of pattern/feature spec</p>
+</div>
+
+<p><strong>Gate status: PASS for specification and investigation. BLOCKED for implementation of both plans (awaiting user go-ahead).</strong></p>
+
+<div class="info-box">
+  <strong>Three documents the next agent receives:</strong>
+  <ol>
+    <li><strong>This handoff</strong> (<span class="code">docs/memory/2026-07-22-session-regime-handoff.html</span>) - status, decisions, codebase map, execution order</li>
+    <li><strong>Session+Regime plan</strong> (<span class="code">docs/architecture/session-regime-aware-parameterization-plan.html</span>) - 4-phase plan for session-aware parameters and regime-aware strategy selection</li>
+    <li><strong>Pattern/Feature spec</strong> (<span class="code">docs/plans/pattern-feature-spec.html</span>) - 7-section spec for 30 patterns, 25 features, 6-phase implementation</li>
+  </ol>
+  <p>A fourth reference document, the <strong>Implementation Knowledge Packet</strong> (<span class="code">docs/memory/VLTHR_Pattern_Feature_Implementation_Knowledge_Packet.md</span>), provides evidence-tier classification and per-category implementation discipline for the pattern/feature work. Read it before implementing any pattern function.</p>
+</div>
+
+<div class="card card-accent">
+  <h3 style="margin-top:0;">Three Problems Identified, Two Plans to Solve Them</h3>
+  <table>
+    <tr><th>Problem</th><th>Current State</th><th>Solution</th><th>Where</th></tr>
+    <tr>
+      <td><strong>Session-blind</strong></td>
+      <td>All symbols use identical SL/TP/RSI params regardless of session. Asian session excluded entirely. Session boundaries inconsistent across 3 files.</td>
+      <td>Session-aware parameterization: <code>SESSION_PARAMS[symbol][session]</code> with fallback chain. 4 standardized sessions. Mann-Whitney U test validates session separation before any params are fit.</td>
+      <td>Session+Regime plan, Phase 1</td>
+    </tr>
+    <tr>
+      <td><strong>Single strategy</strong></td>
+      <td>Strategy (trend_following vs mean_reversion) is hardcoded per symbol in <code>portfolio_config.py</code>. V2 RSI momentum filter was bug-fixed to bypass for mean_reversion, but the strategy itself never changes.</td>
+      <td>Regime-aware strategy selection: <code>get_strategy(symbol, session, regime)</code> resolves strategy dynamically. HMM-trained regime model replaces rule-based ADX gate. Hierarchical shrinkage for sparse cells.</td>
+      <td>Session+Regime plan, Phase 2</td>
+    </tr>
+    <tr>
+      <td><strong>Single regime</strong></td>
+      <td>Regime detection is rule-based (ADX threshold + efficiency ratio). Only function is to veto misaligned strategies. No regime-specific parameter tuning.</td>
+      <td>Two-part solution: (1) HMM regime model in session+regime plan Phase 2. (2) Pattern/feature spec feeds structural context (BOS, CHoCH, Wyckoff phases) as regime-transition candidate features into the HMM classifier.</td>
+      <td>Both plans, connected below</td>
+    </tr>
+  </table>
+</div>
+
+<h3>How the Two Plans Connect</h3>
+<div class="card card-accent">
+  <p>The two plans are not independent. They share three connection points:</p>
+  <ol>
+    <li><strong>Regime classification input.</strong> The session+regime plan (Phase 2) trains an HMM on log returns + realized vol. The pattern/feature spec generates <code>pat_bos_detected</code>, <code>pat_choch_detected</code>, <code>pat_wyckoff_phase</code>, and <code>pat_trend_structure</code> (HH/HL vs LH/LL). These are regime-transition candidate features. Once pattern Phases 1-3 are complete, feed these columns into the HMM training set as additional observation dimensions. This is the bridge between the two workstreams.</li>
+    <li><strong>Strategy resolution.</strong> The session+regime plan creates <code>get_strategy(symbol, session, regime)</code>. The pattern/feature spec's <code>confluence_score</code> and <code>pat_wyckoff_phase</code> fields provide additional context that could inform strategy selection in a future iteration. For now, pattern/feature fields are logged but not used in strategy resolution until Phase 5.</li>
+    <li><strong>DQS scoring.</strong> Both plans eventually modify <code>adaptive_scorer.py</code>. Session+regime work changes how <code>get_symbol_params</code> is called (passing session). Pattern/feature Phase 5 adds a <code>pattern_raw</code> domain to the DQS weighted-max. These changes must be merged carefully. Do session+regime Phase 1-2 first, then pattern/feature Phase 5, so the DQS modification happens on top of a session-aware base.</li>
+  </ol>
+</div>
+
+<h3>Execution Order</h3>
+<div class="card card-accent">
+  <p><strong>Do the plans sequentially, not in parallel.</strong> Session+regime work changes the parameter resolution architecture. Pattern/feature work adds new columns. If pattern/feature Phase 5 (DQS integration) lands before session+regime Phase 1-2, the DQS modification will need to be redone when session-aware params arrive.</p>
+  <p><strong>Recommended order:</strong></p>
+  <ol>
+    <li><strong>Deploy the 3 pipeline fixes</strong> (TP multipliers, dynamic SL, exit detection). Rebuild Docker. Verify live trades.</li>
+    <li><strong>Session+Regime Phase 0:</strong> Build <code>backtest/stat_gates.py</code> (Mann-Whitney U, sample-size validator, DSR, WFE). Unit tests.</li>
+    <li><strong>Session+Regime Phase 1:</strong> Session-aware parameters. Standardize 4 sessions. <code>SESSION_PARAMS</code> dict. Wire into orchestrator, scorer, backtest.</li>
+    <li><strong>Session+Regime Phase 2:</strong> HMM regime model. <code>get_strategy(symbol, session, regime)</code>. Update v2_filters and adaptive_scorer.</li>
+    <li><strong>Pattern/Feature Phase 1:</strong> Pivot detector, trend lines, S/R. Pure column generation. No DQS changes.</li>
+    <li><strong>Pattern/Feature Phase 2:</strong> Curvature, candlesticks. Read knowledge packet section 2.3 first.</li>
+    <li><strong>Pattern/Feature Phase 3:</strong> Wyckoff, VSA, market structure. Read knowledge packet section 2.4 first. This is the highest-risk implementation.</li>
+    <li><strong>Pattern/Feature Phase 4:</strong> Feature engineering (ratios, composites, z-scores, conditional, cross-timeframe).</li>
+    <li><strong>Pattern/Feature Phase 5:</strong> DQS integration. A/B backtest against session-aware baseline. 6 gates must pass.</li>
+    <li><strong>Pattern/Feature Phase 6:</strong> Calibration and live deployment.</li>
+    <li><strong>Session+Regime Phase 3:</strong> Backtest calibration and overfitting audit (DSR, CPCV). Can run after pattern Phase 5 to capture full system.</li>
+    <li><strong>Session+Regime Phase 4:</strong> Shadow deployment and live rollout.</li>
+  </ol>
+  <p>Pattern/feature Phases 1-4 can overlap with session+regime Phase 1-2 since they only add columns. The hard dependency is Phase 5 (DQS integration) which must come after session+regime Phase 2.</p>
+</div>
+
+<!-- ====== STATE BEFORE ====== -->
+<h2 id="state-before">2. State When This Session Started</h2>
+
+<p>The session began as a continuation of a live vs backtest performance gap investigation. The previous session had:</p>
+
+<ul>
+  <li>Shut down Docker services and run backtests comparing per-symbol vs tier-based SL/TP parameters</li>
+  <li>Identified that per-symbol TP multipliers (7.5 ATR for BTC/SOL, 6.0 for ETH/XRP, 5.0 for BNB) were too wide, causing only 14% TP hit rate</li>
+  <li>Identified that tier-based params (3.0-5.0 ATR TP) achieved 31% TP hit rate and PF 1.79 vs 1.27</li>
+  <li>Identified that dynamic SL was active in the backtest but NOT in the live pipeline's fallback monitor</li>
+  <li>Identified that the live fallback monitor used close price only for SL/TP detection, while the backtest used intrabar high/low</li>
+  <li>Left Docker services shut down</li>
+  <li>Left two backtest result CSVs in the backtest folder for reference</li>
+</ul>
+
+<h3>Existing Code State (Before This Session)</h3>
+<table>
+  <tr><th>Component</th><th>State</th><th>File</th></tr>
+  <tr><td>Per-symbol TP multipliers</td><td>7.5/6.0/5.0 ATR (too wide, 14% TP hit)</td><td><span class="tag tag-file">portfolio_config.py</span></td></tr>
+  <tr><td>Dynamic SL in fallback monitor</td><td>Not implemented (comment said "minus dynamic SL")</td><td><span class="tag tag-file">portfolio_orchestrator.py</span> <span class="tag tag-line">:371</span></td></tr>
+  <tr><td>Exit detection in fallback monitor</td><td>Close price only, no intrabar high/low</td><td><span class="tag tag-file">portfolio_orchestrator.py</span> <span class="tag tag-line">:380-388</span></td></tr>
+  <tr><td>sl_original column</td><td>Existed in DB migration but never set by orchestrator</td><td><span class="tag tag-file">db_migration.py</span> <span class="tag tag-line">:318</span></td></tr>
+  <tr><td>Dynamic SL in dashboard backend</td><td>Already active (break-even + time decay + ATR expansion)</td><td><span class="tag tag-file">server.cjs</span> <span class="tag tag-line">:1284</span></td></tr>
+  <tr><td>Session-aware parameters</td><td>Did not exist. Session used for DQS scoring and calibration only.</td><td><span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:66</span></td></tr>
+  <tr><td>Regime-strategy switching</td><td>Did not exist. Regime router only vetoed misaligned strategies.</td><td><span class="tag tag-file">regime_router.py</span> <span class="tag tag-line">:152-207</span></td></tr>
+  <tr><td>Session boundary definitions</td><td>Inconsistent across 3 files (backtest_runner, replay_runner, portfolio_config)</td><td>3 files</td></tr>
+</table>
+
+<!-- ====== STATE NOW ====== -->
+<h2 id="state-now">3. State Now (What Changed)</h2>
+
+<h3>Fix 1: TP Multipliers Reverted</h3>
+<div class="card card-accent">
+  <p>All per-symbol <span class="code">tp_mult</span> values changed from 5.0-7.5 to <strong>4.0</strong> across all 5 symbols. SL multipliers kept at per-symbol values (2.0-2.5). This brings TP hit rate from ~14% to ~31% based on backtest evidence.</p>
+  <p><span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:19-36</span></p>
+</div>
+
+<h3>Fix 2: Dynamic SL Activated in Fallback Monitor</h3>
+<div class="card card-accent">
+  <p>Added break-even (75% of TP distance), time decay (0.25 ATR/hour after 3h), and ATR expansion (1.5x) logic to <span class="code">_fallback_monitor_trades()</span>. Matches the backtest's <span class="code">_compute_dynamic_sl</span> exactly. Also matches the dashboard backend's <span class="code">computeDynamicSL</span> at <span class="tag tag-file">server.cjs</span> <span class="tag tag-line">:185</span>.</p>
+  <p>The function now fetches <span class="code">sl_original</span> and <span class="code">atr_at_entry</span> from the DB. The reprice UPDATE query now sets <span class="code">sl_original = sl_price</span> when promoting PENDING to OPEN.</p>
+  <p><span class="tag tag-file">portfolio_orchestrator.py</span> <span class="tag tag-line">:330-412</span> (monitor), <span class="tag tag-line">:685-712</span> (reprice UPDATE)</p>
+</div>
+
+<h3>Fix 3: Exit Detection Uses High/Low</h3>
+<div class="card card-accent">
+  <p>Changed from <span class="code">live_price >= tp</span> to <span class="code">bar_high >= tp</span> (LONG TP), <span class="code">bar_low <= sl</span> (LONG SL), etc. Exit price now uses SL/TP price instead of close price when SL/TP is hit. This matches the backtest's <span class="code">_check_exits</span> method.</p>
+  <p><span class="tag tag-file">portfolio_orchestrator.py</span> <span class="tag tag-line">:414-437</span></p>
+</div>
+
+<h3>Fix 4: Temp File Cleanup</h3>
+<div class="card card-accent">
+  <p>Removed <span class="code">backtest_runner_tier_based.py</span> (temporary file created for tier-based backtest comparison). Kept <span class="code">backtest_results_live_compare.csv</span> and <span class="code">backtest_results_tier_based.csv</span> for reference.</p>
+</div>
+
+<h3>Plan Written</h3>
+<div class="card card-accent">
+  <p>Full 4-phase plan for session + regime-aware parameterization written to <span class="code">docs/architecture/session-regime-aware-parameterization-plan.html</span>. All claims validated against the actual codebase.</p>
+</div>
+
+<h3>Pattern/Feature Spec Written (New This Session)</h3>
+<div class="card card-accent">
+  <p>Complete HTML specification for pattern recognition and feature engineering written to <span class="code">docs/plans/pattern-feature-spec.html</span>. 2,310 lines, 7 sections, OpenAI dark mode design system. Covers:</p>
+  <ul>
+    <li><strong>30 patterns</strong> across 6 categories (trend lines, S/R, curvature, Wyckoff/VSA, candlesticks, market structure) with formulas and output fields</li>
+    <li><strong>25 engineered features</strong> across 5 categories (ratios, composites, z-scores, conditional, cross-timeframe)</li>
+    <li><strong>6-phase implementation plan</strong> - Phases 1-4 are pure feature generation (no DQS changes), Phase 5 integrates into DQS, Phase 6 calibrates and deploys</li>
+    <li><strong>6 validation gates</strong> - PF, WR, expectancy, drawdown, per-symbol consistency, stress test resilience</li>
+    <li><strong>15+ open-source repos surveyed</strong> - algorithms studied, no dependencies installed, all reimplemented in pure Python</li>
+    <li><strong>8 risks identified</strong> with mitigations, 10 frozen parameters, module architecture defined</li>
+  </ul>
+  <p>No code was implemented. Only the specification document was written.</p>
+</div>
+
+<h3>Implementation Knowledge Packet Written (New This Session)</h3>
+<div class="card card-accent">
+  <p>Reference document for pattern/feature implementers at <span class="code">docs/memory/VLTHR_Pattern_Feature_Implementation_Knowledge_Packet.md</span>. 111 lines. Provides:</p>
+  <ul>
+    <li><strong>Evidence tiers</strong> for all 30 patterns: Tier 1 (Bulkowski-statistical: wedges, triangles, H&S, double top/bottom), Tier 2 (candlesticks: mixed academic evidence), Tier 3 (Wyckoff/VSA: sequence-dependent, requires stateful detector), Tier 4 (SMC/BOS/CHoCH: structural context, not standalone alpha)</li>
+    <li><strong>Per-category implementation discipline</strong>: breakout confirmation is not optional (two-stage state machine), S/R is zones not prices, candlesticks need prior-trend context, Wyckoff must be a state machine not a classifier, BOS/CHoCH feed regime classification not entry signals</li>
+    <li><strong>Cross-cutting rules</strong>: look-ahead bias prevention (<code>iloc[:idx+1]</code> only), NaN handling (return 0.0, never NaN), shared pivot cache (one detection pass, all patterns reuse), co-occurrence matrix from Phase 1 onward, vectorization for latency budget</li>
+    <li><strong>Per-function checklist</strong>: 8 items every pattern function must pass before marked done</li>
+  </ul>
+  <p>Read this before implementing any pattern function. It tells you which patterns to trust ahead of data (Tier 1) and which to assume near-zero weight until IC proves otherwise (Tier 2-4).</p>
+</div>
+
+<h3>NOT Yet Done</h3>
+<div class="card card-warning">
+  <ul>
+    <li><strong>Pipeline container not rebuilt.</strong> The 3 fixes are in source files but Docker services are still down. Next agent must rebuild before the fixes take effect.</li>
+    <li><strong>No session+regime code written.</strong> Only the plan exists. No Phase 0-4 implementation has started.</li>
+    <li><strong>No pattern/feature code written.</strong> Only the spec exists. No Phase 1-6 implementation has started.</li>
+    <li><strong>Docker services are down.</strong> They were shut down in the previous session for the backtest and never restarted.</li>
+  </ul>
+</div>
+
+<!-- ====== DECISIONS ====== -->
+<h2 id="decisions">4. Decisions Made This Session</h2>
+
+<table>
+  <tr><th>Decision</th><th>Rationale</th><th>Evidence</th></tr>
+  <tr>
+    <td>TP multipliers set to 4.0 for all symbols (not tier-based 3.0-5.0)</td>
+    <td>4.0 is the "good" tier value. Keeps R:R at 1.6-2.0 depending on SL mult. Avoids overfitting to a single tier.</td>
+    <td>Backtest: tier-based PF 1.79 vs per-symbol PF 1.27</td>
+  </tr>
+  <tr>
+    <td>SL multipliers kept at per-symbol values (2.0-2.5)</td>
+    <td>Backtest showed tight SL + dynamic SL adjustment works well. 91% of backtest trades had SL adjusted by dynamic logic.</td>
+    <td>Dynamic SL tightened by 2.76 ATR on average in backtest</td>
+  </tr>
+  <tr>
+    <td>Dynamic SL thresholds: 75% break-even, 0.25 ATR/hour decay, 1.5x ATR expansion</td>
+    <td>Matches the backtest's validated logic exactly. The dashboard backend already uses these same values.</td>
+    <td><span class="tag tag-file">backtest_runner.py</span> <span class="tag tag-line">:639-670</span>, <span class="tag tag-file">server.cjs</span> <span class="tag tag-line">:196-226</span></td>
+  </tr>
+  <tr>
+    <td>SL checked before TP in exit detection (both LONG and SHORT)</td>
+    <td>Conservative: if both SL and TP are hit in the same bar, assume SL hit first. This is the more pessimistic assumption and matches the backtest's ordering.</td>
+    <td><span class="tag tag-file">backtest_runner.py</span> <span class="tag tag-line">:1269-1285</span></td>
+  </tr>
+  <tr>
+    <td>Session+regime plan starts with Phase 0 (statistical gates) before any parameter fitting</td>
+    <td>Prevents promoting undersampled cells to production. DSR, Mann-Whitney, sample-size validator must exist as automated gates before any config is written.</td>
+    <td>Bailey et al. 2014: 30 trades per free parameter per cell minimum</td>
+  </tr>
+  <tr>
+    <td>HMM for regime detection (not rule-based ADX)</td>
+    <td>Current ADX threshold is itself an unvalidated parameter. HMM trained offline and loaded as pickle. Standard approach in regime-detection literature.</td>
+    <td><span class="tag tag-file">regime_router.py</span> <span class="tag tag-line">:12-17</span> explicitly chose rule-based for hardware constraints. HMM is offline-trained so live cost is negligible.</td>
+  </tr>
+  <tr>
+    <td>4 sessions: asian (00-08), london (08-12), ny_open (12-17), ny_late (17-00)</td>
+    <td>Standardizes the inconsistent definitions across 3 files. Removes "overlap" session and folds into ny_open. Asian session included (currently excluded by ACTIVE_SESSIONS).</td>
+    <td><span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:53</span> excludes asian and overlap</td>
+  </tr>
+</table>
+
+<!-- ====== OPEN ITEMS ====== -->
+<h2 id="open-items">5. Open Items and Pending Work</h2>
+
+<table>
+  <tr><th>Item</th><th>Priority</th><th>Status</th><th>Owner</th></tr>
+  <tr><td>Rebuild pipeline container with 3 fixes</td><td>High</td><td><span class="badge badge-warn">PENDING</span></td><td>Next agent</td></tr>
+  <tr><td>Restart Docker services (currently all down)</td><td>High</td><td><span class="badge badge-warn">PENDING</span></td><td>Next agent</td></tr>
+  <tr><td>Verify 3 fixes work in live pipeline (watch first few trades)</td><td>High</td><td><span class="badge badge-pending">BLOCKED</span></td><td>Next agent (after rebuild)</td></tr>
+  <tr><td>Phase 0: Statistical gate infrastructure</td><td>Medium</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after user approval)</td></tr>
+  <tr><td>Phase 1: Session-aware parameters</td><td>Medium</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 0)</td></tr>
+  <tr><td>Phase 2: Regime-specific strategy selection</td><td>Low</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 1 gate)</td></tr>
+  <tr><td>Phase 3: Backtest calibration and overfitting audit</td><td>Low</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 2 gate)</td></tr>
+  <tr><td>Phase 4: Shadow deployment and live rollout</td><td>Low</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 3 gate)</td></tr>
+  <tr><td colspan="4" style="background:var(--bg-secondary); font-weight:600;">Pattern/Feature Workstream (New)</td></tr>
+  <tr><td>Pattern/Feature Phase 1: Pivot detection, trend lines, S/R</td><td>Medium</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after user approval)</td></tr>
+  <tr><td>Pattern/Feature Phase 2: Curvature & candlesticks</td><td>Medium</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 1)</td></tr>
+  <tr><td>Pattern/Feature Phase 3: Wyckoff, VSA, market structure</td><td>Medium</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 2)</td></tr>
+  <tr><td>Pattern/Feature Phase 4: Feature engineering (ratios, composites, z-scores)</td><td>Medium</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 3)</td></tr>
+  <tr><td>Pattern/Feature Phase 5: DQS integration</td><td>Low</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 4, requires backtest gate)</td></tr>
+  <tr><td>Pattern/Feature Phase 6: Calibration & live deployment</td><td>Low</td><td><span class="badge badge-pending">NOT STARTED</span></td><td>Next agent (after Phase 5 gate)</td></tr>
+</table>
+
+<div class="warning-box">
+  <strong>Immediate action required:</strong> Docker services are down. The 3 pipeline fixes are in source but not deployed. The next agent should rebuild and restart Docker first, then verify the fixes produce correct trade exits before starting any session+regime work.
+</div>
+
+<!-- ====== DO NOT TOUCH ====== -->
+<h2 id="do-not-touch">6. Do Not Touch List</h2>
+
+<div class="card card-danger">
+  <p>These parameters are validated and must not change during session+regime work:</p>
+  <ul>
+    <li>Kelly V7 bands (<span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:91-98</span>)</li>
+    <li>MR boost 3x (<span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:99</span>)</li>
+    <li>Calibration gate 0.40 (<span class="tag tag-file">calibration.json</span>)</li>
+    <li>Crowding reduction 50% (<span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:44</span>)</li>
+    <li>DQ gate 60 (<span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:45</span>)</li>
+    <li>Max active trades 8 (<span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">PORTFOLIO dict</span>)</li>
+    <li>Scan interval 300s (<span class="tag tag-file">docker-compose.yml</span>)</li>
+    <li>Max leverage 4x (<span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:142</span>)</li>
+    <li>Max portfolio risk 12% (<span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">PORTFOLIO dict</span>)</li>
+  </ul>
+</div>
+
+<!-- ====== PLAN ====== -->
+<h2 id="plan">7. The Plan to Execute</h2>
+
+<p>The full plan is at <span class="code">docs/architecture/session-regime-aware-parameterization-plan.html</span>. Read it in full before starting. Summary of phases:</p>
+
+<h3>Phase 0: Statistical Gate Infrastructure (build first)</h3>
+<ul>
+  <li>Create <span class="code">backtest/stat_gates.py</span> with Mann-Whitney U, sample-size validator, DSR calculator, WFE calculator</li>
+  <li>Unit tests with synthetic data</li>
+  <li>Gate: all 4 functions pass unit tests</li>
+</ul>
+
+<h3>Phase 1: Session-Aware Parameters</h3>
+<ul>
+  <li>Standardize session definitions to 4 sessions across all modules</li>
+  <li>Run Mann-Whitney U test per symbol across sessions using existing backtest results</li>
+  <li>Build <span class="code">SESSION_PARAMS[symbol][session]</span> config with fallback chain</li>
+  <li>Calibrate via rolling WFO (3:1 IS:OOS, Calmar fitness, 3 free params max)</li>
+  <li>Wire <span class="code">get_symbol_params(symbol, session)</span> into orchestrator, scorer, backtest</li>
+  <li>Gate: WFE >= 0.5, OOS PF/WR beats baseline, Mann-Whitney p < 0.05 for 50%+ of splits</li>
+</ul>
+
+<h3>Phase 2: Regime-Specific Strategy Selection</h3>
+<ul>
+  <li>Train Gaussian HMM per symbol (hmmlearn, 2-3 states, log returns + realized vol)</li>
+  <li><span class="code">get_strategy(symbol, session, regime)</span> function with regime override</li>
+  <li>Hierarchical shrinkage: sparse cells blend toward session-only parent</li>
+  <li>Update v2_filters and adaptive_scorer to use resolved strategy</li>
+  <li>Gate: 30 trades per param floor + Mann-Whitney p < 0.05 vs parent session bucket</li>
+</ul>
+
+<h3>Phase 3: Backtest Calibration and Overfitting Audit</h3>
+<ul>
+  <li>Three-config comparison: baseline vs session-aware vs session+regime-aware</li>
+  <li>Rolling WFO then CPCV as final arbiter</li>
+  <li>DSR computation correcting for total trials across Phase 1+2</li>
+  <li>Gate: DSR >= 0.80, CPCV PBO < 0.50</li>
+</ul>
+
+<h3>Phase 4: Shadow Deployment and Live Rollout</h3>
+<ul>
+  <li>Resolve params via session + regime at signal time</li>
+  <li>Store resolved_session, resolved_regime, resolved_strategy on every trade</li>
+  <li>2-4 weeks shadow per cell, monitor live vs OOS expectation</li>
+  <li>Gate: live WR and PF within 20% of OOS expectation per cell</li>
+</ul>
+
+<!-- ====== CODEBASE MAP ====== -->
+<h2 id="codebase">8. Codebase Map for This Work</h2>
+
+<h3>Files Modified This Session (3 fixes)</h3>
+<table>
+  <tr><th>File</th><th>Changes</th><th>Lines</th></tr>
+  <tr><td><span class="tag tag-file">portfolio_config.py</span></td><td>TP multipliers 7.5/6.0/5.0 to 4.0 for all symbols</td><td>:19-36</td></tr>
+  <tr><td><span class="tag tag-file">portfolio_orchestrator.py</span></td><td>Dynamic SL in fallback monitor, high/low exit detection, sl_original in reprice UPDATE</td><td>:330-477, :685-712</td></tr>
+</table>
+
+<h3>Key Files for Session+Regime Work</h3>
+<table>
+  <tr><th>File</th><th>Role</th><th>What to Change</th></tr>
+  <tr>
+    <td><span class="tag tag-file">portfolio_config.py</span></td>
+    <td>Central config. All params live here. Per-symbol SL/TP/RSI params at <span class="tag tag-line">:19-36</span>. ACTIVE_SESSIONS at <span class="tag tag-line">:53</span>.</td>
+    <td>Add SESSION_PARAMS dict, update get_symbol_params signature, add get_strategy function</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">portfolio_orchestrator.py</span></td>
+    <td>11-step pipeline. Calls get_symbol_params at scan (<span class="tag tag-line">:1240+</span>), reprice, and trade creation. V2 filters applied at <span class="tag tag-line">:1260+</span>.</td>
+    <td>Pass session to get_symbol_params at all call sites. Store resolved_* columns.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">adaptive_scorer.py</span></td>
+    <td>DQS scoring. <code>score_signal_adaptive</code> at <span class="tag tag-line">:490+</span>. Extracts RSI, ADX, log_ret, funding_rate, OI from enriched row. Uses get_symbol_params for RSI threshold and strategy.</td>
+    <td>Pass session to get_symbol_params. Use resolved strategy for direction detection. Pattern/feature Phase 5 adds pattern_raw domain here.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">regime_router.py</span></td>
+    <td>Rule-based regime gate. <code>classify_regime</code> at <span class="tag tag-line">:110+</span>. Uses ADX, efficiency ratio, ATR rank. Vetoes misaligned strategies at <span class="tag tag-line">:152-207</span>.</td>
+    <td>Replace rule-based classify_regime with HMM prediction. Update evaluate_regime_gate to use get_strategy. Pattern features (BOS, CHoCH, Wyckoff) feed HMM as observation dimensions.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">v2_filters.py</span></td>
+    <td>Entry filters. <code>apply_v2_filters</code> at <span class="tag tag-line">:1-268</span>. Uses hardcoded per-symbol strategy for RSI momentum check. Bug fix at <span class="tag tag-line">:221-226</span> wraps check in <code>if strategy == "trend_following"</code>.</td>
+    <td>Use resolved strategy from get_strategy() instead of hardcoded per-symbol strategy.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">calibration_lookup.py</span></td>
+    <td>6-level fallback lookup including session. Already session-aware.</td>
+    <td>No change needed. Reference pattern for parameter resolution fallback.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">backtest_runner.py</span></td>
+    <td>Backtest engine. <code>load_symbol_enriched</code> at <span class="tag tag-line">:393-472</span> loads 15m data, adds ATR/RSI/ADX/session, merges 4h context. <code>_extract_market_state</code> at <span class="tag tag-line">:118-177</span> captures 17 market features. <code>_get_enriched_slice</code> at <span class="tag tag-line">:887-936</span> returns last 200 bars for scoring. <code>_compute_dynamic_sl</code> at <span class="tag tag-line">:639-670</span>. <code>_check_exits</code> at <span class="tag tag-line">:1815-1872</span>.</td>
+    <td>Standardize session boundaries. Add session-aware param resolution. Add regime-aware strategy. Pattern/feature columns logged but not used in Phases 1-4.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">replay_runner.py</span></td>
+    <td>Replay engine. Has different _classify_session definition.</td>
+    <td>Standardize session boundaries to match backtest_runner.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">portfolio_gates.py</span></td>
+    <td>Trade count guard with session limits.</td>
+    <td>May need session-aware limits if sessions are redefined.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">db_migration.py</span></td>
+    <td>DB schema. Has sl_original and atr_at_entry columns.</td>
+    <td>Add resolved_session, resolved_regime, resolved_strategy columns in Phase 4. Add pat_* and feat_* columns in pattern/feature Phase 1.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">server.cjs</span></td>
+    <td>Dashboard backend. Has computeDynamicSL already active.</td>
+    <td>No change needed for fixes. May need updates for session-aware display in Phase 4.</td>
+  </tr>
+</table>
+
+<h3>Key Files for Pattern/Feature Work (New Modules)</h3>
+<table>
+  <tr><th>File (to create)</th><th>Role</th><th>Spec Reference</th></tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/__init__.py</span></td>
+    <td><code>detect_all_patterns(df) -> dict</code>. Calls each pattern function, merges results.</td>
+    <td>Spec Section 6, module architecture</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/pivot_detector.py</span></td>
+    <td><code>detect_pivots(df, left=3, right=3) -> pivots</code>. Shared cache. All other pattern functions call this.</td>
+    <td>Spec Section 2.1, knowledge packet section 3.5</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/trend_lines.py</span></td>
+    <td>Wedge, triangle, channel, trend break. Two-stage: raw_break -> confirmed_break.</td>
+    <td>Spec Section 2.1, knowledge packet section 2.1</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/support_resistance.py</span></td>
+    <td>S/R levels with ATR-based clustering, dynamic support/resistance.</td>
+    <td>Spec Section 2.2, knowledge packet section 2.2</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/market_structure.py</span></td>
+    <td>BOS, CHoCH, HH/HL, LH/LL, H&S, double top/bottom, FVG, liquidity sweep, equal highs/lows. Uses shared pivot cache.</td>
+    <td>Spec Section 2.6, knowledge packet section 2.5</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/candlesticks.py</span></td>
+    <td>8 candlestick patterns. Must compute prior-trend context alongside each detection.</td>
+    <td>Spec Section 2.5, knowledge packet section 2.3</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/curvature.py</span></td>
+    <td>Price, volume, RSI curvature via polynomial fit.</td>
+    <td>Spec Section 2.3</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/wyckoff.py</span></td>
+    <td>Wyckoff phase detection. Stateful state machine, not single-bar classifier. Highest implementation risk.</td>
+    <td>Spec Section 2.4, knowledge packet section 2.4</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/vsa.py</span></td>
+    <td>VSA effort vs result, no-demand/no-supply. Continuous divergence feature, not binary.</td>
+    <td>Spec Section 2.4, knowledge packet section 2.4</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/patterns/order_blocks.py</span></td>
+    <td>Order block detection.</td>
+    <td>Spec Section 2.6</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/features/__init__.py</span></td>
+    <td><code>compute_all_features(df, pattern_dict) -> dict</code>. Takes enriched DF + pattern dict, computes all features.</td>
+    <td>Spec Section 3</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/features/ratio_features.py</span></td>
+    <td>6 ratio features (price_to_sr, volume_to_avg, etc.)</td>
+    <td>Spec Section 3.1</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/features/composite_features.py</span></td>
+    <td>5 composite scores (confluence_score, structure_score, etc.)</td>
+    <td>Spec Section 3.2</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/features/zscore_features.py</span></td>
+    <td>6 z-score normalizations (96-bar warmup)</td>
+    <td>Spec Section 3.3</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/features/conditional_features.py</span></td>
+    <td>4 conditional flags</td>
+    <td>Spec Section 3.4</td>
+  </tr>
+  <tr>
+    <td><span class="code">pipeline/engine/features/cross_tf_features.py</span></td>
+    <td>4 cross-timeframe features</td>
+    <td>Spec Section 3.5</td>
+  </tr>
+</table>
+
+<h3>Key Files for Pattern/Feature Work (Existing, to Modify)</h3>
+<table>
+  <tr><th>File</th><th>Role</th><th>What to Change</th></tr>
+  <tr>
+    <td><span class="tag tag-file">backtest_runner.py</span></td>
+    <td>Backtest engine. <code>load_symbol_enriched</code> at <span class="tag tag-line">:393-472</span> is where enriched DF is built. <code>_extract_market_state</code> at <span class="tag tag-line">:118-177</span> shows the 17 features currently captured.</td>
+    <td>Call <code>detect_all_patterns(df)</code> and <code>compute_all_features(df, patterns)</code> after indicators are added. Log pat_*/feat_* columns. Do not use in scoring until Phase 5.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">adaptive_scorer.py</span></td>
+    <td>DQS scoring. <code>score_signal_adaptive</code> at <span class="tag tag-line">:490+</span>.</td>
+    <td>Phase 5 only: add pattern_raw domain to weighted-max. A/B test against session-aware baseline.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">portfolio_orchestrator.py</span></td>
+    <td>Live pipeline. <code>_scan_symbol</code> at <span class="tag tag-line">:1240+</span> is where enriched data is loaded and scored.</td>
+    <td>Phase 6 only: call pattern/feature functions in live scan. Log columns. Phase 5+6: use in DQS.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">data-ingestion/workers/bybit_enrich_core.py</span></td>
+    <td>Enrichment pipeline. Merges OHLCV with OI, funding, LS ratio via <code>merge_asof</code> (backward, no look-ahead).</td>
+    <td>No change. Pattern functions run on the enriched DF downstream. Reference for how data is structured.</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-file">pipeline/engine/v3/discovery/probe_engine.py</span></td>
+    <td>V3 probe engine. 12 probe types, IC analysis, shadow mode. <code>ALL_PROBES</code> dict and <code>run_all_probes</code> at <span class="tag tag-line">:322-491</span>.</td>
+    <td>Reference for IC analysis methodology. Pattern/feature Phase 5 uses similar IC-based feature selection (|IC| >= 0.02 threshold).</td>
+  </tr>
+</table>
+
+<h3>Session Boundary Definitions (Current, Inconsistent)</h3>
+<table>
+  <tr><th>File</th><th>london</th><th>overlap</th><th>ny_open</th><th>ny_late</th><th>asian</th></tr>
+  <tr><td><span class="tag tag-file">backtest_runner.py</span></td><td>07-12</td><td>12-14</td><td>14-21</td><td>20-24</td><td>00-07</td></tr>
+  <tr><td><span class="tag tag-file">replay_runner.py</span></td><td>07-12</td><td>12-20</td><td>14-21</td><td>20-24</td><td>00-07</td></tr>
+  <tr><td><span class="tag tag-file">portfolio_config.py</span></td><td>active</td><td>excluded</td><td>active</td><td>active</td><td>excluded</td></tr>
+  <tr><td><strong>Plan (target)</strong></td><td>08-12</td><td>removed</td><td>12-17</td><td>17-00</td><td>00-08</td></tr>
+</table>
+
+<h3>Backtest Results Left for Reference</h3>
+<table>
+  <tr><th>File</th><th>Content</th></tr>
+  <tr><td><span class="code">backtest_results_live_compare.csv</span></td><td>Per-symbol params backtest (Jan-Jul 2026, treatment_b_phase2). 1020 closed trades, WR 21.9%, PF 1.27.</td></tr>
+  <tr><td><span class="code">backtest_results_tier_based.csv</span></td><td>Tier-based params backtest (same period). 1044 closed trades, WR 32.8%, PF 1.79.</td></tr>
+</table>
+
+<!-- ====== EVIDENCE ====== -->
+<h2 id="evidence">9. Evidence and File Links</h2>
+
+<h3>Files Modified</h3>
+<ul>
+  <li><span class="code">pipeline/engine/portfolio_config.py</span> — TP multipliers reverted to 4.0</li>
+  <li><span class="code">pipeline/engine/portfolio_orchestrator.py</span> — Dynamic SL, high/low exits, sl_original in reprice</li>
+</ul>
+
+<h3>Files Created</h3>
+<ul>
+  <li><span class="code">docs/architecture/session-regime-aware-parameterization-plan.html</span> — Full 4-phase plan with research validation</li>
+  <li><span class="code">docs/plans/pattern-feature-spec.html</span> — Pattern recognition & feature engineering spec (2,310 lines, 7 sections). 30 patterns, 25 features, 6 phases, 6 validation gates, 0 new dependencies.</li>
+  <li><span class="code">docs/memory/VLTHR_Pattern_Feature_Implementation_Knowledge_Packet.md</span> — Evidence tiers, per-category implementation discipline, cross-cutting rules, per-function checklist. Read before implementing any pattern function.</li>
+  <li><span class="code">docs/memory/2026-07-22-session-regime-handoff.html</span> — This document</li>
+</ul>
+
+<h3>Files Removed</h3>
+<ul>
+  <li><span class="code">backtest/backtest_runner_tier_based.py</span> — Temporary file from previous session</li>
+</ul>
+
+<h3>Key Reference Files (not modified, read for context)</h3>
+<ul>
+  <li><span class="code">pipeline/engine/dynamic_sl.py</span> — Standalone dynamic SL module (has 50% break-even threshold, backtest uses 75%. Dashboard backend also uses 75%. The 75% threshold is the validated one.)</li>
+  <li><span class="code">pipeline/engine/regime_router.py</span> — Current rule-based regime detection. Will be replaced by HMM in session+regime Phase 2. Pattern features (BOS, CHoCH, Wyckoff) feed HMM as observation dimensions.</li>
+  <li><span class="code">pipeline/engine/calibration_lookup.py</span> — Existing 6-level fallback pattern to mirror for parameter resolution.</li>
+  <li><span class="code">backtest/backtest_runner.py</span> — Backtest engine. <code>load_symbol_enriched</code> (<span class="tag tag-line">:393-472</span>) builds the enriched DF. <code>_extract_market_state</code> (<span class="tag tag-line">:118-177</span>) shows 17 features currently captured. <code>_get_enriched_slice</code> (<span class="tag tag-line">:887-936</span>) returns last 200 bars for scoring. <code>_compute_dynamic_sl</code> (<span class="tag tag-line">:639-670</span>) and <code>_check_exits</code> (<span class="tag tag-line">:1815-1872</span>) reference for live logic.</li>
+  <li><span class="code">pipeline/engine/adaptive_scorer.py</span> — DQS scoring. <code>score_signal_adaptive</code> (<span class="tag tag-line">:490+</span>) extracts RSI, ADX, log_ret, funding_rate, OI. Both plans modify this file: session+regime changes param resolution, pattern/feature Phase 5 adds pattern_raw domain.</li>
+  <li><span class="code">pipeline/engine/v2_filters.py</span> — Entry filters. <code>apply_v2_filters</code> (<span class="tag tag-line">:1-268</span>). Bug fix at <span class="tag tag-line">:221-226</span> wraps RSI momentum check in <code>if strategy == "trend_following"</code>. Session+regime Phase 2 replaces hardcoded strategy with resolved strategy.</li>
+  <li><span class="code">pipeline/engine/v3/discovery/probe_engine.py</span> — V3 probe engine. 12 probe types with IC analysis. <code>ALL_PROBES</code> and <code>run_all_probes</code> at <span class="tag tag-line">:322-491</span>. Reference for IC methodology used in pattern/feature Phase 5.</li>
+  <li><span class="code">data-ingestion/workers/bybit_enrich_core.py</span> — Enrichment pipeline. Merges OHLCV with OI, funding, LS ratio via backward <code>merge_asof</code>. No look-ahead bias. Pattern functions run on this enriched DF downstream.</li>
+  <li><span class="code">backend/src/server.cjs</span> — Dashboard backend with computeDynamicSL already active (reference, not modified).</li>
+</ul>
+
+<h3>Verification Run</h3>
+<pre><code>python3 -c "import py_compile; py_compile.compile('pipeline/engine/portfolio_config.py', doraise=True); print('OK')"
+python3 -c "import py_compile; py_compile.compile('pipeline/engine/portfolio_orchestrator.py', doraise=True); print('OK')"
+# Both passed. Syntax valid.
+
+# TP multiplier verification:
+# BTCUSDT: sl_mult=2.5, tp_mult=4.0, RR=1.60
+# ETHUSDT: sl_mult=2.0, tp_mult=4.0, RR=2.00
+# SOLUSDT: sl_mult=2.5, tp_mult=4.0, RR=1.60
+# XRPUSDT: sl_mult=2.5, tp_mult=4.0, RR=1.60
+# BNBUSDT: sl_mult=2.0, tp_mult=4.0, RR=2.00
+
+# Dynamic SL logic test:
+# Entry=70000, SL_orig=68750, TP=72000, ATR=500, price=71500, hours=5
+# TIME_DECAY: SL moved to 70000 (tightened by 1250)
+# TP_HIT at 72000 (bar_high=72100 >= tp)
+# All logic checks passed.</code></pre>
+
+<h3>Deploy Command (for next agent)</h3>
+<pre><code>cd .
+docker compose build pipeline
+docker compose up -d</code></pre>
+
+<hr>
+<p style="color:var(--text-muted); font-size:0.82rem; text-align:center;">
+  VLTHR Handoff &middot; Session + Regime-Aware Parameterization + Pattern/Feature Spec &middot; July 22, 2026
+</p>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "signals_scanned": 214278,
+  "signals_confirmed": 7510,
+  "final_equity": 16527.037426661598,
+  "total_return_pct": 65.27037426661597,
+  "max_drawdown_pct": -5.917610197997765,
+  "win_rate_pct": 77.13651498335183,
+  "tp_hits": 695,
+  "sl_hits": 206
+}

@@ -1,0 +1,2 @@
+id,balance,equity,margin_used,total_pnl,total_trades,win_rate,created_at,updated_at,realized_pnl,cumulative_funding_paid,totp_secret
+2,10351.71,6631.57,3720.14,15.1248,33,48.48,2026-07-03 22:17:23.549243,2026-07-21 14:39:54.695881,356.98,-2.90,NB5GY2KUJJCCGPBGEUQUQIZWGZRDKI2TJY2VKZBMOYUGS4DHNRAQ

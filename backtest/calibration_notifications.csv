@@ -1,0 +1,26 @@
+scope,symbol,metric,metric_label,level,bt_value,live_value,delta,direction,bt_trades,live_trades,message,calibration_gate
+overall,ALL,win_rate,Win Rate %,INSUFFICIENT_DATA,36.042638241172554,0,0,,1501,0,Only 0 live trades (need 5),0.48
+overall,ALL,profit_factor,Profit Factor,INSUFFICIENT_DATA,3.086882575289867,0,0,,1501,0,Only 0 live trades (need 5),0.48
+overall,ALL,expectancy,Expectancy $,INSUFFICIENT_DATA,6.981199200532977,0,0,,1501,0,Only 0 live trades (need 5),0.48
+overall,ALL,tp_rate,TP Hit Rate %,INSUFFICIENT_DATA,33.510992671552295,0,0,,1501,0,Only 0 live trades (need 5),0.48
+overall,ALL,sl_rate,SL Hit Rate %,INSUFFICIENT_DATA,63.55762824783477,0,0,,1501,0,Only 0 live trades (need 5),0.48
+per_symbol,BNBUSDT,win_rate,Win Rate %,INSUFFICIENT_DATA,41.30434782608695,0,0,,46,0,Only 0 live trades (need 5),0.48
+per_symbol,BNBUSDT,profit_factor,Profit Factor,INSUFFICIENT_DATA,2.181493299298022,0,0,,46,0,Only 0 live trades (need 5),0.48
+per_symbol,BNBUSDT,expectancy,Expectancy $,INSUFFICIENT_DATA,6.037173913043479,0,0,,46,0,Only 0 live trades (need 5),0.48
+per_symbol,BNBUSDT,tp_rate,TP Hit Rate %,INSUFFICIENT_DATA,41.30434782608695,0,0,,46,0,Only 0 live trades (need 5),0.48
+per_symbol,BNBUSDT,sl_rate,SL Hit Rate %,INSUFFICIENT_DATA,58.69565217391305,0,0,,46,0,Only 0 live trades (need 5),0.48
+per_symbol,BTCUSDT,win_rate,Win Rate %,INSUFFICIENT_DATA,38.24626865671642,0,0,,536,0,Only 0 live trades (need 5),0.48
+per_symbol,BTCUSDT,profit_factor,Profit Factor,INSUFFICIENT_DATA,3.2551429259107185,0,0,,536,0,Only 0 live trades (need 5),0.48
+per_symbol,BTCUSDT,expectancy,Expectancy $,INSUFFICIENT_DATA,5.94339552238806,0,0,,536,0,Only 0 live trades (need 5),0.48
+per_symbol,BTCUSDT,tp_rate,TP Hit Rate %,INSUFFICIENT_DATA,36.007462686567166,0,0,,536,0,Only 0 live trades (need 5),0.48
+per_symbol,BTCUSDT,sl_rate,SL Hit Rate %,INSUFFICIENT_DATA,61.56716417910447,0,0,,536,0,Only 0 live trades (need 5),0.48
+per_symbol,SOLUSDT,win_rate,Win Rate %,INSUFFICIENT_DATA,35.09127789046653,0,0,,493,0,Only 0 live trades (need 5),0.48
+per_symbol,SOLUSDT,profit_factor,Profit Factor,INSUFFICIENT_DATA,3.3457430576747025,0,0,,493,0,Only 0 live trades (need 5),0.48
+per_symbol,SOLUSDT,expectancy,Expectancy $,INSUFFICIENT_DATA,8.419837728194725,0,0,,493,0,Only 0 live trades (need 5),0.48
+per_symbol,SOLUSDT,tp_rate,TP Hit Rate %,INSUFFICIENT_DATA,32.048681541582155,0,0,,493,0,Only 0 live trades (need 5),0.48
+per_symbol,SOLUSDT,sl_rate,SL Hit Rate %,INSUFFICIENT_DATA,64.3002028397566,0,0,,493,0,Only 0 live trades (need 5),0.48
+per_symbol,XRPUSDT,win_rate,Win Rate %,INSUFFICIENT_DATA,33.80281690140845,0,0,,426,0,Only 0 live trades (need 5),0.48
+per_symbol,XRPUSDT,profit_factor,Profit Factor,INSUFFICIENT_DATA,2.7857931060280174,0,0,,426,0,Only 0 live trades (need 5),0.48
+per_symbol,XRPUSDT,expectancy,Expectancy $,INSUFFICIENT_DATA,6.724014084507042,0,0,,426,0,Only 0 live trades (need 5),0.48
+per_symbol,XRPUSDT,tp_rate,TP Hit Rate %,INSUFFICIENT_DATA,31.220657276995308,0,0,,426,0,Only 0 live trades (need 5),0.48
+per_symbol,XRPUSDT,sl_rate,SL Hit Rate %,INSUFFICIENT_DATA,65.72769953051643,0,0,,426,0,Only 0 live trades (need 5),0.48

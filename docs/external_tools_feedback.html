@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>External Tools Framework Feedback Report</title>
+<style>
+:root {
+  --bg: #0b0b0f;
+  --card: #1c1c22;
+  --card-hover: #22222a;
+  --border: #2a2a32;
+  --text: #e0e0e6;
+  --text-dim: #8a8a96;
+  --green: #28c840;
+  --red: #ff5f57;
+  --amber: #febc2e;
+  --blue: #5b8def;
+  --purple: #a855f7;
+  --cyan: #22d3ee;
+  --orange: #f97316;
+  --font: 'Nimbus Sans TW01', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+h2 {
+  font-size: 1.3rem;
+  margin: 32px 0 16px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+h3 {
+  font-size: 1.05rem;
+  margin: 20px 0 8px;
+  color: var(--text-dim);
+}
+h4 {
+  font-size: 0.9rem;
+  margin: 12px 0 6px;
+  color: var(--text);
+}
+.header-meta {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 24px;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+.stat-card .num {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+.stat-card .label {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+.section:hover { border-color: var(--text-dim); }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-proprietary { background: rgba(168,85,247,0.15); color: var(--purple); }
+.badge-framework { background: rgba(91,141,239,0.15); color: var(--blue); }
+.badge-governance { background: rgba(254,188,46,0.15); color: var(--amber); }
+.badge-competition { background: rgba(34,211,238,0.15); color: var(--cyan); }
+.badge-external { background: rgba(249,115,22,0.15); color: var(--orange); }
+.badge-engine { background: rgba(40,200,64,0.15); color: var(--green); }
+.item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.item-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+.item-desc {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+.item-points {
+  margin-top: 8px;
+  padding-left: 16px;
+}
+.item-points li {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-bottom: 3px;
+}
+.item-points li strong { color: var(--text); }
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  margin-right: 4px;
+  margin-top: 6px;
+}
+.tag-core { background: rgba(168,85,247,0.12); color: var(--purple); border: 1px solid rgba(168,85,247,0.25); }
+.tag-layer { background: rgba(91,141,239,0.12); color: var(--blue); border: 1px solid rgba(91,141,239,0.25); }
+.tag-validated { background: rgba(40,200,64,0.12); color: var(--green); border: 1px solid rgba(40,200,64,0.25); }
+.tag-reference { background: rgba(254,188,46,0.12); color: var(--amber); border: 1px solid rgba(254,188,46,0.25); }
+.tag-external { background: rgba(249,115,22,0.12); color: var(--orange); border: 1px solid rgba(249,115,22,0.25); }
+.pipeline-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 12px 0;
+  align-items: center;
+}
+.flow-step {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.76rem;
+  color: var(--text-dim);
+}
+.flow-arrow { color: var(--text-dim); font-size: 0.7rem; }
+.layer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+.layer-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+.layer-card h4 {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.layer-card p {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin: 0;
+}
+.schema-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.schema-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+.schema-card .id {
+  font-size: 0.72rem;
+  color: var(--purple);
+  font-weight: 600;
+}
+.schema-card .name {
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-top: 2px;
+}
+.schema-card .desc {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.evidence-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 0.82rem;
+}
+.evidence-table th {
+  text-align: left;
+  padding: 8px 10px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.78rem;
+}
+.evidence-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.evidence-table td.pass { color: var(--green); }
+.evidence-table td.fail { color: var(--red); }
+.callout {
+  background: rgba(168,85,247,0.05);
+  border: 1px solid rgba(168,85,247,0.2);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 16px 0;
+}
+.callout h4 {
+  color: var(--purple);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+.callout p {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.footer {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  text-align: center;
+}
+.architecture-diagram {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  white-space: pre;
+  overflow-x: auto;
+}
+</style>
+</head>
+<body>
+
+<h1>External Tools Framework Feedback Report</h1>
+<div class="header-meta">
+  <strong>Date:</strong> 2026-07-30 &nbsp;|&nbsp;
+  <strong>Author:</strong> Cascade (AI coding agent) &nbsp;|&nbsp;
+  <strong>Status:</strong> ACTIVE &nbsp;|&nbsp;
+  <strong>Purpose:</strong> Feedback on proprietary framework systems in external tools folder
+</div>
+
+<div class="summary-grid">
+  <div class="stat-card"><div class="num" style="color:var(--purple);">4</div><div class="label">Top-Level Directories</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--blue);">25</div><div class="label">CITM Schemas</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--amber);">11</div><div class="label">PURF Layers</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--green);">21</div><div class="label">UIOS Engines</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--cyan);">21</div><div class="label">ROS Documents</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--orange);">3</div><div class="label">External Dependencies</div></div>
+</div>
+
+<!-- ============================================ -->
+<!-- CITM: Comprehensive Intelligence Twin Model -->
+<!-- ============================================ -->
+<h2>CITM: Comprehensive Intelligence Twin Model</h2>
+
+<div class="callout">
+  <h4>What Is CITM?</h4>
+  <p>
+    CITM is a domain-independent Intelligence Operating System. It models reality before modelling solutions.
+    Every solution has an objective, a problem, constraints, causes, evidence, uncertainty, consequences,
+    execution requirements, and scientific value. The architecture transforms reality into executable knowledge
+    through a continuous intelligence pipeline. All domains (trading, medicine, manufacturing, energy, etc.)
+    plug into the same architecture through Domain Adapters. The core never changes.
+  </p>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-proprietary">Proprietary Architecture</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">25 JSON schemas + 1 architecture enclosure</span>
+  </div>
+
+  <h3>Architecture Enclosure (999-ArchitectureEnclosure.md)</h3>
+  <div class="item">
+    <div class="item-name">10 Architectural Laws</div>
+    <div class="item-points">
+      <li><strong>Law 1:</strong> Every solution has a discoverable problem.</li>
+      <li><strong>Law 2:</strong> Every problem originates from an objective.</li>
+      <li><strong>Law 3:</strong> Every decision is constrained by reality.</li>
+      <li><strong>Law 4:</strong> Evidence outranks assumptions.</li>
+      <li><strong>Law 5:</strong> Reality outranks models.</li>
+      <li><strong>Law 6:</strong> Knowledge without validation is information.</li>
+      <li><strong>Law 7:</strong> Execution without readiness is risk.</li>
+      <li><strong>Law 8:</strong> Science is validated knowledge reused across domains.</li>
+      <li><strong>Law 9:</strong> Meta Intelligence improves intelligence itself.</li>
+      <li><strong>Law 10:</strong> The Kernel never reasons. It only coordinates.</li>
+    </div>
+  </div>
+
+  <h3>Intelligence Pipeline</h3>
+  <div class="pipeline-flow">
+    <span class="flow-step">Objective</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Problem</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Information Acquisition</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Reality Modelling</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Root Cause</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Pattern Discovery</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Feature Engineering</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Solution Mapping</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Decision Intelligence</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Simulation</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Truth Validation</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Uncertainty Intelligence</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Strategy</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Execution</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Scientific Knowledge</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Meta Intelligence</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Governance</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Runtime</span>
+  </div>
+
+  <h3>5 Intelligence Layers</h3>
+  <div class="layer-grid">
+    <div class="layer-card">
+      <h4>Layer 1: Runtime</h4>
+      <p>Kernel, Messaging, Memory, Scheduling, Lifecycle</p>
+    </div>
+    <div class="layer-card">
+      <h4>Layer 2: Intelligence</h4>
+      <p>Objective, Problem, Evidence, Knowledge, Root Cause, Patterns, Features, Mappings</p>
+    </div>
+    <div class="layer-card">
+      <h4>Layer 3: Decision</h4>
+      <p>Decision Intelligence, Quality, Simulation, Reality, Validation, Domain Integration</p>
+    </div>
+    <div class="layer-card">
+      <h4>Layer 4: Execution</h4>
+      <p>Strategy, Execution, Monitoring, Recovery, Learning</p>
+    </div>
+    <div class="layer-card">
+      <h4>Layer 5: Science</h4>
+      <p>Science, Meta Intelligence, Governance, Architecture Evolution</p>
+    </div>
+  </div>
+
+  <h3>25 CITM Schema Files</h3>
+  <div class="schema-grid">
+    <div class="schema-card"><div class="id">000</div><div class="name">Core Ontology</div><div class="desc">Identity, Metadata, Provenance, Confidence, Evidence, Relationship, Validation, Lifecycle, Version</div></div>
+    <div class="schema-card"><div class="id">001</div><div class="name">Problem Twin</div><div class="desc">Problem representation and decomposition</div></div>
+    <div class="schema-card"><div class="id">002</div><div class="name">Solution Twin</div><div class="desc">Solution representation and mapping</div></div>
+    <div class="schema-card"><div class="id">003a</div><div class="name">Mapping Engine</div><div class="desc">Problem-to-solution mapping</div></div>
+    <div class="schema-card"><div class="id">003b</div><div class="name">Mapping Reasoning</div><div class="desc">Reasoning over mappings</div></div>
+    <div class="schema-card"><div class="id">003c</div><div class="name">Mapping Optimization</div><div class="desc">Optimization of mappings</div></div>
+    <div class="schema-card"><div class="id">004</div><div class="name">Root Cause Engine</div><div class="desc">Causal chain discovery</div></div>
+    <div class="schema-card"><div class="id">005</div><div class="name">Pattern Intelligence</div><div class="desc">Pattern discovery engine</div></div>
+    <div class="schema-card"><div class="id">006</div><div class="name">Feature Intelligence</div><div class="desc">Feature engineering engine</div></div>
+    <div class="schema-card"><div class="id">007</div><div class="name">Decision Intelligence</div><div class="desc">Decision-making engine</div></div>
+    <div class="schema-card"><div class="id">008</div><div class="name">Reality Compiler</div><div class="desc">Reality model generation</div></div>
+    <div class="schema-card"><div class="id">009</div><div class="name">Quality Control</div><div class="desc">Quality assurance engine</div></div>
+    <div class="schema-card"><div class="id">010</div><div class="name">Domain Plug Adapter</div><div class="desc">Domain integration interface</div></div>
+    <div class="schema-card"><div class="id">011</div><div class="name">Simulation Engine</div><div class="desc">Digital twin simulation</div></div>
+    <div class="schema-card"><div class="id">012</div><div class="name">Knowledge Learning</div><div class="desc">Knowledge acquisition and learning</div></div>
+    <div class="schema-card"><div class="id">013</div><div class="name">Objective Governance</div><div class="desc">Objective management</div></div>
+    <div class="schema-card"><div class="id">014</div><div class="name">Information Acquisition</div><div class="desc">Data gathering engine</div></div>
+    <div class="schema-card"><div class="id">015</div><div class="name">Reality Model Generator</div><div class="desc">Generates competing models (Causal, Mechanistic, Behavioral, Statistical, Predictive, Constraint, Hybrid). Compares via agreement matrix, conflict score, diversity score. Ranks and selects best model. Retains alternatives.</div></div>
+    <div class="schema-card"><div class="id">016</div><div class="name">Truth Validation</div><div class="desc">Validates claims (Observation, Hypothesis, Prediction, RootCause, Decision, Constraint, Pattern) through evidence, falsification tests, reproducibility trials. Truth status: Supported, ProvisionallySupported, Inconclusive, Refuted. Continuous observation with revalidation thresholds.</div></div>
+    <div class="schema-card"><div class="id">017</div><div class="name">Uncertainty Intelligence</div><div class="desc">Identifies uncertainty sources (epistemic, aleatory, measurement, model, environment, human, unknown unknowns). Classifies (ambiguity, incompleteness, conflict, volatility, novelty). Propagates through models and decisions. Recommends mitigation and hedging strategies.</div></div>
+    <div class="schema-card"><div class="id">018</div><div class="name">Intelligence Orchestrator</div><div class="desc">Coordinates complete reasoning lifecycle. Workflow graph with active, completed, pending engines. Parallel execution support. Routing engine with fallback. State management with checkpoints and rollback. Termination criteria: objective satisfied, confidence satisfied, resource limit, manual.</div></div>
+    <div class="schema-card"><div class="id">019</div><div class="name">Meta Intelligence</div><div class="desc">Observes and improves reasoning itself. Analyzes reasoning efficiency, completeness, accuracy, depth, consistency. Evaluates engine performance (execution time, knowledge contribution, confidence contribution, cost, utility). Self-optimization of workflows, engines, parameters. Architecture evolution with new/obsolete capabilities.</div></div>
+    <div class="schema-card"><div class="id">020</div><div class="name">Science Engine</div><div class="desc">Discovers reusable principles from validated knowledge. Evaluates generalizability with boundary and failure conditions. Tests cross-domain transferability. Promotion levels: Observation, Pattern, Heuristic, Principle, Law, Canonical. Publishes to knowledge ontology for reuse.</div></div>
+    <div class="schema-card"><div class="id">021</div><div class="name">Strategy Synthesis</div><div class="desc">Synthesizes validated knowledge into strategies. Generates candidates with expected outcomes. Tradeoff analysis: benefit, cost, risk, resilience, sustainability scores. Resource alignment with gap analysis. Execution intent with priority and readiness. Strategy evaluation: alignment, robustness, adaptability.</div></div>
+    <div class="schema-card"><div class="id">022</div><div class="name">Execution Readiness</div><div class="desc">Verifies operational readiness before execution. Prerequisites check (satisfied vs unsatisfied). Dependency assessment (internal, external, health). Resource assessment (availability, capacity, risk). Risk gate: rollback, monitoring, stop conditions, residual risk. Readiness decision with blocking issues.</div></div>
+    <div class="schema-card"><div class="id">023</div><div class="name">Execution Engineering</div><div class="desc">Transforms approved strategies into executable workflows. Execution modes: Sequential, Parallel, Hybrid, EventDriven. Workflow construction with steps, dependencies, durations. Control strategy with adaptation triggers and decision checkpoints. Monitoring plan with metrics, sampling, alerts. Rollback strategy with recovery plan.</div></div>
+    <div class="schema-card"><div class="id">024</div><div class="name">Intelligence Governance</div><div class="desc">Supervises intelligence lifecycle. Continuation assessment: confidence/knowledge growth rate, diminishing returns, termination likelihood. Resource governance: time, compute, memory budgets. Objective governance: drift, conflicting objectives. Reasoning governance: loop, deadlock, stagnation detection. Decisions: Continue, Pause, Restart, AcquireInformation, Escalate, Terminate.</div></div>
+  </div>
+
+  <h3>Core Ontology (000-Core.schema.json) Key Types</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>Identity:</strong> UUID, URI, type, namespace, labels</li>
+      <li><strong>Metadata:</strong> Description, keywords, owner, organization, license, domain, industry</li>
+      <li><strong>Provenance:</strong> Source type/ID/URI/version, acquisition method/date, trust score (0-1)</li>
+      <li><strong>Confidence:</strong> Overall, mapping, evidence, data, model, human, prediction, unknown confidence. No engine may expose only one confidence score.</li>
+      <li><strong>Evidence:</strong> Evidence ID, type, observation, measurement, source, timestamp, weight, reliability, authenticity, integrity, hash</li>
+      <li><strong>Relationship:</strong> Source, target, relationship type, strength, direction, confidence, weight</li>
+      <li><strong>Validation:</strong> Status, validator, date, score, failed/passed checks</li>
+      <li><strong>Lifecycle:</strong> Draft, Candidate, Validated, Production, Deprecated, Archived, Retired</li>
+      <li><strong>Version:</strong> Major, minor, patch, previous, next, changeLog, compatibility, migrationPath</li>
+    </div>
+  </div>
+
+  <h3>Canonical Resource Chain (20 resources)</h3>
+  <div class="pipeline-flow">
+    <span class="flow-step">Objective</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Problem</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Constraint</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Observation</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Evidence</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Signal</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Pattern</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Feature</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Relationship</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Root Cause</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Hypothesis</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Reality Model</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Decision</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Strategy</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Simulation</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Execution</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Outcome</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Knowledge</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Scientific Principle</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Canonical Model</span>
+  </div>
+
+  <h3>Scientific Knowledge Promotion</h3>
+  <div class="pipeline-flow">
+    <span class="flow-step">Observation</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Finding</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Pattern</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Mechanism</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Heuristic</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Principle</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Theory</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Law</span><span class="flow-arrow">-></span>
+    <span class="flow-step">Canonical Model</span>
+  </div>
+
+  <h3>Design Principles</h3>
+  <div class="item">
+    <div class="item-points">
+      <li>Every engine shall have one responsibility.</li>
+      <li>No duplicated intelligence, state, or evidence.</li>
+      <li>Every engine produces reusable, machine-readable outputs.</li>
+      <li>Every resource is versioned. Every relationship is explicit.</li>
+      <li>Every uncertainty is measurable. Every decision is reproducible.</li>
+      <li>Engines never communicate directly. Communication occurs through canonical resources (loose coupling).</li>
+      <li>Domains may add entities, constraints, evidence, simulations, execution models. Domains shall never modify Kernel, Runtime, Governance, Scientific promotion, Canonical ontology, Confidence model, or Traceability model.</li>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- PURF: Progressive Uncertainty Reduction Framework -->
+<!-- ============================================ -->
+<h2>PURF: Progressive Uncertainty Reduction Framework</h2>
+
+<div class="callout">
+  <h4>What Is PURF?</h4>
+  <p>
+    PURF is not a root-cause analysis framework. It is a progressive uncertainty reduction framework.
+    Every higher layer is only allowed to exist if the lower layer has passed validation. The pyramid is
+    a sequence of gates rather than a sequence of analyses. The pyramid is fractal: each layer becomes
+    a new pyramid. CITM sits between Reality and Reasoning, giving AI a structured representation of reality
+    instead of text to reason over.
+  </p>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-governance">Governance Layers</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">11 horizontal governance layers</span>
+  </div>
+
+  <h3>17-Level PURF Pyramid</h3>
+  <div class="pipeline-flow" style="flex-direction:column;align-items:stretch;gap:4px;">
+    <div><span class="flow-step" style="border-color:var(--amber);color:var(--amber);">L0: Reality Capture</span> - Capture challenge exactly as received. Gate: Complete capture.</div>
+    <div><span class="flow-step">L1: Context Matrix</span> - Stakeholders, objectives, constraints, environment. Gate: Context completeness.</div>
+    <div><span class="flow-step">L2: Uncertainty Matrix</span> - Facts, assumptions, opinions, hypotheses, missing info. Gate: Confidence score.</div>
+    <div><span class="flow-step">L3: MECE Decomposition</span> - Mutually exclusive, collectively exhaustive domains. Gate: Coverage test.</div>
+    <div><span class="flow-step">L4: Digital Twin Construction</span> - Mathematical/graph representation. Gate: Structural validity.</div>
+    <div><span class="flow-step">L5: State Estimation</span> - Current state of every subsystem. Gate: State consistency.</div>
+    <div><span class="flow-step">L6: Root Cause Discovery</span> - Trace causal chains, not symptoms. Gate: Evidence validation.</div>
+    <div><span class="flow-step">L7: Knowledge Completion</span> - Acquire missing data. Gate: Missing information threshold.</div>
+    <div><span class="flow-step">L8: Hypothesis Generation</span> - Competing explanations. Gate: Diversity test.</div>
+    <div><span class="flow-step">L9: Hypothesis Elimination</span> - Reject inconsistent explanations. Gate: Statistical confidence.</div>
+    <div><span class="flow-step">L10: Option Generation</span> - Possible interventions. Gate: Feasibility.</div>
+    <div><span class="flow-step">L11: Simulation</span> - Execute in digital twin. Gate: Performance metrics.</div>
+    <div><span class="flow-step">L12: Trade-off Analysis</span> - Cost, risk, safety, ethics, time. Gate: Pareto optimality.</div>
+    <div><span class="flow-step">L13: Decision Approval</span> - Choose preferred solution. Gate: Decision quality score.</div>
+    <div><span class="flow-step">L14: Execution Planning</span> - Tasks, dependencies, owners. Gate: Readiness.</div>
+    <div><span class="flow-step">L15: Monitoring</span> - Measure execution vs expectations. Gate: KPI health.</div>
+    <div><span class="flow-step">L16: Learning</span> - Compare prediction vs reality. Gate: Error analysis.</div>
+    <div><span class="flow-step" style="border-color:var(--amber);color:var(--amber);">L17: Memory</span> - Store validated knowledge. Gate: Knowledge indexing.</div>
+  </div>
+
+  <h3>11 Horizontal Governance Layers</h3>
+  <div class="layer-grid">
+    <div class="layer-card">
+      <h4>AML: Assumption Management Layer</h4>
+      <p>Identifies, classifies, quantifies, validates, tracks, and monitors every assumption. No recommendation may rely on an undocumented assumption. Detects assumption drift. Triggers reassessment when assumptions become invalid.</p>
+    </div>
+    <div class="layer-card">
+      <h4>DEIL: Decision &amp; Evidence Intelligence Layer</h4>
+      <p>Complete decision traceability from original challenge through every reasoning step to final outcome. No recommendation without an auditable evidence trail. Supports audits, regulatory reviews, post-incident investigations.</p>
+    </div>
+    <div class="layer-card">
+      <h4>UML: Uncertainty Management Layer</h4>
+      <p>Identifies unknowns, missing data, data quality issues, model limitations, operational/environmental/business uncertainty. Produces uncertainty register, confidence map, information gap report.</p>
+    </div>
+    <div class="layer-card">
+      <h4>VVL: Validation &amp; Verification Layer</h4>
+      <p>Validation: "Did we build the correct solution?" Verification: "Did we build the solution correctly?" Governs every transition between PURF stages. Prevents propagation of invalid knowledge.</p>
+    </div>
+    <div class="layer-card">
+      <h4>AEL: Alternative Exploration Layer</h4>
+      <p>Prevents premature convergence. Enforces systematic exploration of competing explanations, architectures, technologies, and strategies. A solution cannot be approved unless it has competed against credible alternatives.</p>
+    </div>
+    <div class="layer-card">
+      <h4>RRL: Risk &amp; Resilience Layer</h4>
+      <p>Risk identification, quantification, propagation, and resilience engineering across all PURF stages.</p>
+    </div>
+    <div class="layer-card">
+      <h4>VRL: Value &amp; Resource Layer</h4>
+      <p>Commercial assessment, business value, CAPEX/OPEX, ROI, payback, revenue, savings, operational/safety/environmental benefits.</p>
+    </div>
+    <div class="layer-card">
+      <h4>XL: Execution Layer</h4>
+      <p>Execution planning, implementation, monitoring, and adaptation. Converts decisions into tasks, dependencies, owners, milestones.</p>
+    </div>
+    <div class="layer-card">
+      <h4>GCTL: Governance, Compliance &amp; Trust Layer</h4>
+      <p>Enforces governance policies, validates regulatory compliance, ensures cybersecurity readiness, manages decision accountability, provides complete auditability. Every recommendation must satisfy governance before progressing.</p>
+    </div>
+    <div class="layer-card">
+      <h4>AOL: Action &amp; Operations Layer</h4>
+      <p>Implementation planning, deployment, monitoring, and operational execution. Tasks, owners, timelines, budgets, milestones, rollback plans, KPIs.</p>
+    </div>
+    <div class="layer-card">
+      <h4>KEL: Knowledge Evolution Layer</h4>
+      <p>Transforms PURF from a decision framework into a continuously improving intelligence system. Every validated project permanently improves future reasoning, simulations, digital twins, and decisions. Makes CITM a learning operating system.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- UIOS Engine Systems -->
+<!-- ============================================ -->
+<h2>UIOS: Universal Intelligence Operating System Engines</h2>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-engine">Engine Specifications</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">21 engine specifications in /systems/</span>
+  </div>
+
+  <div class="item">
+    <div class="item-name">ADCOS: Adaptive Decision-Centric Operating System</div>
+    <div class="item-desc">Orchestration engine. Coordinates every intelligence engine, determines execution order, enforces validation gates, routes data, maintains decision lifecycle. Does not generate intelligence itself.</div>
+    <div class="item-points">
+      <li><strong>Answers:</strong> "Given the current state of knowledge, what engine should execute next?"</li>
+      <li><strong>Decision lifecycle:</strong> Context -> Problem -> Information -> Knowledge -> Hypothesis -> Validation -> Simulation -> Recommendation -> Approval -> Execution -> Monitoring -> Learning -> Memory</li>
+      <li><strong>Core concepts:</strong> Decision, Stage, Workflow, Route, Gate, Policy</li>
+    </div>
+    <span class="tag tag-core">Core orchestrator</span>
+  </div>
+
+  <div class="item">
+    <div class="item-name">ARUEV: Assumption, Risk, Uncertainty, Evidence &amp; Validation Engine</div>
+    <div class="item-desc">Identifies, measures, validates, and continuously monitors the integrity of every decision. Converts implicit components into explicit, measurable, verifiable objects.</div>
+    <div class="item-points">
+      <li><strong>Answers:</strong> "What must be true for this decision to remain valid?"</li>
+      <li><strong>5 components:</strong> Assumptions, Risks, Uncertainties, Evidence, Validation</li>
+      <li><strong>If any change:</strong> Decision must be re-evaluated</li>
+    </div>
+    <span class="tag tag-core">Decision integrity</span>
+  </div>
+
+  <h3>All 21 UIOS Engines</h3>
+  <div class="schema-grid">
+    <div class="schema-card"><div class="name">ADCOS</div><div class="desc">Adaptive Decision-Centric Operating System (orchestrator)</div></div>
+    <div class="schema-card"><div class="name">ARUEV</div><div class="desc">Assumption, Risk, Uncertainty, Evidence &amp; Validation</div></div>
+    <div class="schema-card"><div class="name">DQS</div><div class="desc">Decision Quality Scoring</div></div>
+    <div class="schema-card"><div class="name">EXE</div><div class="desc">Execution Engine</div></div>
+    <div class="schema-card"><div class="name">GCE</div><div class="desc">Governance &amp; Compliance Engine</div></div>
+    <div class="schema-card"><div class="name">HVE</div><div class="desc">Hypothesis Validation Engine</div></div>
+    <div class="schema-card"><div class="name">IOE</div><div class="desc">Information Orchestration Engine</div></div>
+    <div class="schema-card"><div class="name">Index</div><div class="desc">Indexing Engine</div></div>
+    <div class="schema-card"><div class="name">KGE</div><div class="desc">Knowledge Graph Engine</div></div>
+    <div class="schema-card"><div class="name">LME</div><div class="desc">Learning &amp; Memory Engine</div></div>
+    <div class="schema-card"><div class="name">MME</div><div class="desc">Meta-Management Engine</div></div>
+    <div class="schema-card"><div class="name">MNIF</div><div class="desc">Meta-Intelligence Framework</div></div>
+    <div class="schema-card"><div class="name">MOE</div><div class="desc">Monitoring &amp; Observation Engine</div></div>
+    <div class="schema-card"><div class="name">PRE</div><div class="desc">Problem Research Engine</div></div>
+    <div class="schema-card"><div class="name">QOF</div><div class="desc">Quality of Observation Filter</div></div>
+    <div class="schema-card"><div class="name">RGE</div><div class="desc">Recommendation Generation Engine</div></div>
+    <div class="schema-card"><div class="name">SME</div><div class="desc">Simulation &amp; Modeling Engine</div></div>
+    <div class="schema-card"><div class="name">UAIE</div><div class="desc">Universal API &amp; Integration Engine</div></div>
+    <div class="schema-card"><div class="name">UIK</div><div class="desc">Universal Intelligence Kernel</div></div>
+    <div class="schema-card"><div class="name">XTE</div><div class="desc">Explainability &amp; Traceability Engine</div></div>
+    <div class="schema-card"><div class="name">Master</div><div class="desc">Master system specification</div></div>
+  </div>
+
+  <h3>UAIE: Universal API &amp; Integration Engine (detailed)</h3>
+  <div class="item">
+    <div class="item-desc">Communication backbone of UIOS. Makes every component interoperable through standardized interfaces.</div>
+    <div class="item-points">
+      <li><strong>20 database tables:</strong> api_registry, api_endpoints, api_versions, service_registry, integration_connectors, connector_credentials, event_registry, event_subscriptions, event_messages, webhook_registry, webhook_deliveries, transformation_rules, protocol_adapters, integration_flows, integration_executions, api_usage, rate_limit_events, integration_errors, integration_audit, integration_health</li>
+      <li><strong>Communication:</strong> REST, GraphQL, gRPC, Kafka, RabbitMQ, NATS, MQTT, Redis Streams, Webhooks, WebSockets, SSE</li>
+      <li><strong>Security:</strong> OAuth2, JWT, Mutual TLS, certificate auth, secret management, encryption in transit/rest, request signing, replay protection</li>
+      <li><strong>Standard message envelope:</strong> message_id, correlation_id, workflow_id, event_type, source, target, timestamp, version, payload, metadata</li>
+      <li><strong>Design:</strong> Contract-first, versioned APIs, protocol-agnostic, externalized secrets, observable, recoverable</li>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ROS: Research Operating System -->
+<!-- ============================================ -->
+<h2>ROS: Research Operating System</h2>
+
+<div class="callout">
+  <h4>What Is ROS?</h4>
+  <p>
+    ROS is a closed-loop intelligence architecture for transforming uncertainty into validated decisions
+    through structured research, simulation, experimentation, optimization, implementation, and continuous
+    organizational learning. It answers: "Given limited knowledge, what is the best decision that can
+    currently be made, and how do we continuously improve it?"
+  </p>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-framework">Research Framework</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">21 documents (ROS-001 to ROS-021)</span>
+  </div>
+
+  <h3>4 Functional Layers</h3>
+  <div class="layer-grid">
+    <div class="layer-card">
+      <h4>Layer 1: Governance</h4>
+      <p>Controls standards, approvals, ethics, research quality. ROS-001 to ROS-003.</p>
+    </div>
+    <div class="layer-card">
+      <h4>Layer 2: Intelligence</h4>
+      <p>Transforms uncertainty into knowledge. ROS-004 to ROS-013. Includes PURF, RUCA, Knowledge Intelligence, Multi-Agent Intelligence, Experimentation, Scenario Intelligence, Validation, Decision Intelligence, Implementation, Continuous Learning.</p>
+    </div>
+    <div class="layer-card">
+      <h4>Layer 3: Engineering</h4>
+      <p>Implements intelligence into software and operational systems. ROS-014 to ROS-020. Research Data Architecture, Digital Twin Engineering, AI &amp; Agent Engineering, Software Platform, Evidence &amp; Confidence, Performance Measurement, Playbooks &amp; SOPs.</p>
+    </div>
+    <div class="layer-card">
+      <h4>Layer 4: Management</h4>
+      <p>Coordinates every framework simultaneously. ROS-021 Master Architecture.</p>
+    </div>
+  </div>
+
+  <h3>12 Research Principles</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>1.</strong> Evidence before opinion.</li>
+      <li><strong>2.</strong> Root causes before solutions.</li>
+      <li><strong>3.</strong> Multiple hypotheses before commitment.</li>
+      <li><strong>4.</strong> Simulate before implementation.</li>
+      <li><strong>5.</strong> Validate before recommendation.</li>
+      <li><strong>6.</strong> Compare multiple candidates.</li>
+      <li><strong>7.</strong> Measure uncertainty continuously.</li>
+      <li><strong>8.</strong> Confidence is quantified.</li>
+      <li><strong>9.</strong> Everything is traceable.</li>
+      <li><strong>10.</strong> Every project improves the system.</li>
+      <li><strong>11.</strong> Human governance remains final authority.</li>
+      <li><strong>12.</strong> Reality always overrides assumptions.</li>
+    </div>
+  </div>
+
+  <h3>Master Decision Pipeline (18 mandatory fields)</h3>
+  <div class="item">
+    <div class="item-desc">Every recommendation produced by ROS must contain all 18 fields. Nothing bypasses this pipeline.</div>
+    <div class="item-points">
+      <li>Problem definition, Root causes, Remaining uncertainties, Evidence summary, Confidence score</li>
+      <li>Alternative candidates, Trade-offs, Risks, Best Case, Expected Case, Worst Case, Black Swan Case</li>
+      <li>Simulation results, Validation status, Recommendation, Monitoring plan, Exit criteria, Learning plan</li>
+    </div>
+  </div>
+
+  <h3>Standard AI Agent Organization (15 roles)</h3>
+  <div class="item">
+    <div class="item-points">
+      <li>Research Director, Project Manager, Knowledge Engineer, RUCA Specialist, Domain Expert</li>
+      <li>Data Engineer, Experiment Designer, Statistician, Digital Twin Engineer, Simulation Engineer</li>
+      <li>Validation Engineer, Decision Engineer, Optimization Engineer, Documentation Engineer, Learning Manager, Governance Auditor</li>
+    </div>
+  </div>
+
+  <h3>Reference Technology Stack</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>Research:</strong> PURF, RUCA, CITM, UIOS, UIA</li>
+      <li><strong>AI:</strong> Haystack, AutoGen, LangGraph, LangChain, MCP, Vector Databases</li>
+      <li><strong>Optimization:</strong> Google OR-Tools, Mathematical Programming, Constraint Solvers</li>
+      <li><strong>Simulation:</strong> Digital Twin, System Dynamics, Agent-Based, Monte Carlo, Discrete Event</li>
+      <li><strong>Knowledge:</strong> Knowledge Graph, Graph Database, Vector Search, Document Repository</li>
+      <li><strong>Infrastructure:</strong> Docker, Kubernetes, PostgreSQL, Neo4j, Redis, Object Storage, Python, TypeScript</li>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- AISEOS: AI Software Engineering Operating System -->
+<!-- ============================================ -->
+<h2>AISEOS: AI Software Engineering Operating System</h2>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-proprietary">Master Prompt</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">475 lines</span>
+  </div>
+
+  <div class="callout">
+    <h4>Core Philosophy</h4>
+    <p>
+      "You are not a code generator. You are a disciplined software engineer operating under strict
+      engineering governance. No code is considered complete until it has successfully passed independent
+      review. Your success is measured by the number of defects prevented, not the number of lines written.
+      Quality before quantity. Evidence before confidence. Correctness before completion."
+    </p>
+  </div>
+
+  <h3>9-Step Implementation Pipeline</h3>
+  <div class="pipeline-flow">
+    <span class="flow-step">1. Understand Task</span><span class="flow-arrow">-></span>
+    <span class="flow-step">2. Architecture Review</span><span class="flow-arrow">-></span>
+    <span class="flow-step">3. Implementation</span><span class="flow-arrow">-></span>
+    <span class="flow-step">4. Self Review (18 checks)</span><span class="flow-arrow">-></span>
+    <span class="flow-step">5. Self Critique</span><span class="flow-arrow">-></span>
+    <span class="flow-step">6. Standards Review</span><span class="flow-arrow">-></span>
+    <span class="flow-step">7. Independent Review</span><span class="flow-arrow">-></span>
+    <span class="flow-step">8. Revision Loop</span><span class="flow-arrow">-></span>
+    <span class="flow-step">9. Final Acceptance Report</span>
+  </div>
+
+  <h3>18 Mandatory Self-Review Checks</h3>
+  <div class="item">
+    <div class="item-points">
+      <li>Syntax, Typing, Imports, Naming, Architecture, Logic, Failure Modes, Edge Cases, Performance</li>
+      <li>Security, Memory Usage, Concurrency, Error Handling, Logging, Documentation, Maintainability, Scalability, Testability</li>
+    </div>
+  </div>
+
+  <h3>8 Mandatory Rules</h3>
+  <div class="item">
+    <div class="item-points">
+      <li>Never invent APIs. Never invent library behaviour. Never assume undocumented framework behaviour.</li>
+      <li>Never bypass architecture. Never duplicate existing logic. Never ignore failing tests.</li>
+      <li>Never hide uncertainty. When uncertain, STOP and request clarification.</li>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- CITM-PURF Integration -->
+<!-- ============================================ -->
+<h2>CITM-PURF Integration: Master Operating Procedure</h2>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-governance">Integrated Workflow</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">1121 lines. Sahara Challenge mandatory workflow.</span>
+  </div>
+
+  <h3>7 Golden Rules</h3>
+  <div class="item">
+    <div class="item-points">
+      <li>Always decompose before solving.</li>
+      <li>Always model before recommending.</li>
+      <li>Always simulate before deciding.</li>
+      <li>Always validate before implementation.</li>
+      <li>Always monitor after deployment.</li>
+      <li>Always learn after completion.</li>
+      <li>Always document everything.</li>
+    </div>
+  </div>
+
+  <h3>20-Phase Workflow (Challenge to Submission)</h3>
+  <div class="pipeline-flow" style="flex-direction:column;align-items:stretch;gap:4px;">
+    <div><span class="flow-step">P0: Challenge Capture</span> - Capture exactly. Do not interpret. Do not solve.</div>
+    <div><span class="flow-step">P1: Context Analysis (PURF L1)</span> - Stakeholders, objectives, constraints, timeline, resources</div>
+    <div><span class="flow-step">P2: Reality Mapping (CITM)</span> - Processes, equipment, systems, people, data, flows</div>
+    <div><span class="flow-step">P3: Problem Decomposition (PURF)</span> - MECE, recursive to atomic</div>
+    <div><span class="flow-step">P4: Assumption Discovery (AML)</span> - Identify, classify, assign confidence, validation method</div>
+    <div><span class="flow-step">P5: Evidence Collection (DEIL)</span> - Documents, sensors, logs, SCADA, ERP, research</div>
+    <div><span class="flow-step">P6: Uncertainty Analysis (UML)</span> - Unknowns, data quality, model limitations</div>
+    <div><span class="flow-step">P7: Digital Twin Construction (CITM)</span> - Physical, process, equipment, control, operational, business, risk models</div>
+    <div><span class="flow-step">P8: Root Cause Analysis</span> - Five Whys, Fault Tree, Fishbone, Causal Graph, Bayesian</div>
+    <div><span class="flow-step">P9: Knowledge Completion</span> - Acquire missing info until confidence threshold met</div>
+    <div><span class="flow-step">P10: Alternative Generation (AEL)</span> - Technical, operational, business, AI, maintenance, policy</div>
+    <div><span class="flow-step">P11: Simulation (CITM)</span> - Normal, stress, worst case, best case, failure, recovery</div>
+    <div><span class="flow-step">P12: Trade-off Analysis</span> - Cost, risk, time, safety, ROI, scalability, environmental</div>
+    <div><span class="flow-step">P13: Decision (DEIL)</span> - Evidence, assumptions, simulation, risks, expected value, confidence</div>
+    <div><span class="flow-step">P14: Implementation Planning (AOL)</span> - Tasks, owners, timeline, budget, milestones, rollback</div>
+    <div><span class="flow-step">P15: Commercial Assessment</span> - Business value, CAPEX, OPEX, ROI, payback, savings</div>
+    <div><span class="flow-step">P16: Validation (VVL)</span> - Engineering, business, operations, safety, compliance, cybersecurity</div>
+    <div><span class="flow-step">P17: Governance Review (GCTL)</span> - Compliance, approvals, audit, risk acceptance</div>
+    <div><span class="flow-step">P18: Deployment (AOL)</span> - Execute, monitor, adapt, log</div>
+    <div><span class="flow-step">P19: Monitoring</span> - Production, performance, safety, reliability, cost, KPIs</div>
+    <div><span class="flow-step">P20: Learning (KEL)</span> - Compare expected vs actual. Capture lessons. Update models.</div>
+  </div>
+
+  <h3>24-Item Final Submission Package</h3>
+  <div class="item">
+    <div class="item-points">
+      <li>Executive Summary, Challenge Definition, Context Analysis, Digital Twin Architecture, Problem Decomposition</li>
+      <li>Root Cause Analysis, Evidence Repository, Assumption Register, Uncertainty Analysis, Alternative Analysis</li>
+      <li>Simulation Results, Trade-off Analysis, Recommended Solution, Implementation Roadmap, Cost Benefit Analysis</li>
+      <li>Risk Assessment, Validation Report, Governance Report, Monitoring Plan, Learning &amp; Knowledge Assets</li>
+      <li>Complete Reasoning Log, Complete Decision Log, Complete Version History, Reusable Templates &amp; Components</li>
+    </div>
+  </div>
+
+  <h3>13 Quality Gates</h3>
+  <div class="item">
+    <div class="item-points">
+      <li>Problem fully understood. Evidence supports conclusions. Assumptions documented. Uncertainty quantified.</li>
+      <li>Digital Twin updated. Alternatives explored. Simulations complete. Risks understood.</li>
+      <li>Business value demonstrated. Validation passed. Governance approvals complete.</li>
+      <li>Implementation feasible. Knowledge captured. If any gate fails, return to appropriate phase.</li>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- M.A.D. System: Sahara Group Competition Submission -->
+<!-- ============================================ -->
+<h2>M.A.D. System: Sahara Group Competition Submission</h2>
+
+<div class="callout">
+  <h4>What Is the M.A.D. System?</h4>
+  <p>
+    Machine Anomaly Detection. Addresses unplanned bearing failures at Asharami Energy and Egbin Power.
+    Uses an LSTM autoencoder (62,293 parameters) trained on healthy-only vibration data to detect bearing
+    degradation without fault labels. Delivers 51-hour lead time and 2.15% false alarm rate at under $500
+    per monitored bearing node. This is the filled, validated framework submission for a Sahara Group
+    innovation challenge, using the CITM-PURF integrated workflow.
+  </p>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-competition">Competition Submission</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">12 framework documents. Version 10.0.</span>
+  </div>
+
+  <h3>Validated Performance Metrics</h3>
+  <table class="evidence-table">
+    <tr><th>Metric</th><th>Result</th><th>Target</th><th>Status</th></tr>
+    <tr><td>AUC ROC (NASA IMS cross-dataset)</td><td>0.9940</td><td>&ge; 0.95</td><td class="pass">Pass</td></tr>
+    <tr><td>False alarm rate (regime conditional)</td><td>2.15%</td><td>&lt; 5%</td><td class="pass">Pass</td></tr>
+    <tr><td>Lead time (IMS)</td><td>51.0 hours</td><td>&ge; 48 hours</td><td class="pass">Pass</td></tr>
+    <tr><td>Cost savings</td><td>50.0%</td><td>&ge; 30%</td><td class="pass">Pass</td></tr>
+    <tr><td>Detection precision</td><td>100.0%</td><td>&ge; 90%</td><td class="pass">Pass</td></tr>
+    <tr><td>Regime gate FAR reduction</td><td>91.79%</td><td>&ge; 40%</td><td class="pass">Pass</td></tr>
+    <tr><td>Monte Carlo p-value</td><td>&lt; 0.001</td><td>&lt; 0.05</td><td class="pass">Pass</td></tr>
+  </table>
+
+  <h3>4 Root Causes Identified (Five Whys)</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>Detection latency:</strong> Bearing degradation is gradual and temporal, but current methods are amplitude-based and non-temporal. Supervised ML cannot operate without fault labels.</li>
+      <li><strong>False alarm burden:</strong> Operating regime variability is ignored in threshold setting, causing confusion between normal load changes and fault signatures.</li>
+      <li><strong>Deployment infeasibility:</strong> Academic formulation optimizes for visualization quality, not real-time deployment. Deployable fixed-baseline alternative was not validated.</li>
+      <li><strong>Validation rigour:</strong> Condition monitoring field has not adopted backtesting standards from quantitative finance.</li>
+    </div>
+  </div>
+
+  <h3>4 Solution Components</h3>
+  <div class="layer-grid">
+    <div class="layer-card">
+      <h4>1. LSTM Autoencoder</h4>
+      <p>62,293 params. 2-layer encoder (64->32), dense latent (16), 2-layer decoder (32->64). Sequence length 10. Trained on healthy data only. MAE anomaly score. AUC 0.9940 on NASA IMS.</p>
+    </div>
+    <div class="layer-card">
+      <h4>2. Regime Conditional DCE</h4>
+      <p>4-tier cascade: Normal/Watch/Alert/Critical. Per-regime mean offset + global std. 100-cycle persistence filter. 91.79% FAR reduction (26.41% to 2.15%).</p>
+    </div>
+    <div class="layer-card">
+      <h4>3. Deployable Health Index</h4>
+      <p>Fixed baseline (first 200 cycles). Z-score, exponential decay: HI = 100 * exp(-max(0, z_smooth) / 5.0). 0-100 scale. No retrospective data needed.</p>
+    </div>
+    <div class="layer-card">
+      <h4>4. Statistical Validation</h4>
+      <p>Walk-forward (T=200, W=100, S=50). Monte Carlo (1,000 permutations, p&lt;0.001). 5-seed aggregation with 95% CI. 10 ablation studies.</p>
+    </div>
+  </div>
+
+  <h3>Architecture</h3>
+  <div class="architecture-diagram">[ADXL355 Sensor] -> [ESP32-S3 Edge Processor] -> [Feature Extraction] -> [LSTM Autoencoder] -> [Anomaly Score]
+                                                                          |
+                                        [Health Index] <- [DCE Thresholds] <- [Regime Classifier]
+                                            |
+                                    [Alert Output] -> [SCADA / CMMS / Dashboard]</div>
+
+  <h3>Economic Impact</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>Combined savings:</strong> $20.5M to $45.0M/year (95% CI lower bound $26.5M)</li>
+      <li><strong>Asharami Energy:</strong> Protects 350,000 bpd production, 1,000,000 MMScf/d gas target. 7 new drilling rigs.</li>
+      <li><strong>Egbin Power:</strong> Safeguards 1,320 MW installed capacity (~10% of national grid). 186 rolling element bearings across 6 units.</li>
+      <li><strong>Pilot budget:</strong> $4,248 total (20 sensor nodes, 2 sites, 4 months)</li>
+      <li><strong>Payback:</strong> Under 1 month. 3-year ROI: 3,000% to 12,000%.</li>
+      <li><strong>Fleet scale:</strong> 800-1,700 critical bearings, $20M-$65M total addressable savings.</li>
+    </div>
+  </div>
+
+  <h3>12 Framework Documents</h3>
+  <div class="schema-grid">
+    <div class="schema-card"><div class="name">01 Executive Summary</div><div class="desc">One-page summary with validated metrics</div></div>
+    <div class="schema-card"><div class="name">02 Problem Decomposition</div><div class="desc">4 sub-problems with impact analysis</div></div>
+    <div class="schema-card"><div class="name">03 Root Cause Analysis</div><div class="desc">Five Whys for each sub-problem</div></div>
+    <div class="schema-card"><div class="name">04 Proposed Solution</div><div class="desc">4 core components with validated results</div></div>
+    <div class="schema-card"><div class="name">05 Architecture</div><div class="desc">Sensor, edge, model, decision, integration layers</div></div>
+    <div class="schema-card"><div class="name">06 Simulation &amp; Validation</div><div class="desc">4-tier testing, Monte Carlo, ablation, 3 hypotheses</div></div>
+    <div class="schema-card"><div class="name">07 Implementation Roadmap</div><div class="desc">4 phases over 12 months + Year 2 scale</div></div>
+    <div class="schema-card"><div class="name">08 Cost Benefit Analysis</div><div class="desc">Hardware, installation, recurring costs. Monte Carlo ROI.</div></div>
+    <div class="schema-card"><div class="name">09 Risks &amp; Mitigations</div><div class="desc">10 risks with likelihood, impact, mitigation</div></div>
+    <div class="schema-card"><div class="name">10 KPIs</div><div class="desc">8 pilot KPIs, 8 scale KPIs, escalation rules</div></div>
+    <div class="schema-card"><div class="name">11 Pilot Plan</div><div class="desc">2 sites, 6 nodes, $4,248 budget, exit criteria</div></div>
+    <div class="schema-card"><div class="name">12 Scalability</div><div class="desc">Pilot to enterprise, 5 scaling dimensions, equipment transfer</div></div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- External Dependencies -->
+<!-- ============================================ -->
+<h2>External Dependencies</h2>
+
+<div class="section">
+  <div class="section-header">
+    <span class="badge badge-external">Open-Source Dependencies</span>
+    <span style="color:var(--text-dim);font-size:0.8rem;">3 repositories</span>
+  </div>
+
+  <div class="item">
+    <div class="item-name">autogen-main</div>
+    <div class="item-desc">Microsoft AutoGen. Multi-agent AI application framework. 1,814 items. <strong>Now in maintenance mode.</strong> Microsoft recommends migrating to Microsoft Agent Framework (MAF) for new projects.</div>
+    <div class="item-points">
+      <li><strong>Used by:</strong> RCA Engine (ARUEV stage), ROS Multi-Agent Intelligence (ROS-007 MAIF)</li>
+      <li><strong>Role:</strong> SelectorGroupChat, MagenticOneGroupChat for multi-agent deliberation</li>
+      <li><strong>Agents:</strong> root_cause_analyst, skeptic, statistical_validator, domain_expert, hypothesis_validator, integrity_checker, simulation_agent, risk_analyst, compliance_checker</li>
+      <li><strong>Layered architecture:</strong> Core API (event-driven, Actor model, distributed runtime), AgentChat API (high-level agents and teams), Extensions API (LLM clients, code execution, MCP tools)</li>
+      <li><strong>Core API:</strong> Message passing, event-driven agents, local and distributed runtime. Cross-language support for .NET and Python. Actor model with single responsibility agents.</li>
+      <li><strong>AgentChat API:</strong> AssistantAgent with preset behaviors. Teams with predefined multi-agent design patterns (two-agent chat, group chat, SelectorGroupChat, MagenticOneGroupChat). AgentTool for composing agents as tools.</li>
+      <li><strong>Extensions:</strong> OpenAIChatCompletionClient, MCP workbench with StdioServerParams, code execution, web surfer, file surfer. Supports OpenAI, AzureOpenAI, Anthropic, and other LLM providers.</li>
+      <li><strong>Magentic-One:</strong> Generalist multi-agent system for open-ended web and file tasks. Agents: MultimodalWebSurfer, FileSurfer, MagenticOneCoderAgent. Orchestrator: MagenticOneGroupChat. Competitive on agentic benchmarks.</li>
+      <li><strong>AutoGen Studio:</strong> No-code GUI for prototyping multi-agent workflows. FastAPI backend, React/Gatsby frontend. SQLModel database layer (SQLite, PostgreSQL, MySQL). Not production-ready.</li>
+      <li><strong>AutoGen Bench:</strong> Benchmarking suite with GAIA and HumanEval benchmarks for evaluating agent performance.</li>
+      <li><strong>MCP support:</strong> Model Context Protocol server integration via McpWorkbench. Agents can use MCP servers as tool providers (e.g., Playwright for web browsing).</li>
+      <li><strong>How it helps CITM/UIOS:</strong> Maps to MNIF (Multi-Node Intelligence Framework). Each CITM engine can become an AutoGen agent. AgentChat teams correspond to UIOS orchestration patterns. Event-driven Core maps to ADCOS orchestration. Magentic-One pattern maps to ROS-007 multi-agent deliberation. MCP enables tool integration with UAIE (Universal API and Integration Engine).</li>
+      <li><strong>Migration note:</strong> AutoGen is in maintenance mode. New projects should use Microsoft Agent Framework (MAF). MAF provides enterprise-grade multi-agent orchestration, multi-provider model support, A2A and MCP interoperability, stable APIs, long-term support.</li>
+    </div>
+    <span class="tag tag-external">Python</span>
+    <span class="tag tag-external">Multi-agent</span>
+    <span class="tag tag-external">Maintenance mode</span>
+  </div>
+
+  <div class="item">
+    <div class="item-name">haystack-main</div>
+    <div class="item-desc">Haystack by deepset. Open-source AI orchestration framework for production-ready LLM applications. 9,301 items. Apache 2.0 license.</div>
+    <div class="item-points">
+      <li><strong>Used by:</strong> RCA Engine (evidence retrieval), ROS Knowledge Intelligence (ROS-006 KIS), PURF DEIL (evidence trail)</li>
+      <li><strong>Role:</strong> BM25 + embedding reciprocal rank fusion. Replaces simple rag.py. Production-ready pipeline architecture for RAG, agents, semantic search, QA.</li>
+      <li><strong>Document store:</strong> InMemoryDocumentStore for prototype. Migration to Qdrant/Elasticsearch is a YAML config change.</li>
+      <li><strong>Core architecture:</strong> Pipeline-based with modular components. Pipelines support loops, branches, conditional logic. SuperComponent for composing complex pipelines. Serialization for pipeline persistence and deployment.</li>
+      <li><strong>18 component categories:</strong> agents, builders, caching, converters, embedders, evaluators, extractors, fetchers, generators, joiners, preprocessors, query, rankers, retrievers, routers, samplers, validators, writers</li>
+      <li><strong>Agent component:</strong> Stateful Agent with tool calling, hooks system (BEFORE_RUN, BEFORE_LLM, BEFORE_TOOL, AFTER_TOOL, AFTER_RUN, ON_EXIT). State management with merge strategies. ChatMessage and ChatRole dataclasses. Streaming support.</li>
+      <li><strong>Tool calling:</strong> Tool and Toolset abstractions. ComponentTool wraps any Haystack component as a tool. Tool validation, duplicate name checking. Tool invocation with async support. ToolNotFoundException handling.</li>
+      <li><strong>Pipeline engine:</strong> Pipeline base (89K lines), pipeline.py (64K), draw.py for visual graph rendering. Component checks for socket validation. Breakpoint support for debugging. Descriptions for pipeline introspection.</li>
+      <li><strong>Model/vendor agnostic:</strong> Integrates with OpenAI, Mistral, Anthropic, Cohere, Hugging Face, Azure OpenAI, AWS Bedrock, local models. Swap models without rewriting system.</li>
+      <li><strong>Context engineering:</strong> Explicit control over how information is retrieved, ranked, filtered, combined, structured, and routed before reaching the model. Transparent and traceable pipelines.</li>
+      <li><strong>Hooks system:</strong> 6 hook points (BEFORE_RUN, BEFORE_LLM, BEFORE_TOOL, AFTER_TOOL, AFTER_RUN, ON_EXIT). Hooks for logging, tracing, validation, governance. Warm-up and close lifecycle for hooks.</li>
+      <li><strong>Tracing:</strong> Built-in tracing module for observability. Serializable values for tracing context. Integration with external tracing systems.</li>
+      <li><strong>Hayhooks:</strong> Deploy pipelines as REST APIs or MCP servers. OpenAI-compatible chat completion endpoints. Works with chat UIs like open-webui.</li>
+      <li><strong>How it helps CITM/UIOS:</strong> Pipeline architecture maps to ADCOS workflow orchestration. Components map to UIOS engines (retrievers to KGE, generators to RGE, validators to DQS, evaluators to QOF). Agent with tools maps to MNIF nodes. Hooks map to GCE governance checkpoints. Tracing maps to XTE explainability. Document stores map to MME memory. RAG pipelines serve ARUEV evidence gathering and DEIL decision traceability. Serialization enables pipeline persistence and replay for reproducibility.</li>
+      <li><strong>How it helps PURF:</strong> Retrieval pipelines serve L0 Reality Capture and L7 Knowledge Completion. Reranking and filtering serve L3 MECE Decomposition. Evaluation components serve VVL validation gates. Agents with tool calling serve L10 Option Generation and L11 Simulation.</li>
+    </div>
+    <span class="tag tag-external">Python</span>
+    <span class="tag tag-external">RAG</span>
+    <span class="tag tag-external">Pipeline</span>
+    <span class="tag tag-external">Apache 2.0</span>
+  </div>
+
+  <div class="item">
+    <div class="item-name">x-algorithm-main</div>
+    <div class="item-desc">X (Twitter) For You feed recommendation algorithm. 215 items. Reference/learning only.</div>
+    <div class="item-points">
+      <li><strong>Components:</strong> Home Mixer (orchestration), Thunder (in-network), Phoenix (out-of-network retrieval + ranking), Grox (content understanding), Candidate Pipeline</li>
+      <li><strong>Model:</strong> Grok-based transformer. 256-dim embeddings, 4 attention heads, 2 transformer layers. Pre-trained mini model (~3 GB via Git LFS).</li>
+      <li><strong>Architecture:</strong> Retrieval -> Ranking pipeline. Eliminated all hand-engineered features. Transformer does all heavy lifting from engagement history.</li>
+      <li><strong>Relevance:</strong> Reference for recommendation system architecture. Not directly integrated into VLTHR or RCA systems.</li>
+    </div>
+    <span class="tag tag-external">Reference</span>
+    <span class="tag tag-external">Not integrated</span>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- Integration Map -->
+<!-- ============================================ -->
+<h2>Integration Map: How Everything Connects</h2>
+
+<div class="section">
+  <div class="architecture-diagram">                    USER OBJECTIVE
+                         |
+                    CHALLENGE CAPTURE
+                         |
+              +----------+----------+
+              |                     |
+         FAST PATH              FULL PATH
+     (Rapid Response Kit)        (IPDF / CITM-PURF)
+              |                     |
+              |              20-Phase Workflow
+              |              (P0 Challenge -> P20 Learning)
+              |                     |
+              |              +------+------+
+              |              |             |
+         CITM SCHEMAS     PURF LAYERS    UIOS ENGINES
+        (000-024, 999)   (11 layers)   (21 engines)
+              |              |             |
+              +------+-------+------+------+
+                     |              |
+                ROS-021 MASTER   AISEOS
+                (orchestration)  (engineering)
+                     |
+              +------+------+
+              |             |
+         EXTERNAL DEPS   M.A.D. SYSTEM
+        (AutoGen,       (filled framework,
+         Haystack)       Sahara submission)
+              |
+         VLTHR TRADING SYSTEM
+        (skills, pipeline, gates)</div>
+
+  <h3>Key Relationships</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>CITM</strong> provides the schema ontology. All engines produce/consume canonical resources.</li>
+      <li><strong>PURF</strong> provides the governance gates. No stage progresses without validation.</li>
+      <li><strong>UIOS Engines</strong> (ADCOS, ARUEV, DQS, etc.) implement the intelligence pipeline.</li>
+      <li><strong>ROS</strong> wraps everything into a closed-loop research operating system with 21 documents.</li>
+      <li><strong>AISEOS</strong> governs how AI agents write code: 9-step pipeline, 18 self-review checks, independent review.</li>
+      <li><strong>CITM-PURF Integration</strong> defines the 20-phase Sahara Challenge workflow with 13 quality gates.</li>
+      <li><strong>M.A.D. System</strong> is the filled, validated competition submission using the full framework.</li>
+      <li><strong>AutoGen</strong> provides multi-agent deliberation for ARUEV and RCA Engine stages. Its Actor model maps to MNIF nodes. AgentChat teams map to UIOS orchestration. Magentic-One provides a proven generalist agent pattern. MCP support enables UAIE integration. <em>Note: AutoGen is in maintenance mode. Microsoft Agent Framework is the recommended successor.</em></li>
+      <li><strong>Haystack</strong> provides RAG-based evidence retrieval for knowledge acquisition. Its pipeline architecture maps to ADCOS orchestration. 18 component categories map to UIOS engines. Agent with hooks maps to MNIF + GCE governance. Tracing maps to XTE explainability. Hayhooks enables REST API and MCP server deployment. Serialization enables reproducibility for VVL validation.</li>
+      <li><strong>VLTHR Skills</strong> (29 skills in .devin/skills/) operationalize these frameworks for the trading system.</li>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- Assessment -->
+<!-- ============================================ -->
+<h2>Assessment</h2>
+
+<div class="section">
+  <h3>Strengths</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>Domain-independent architecture:</strong> CITM core never changes. Domains plug in through adapters. Same framework serves trading, energy, medicine, manufacturing.</li>
+      <li><strong>Gate-driven progression:</strong> PURF enforces validation at every stage. No stage progresses without passing its gate. Prevents premature convergence.</li>
+      <li><strong>Complete traceability:</strong> Every output references objective, problem, evidence, decision, knowledge, version, confidence, timestamp, origin. Every result is reproducible.</li>
+      <li><strong>Multi-dimensional confidence:</strong> No engine may expose only one confidence score. Evidence, model, decision, execution, scientific confidence all tracked separately.</li>
+      <li><strong>Fractal recursion:</strong> Every PURF node repeats the same 17-level pyramid. Scales from enterprise to individual component.</li>
+      <li><strong>Validated competition submission:</strong> M.A.D. System has real metrics (AUC 0.9940, 51h lead time, 2.15% FAR, p&lt;0.001) from NASA IMS cross-dataset validation.</li>
+      <li><strong>Knowledge evolution:</strong> KEL transforms the framework from a decision tool into a continuously improving intelligence system. Every project permanently improves future reasoning.</li>
+    </div>
+  </div>
+
+  <h3>Observations</h3>
+  <div class="item">
+    <div class="item-points">
+      <li><strong>Schema completeness:</strong> 25 JSON schemas cover the full intelligence pipeline. 000-Core provides shared types (Identity, Metadata, Provenance, Confidence, Evidence, Relationship, Validation, Lifecycle, Version).</li>
+      <li><strong>Engine count:</strong> 21 UIOS engines. Each has one responsibility. Engines communicate only through canonical resources (loose coupling).</li>
+      <li><strong>ROS coverage:</strong> 21 documents cover governance, intelligence, engineering, and management. 12 research principles. 18 mandatory decision pipeline fields. 15 agent roles.</li>
+      <li><strong>AISEOS discipline:</strong> 9-step implementation pipeline with 18 self-review checks and independent AI review. No code accepted after a single review. Revision loop until PASS.</li>
+      <li><strong>M.A.D. System maturity:</strong> Version 10.0. 12 framework documents. 4-tier validation (real data, synthetic sweep, ablation, robustness). 3 hypotheses all passed. 10 risks documented with mitigations.</li>
+      <li><strong>x-algorithm is reference only:</strong> Not integrated into any proprietary system. Provides architectural patterns for recommendation/ranking pipelines.</li>
+      <li><strong>AutoGen maturity:</strong> In maintenance mode. No new features. Community-managed. Microsoft Agent Framework (MAF) is the enterprise-ready successor with stable APIs, A2A and MCP interoperability, and long-term support. Existing AutoGen code should plan migration via the official migration guide.</li>
+      <li><strong>Haystack maturity:</strong> Actively maintained. Apache 2.0 license. Production-ready. PyPI package haystack-ai. Conda support. Docker images available. Enterprise support through deepset. Strong CI/CD with tests, Mypy, Ruff, coverage tracking. OpenSSF Best Practices badge.</li>
+      <li><strong>Schema depth verified:</strong> All 25 CITM schemas (000-024) read in full. 000-Core defines 9 shared types (Identity, Metadata, Provenance, Confidence, Evidence, Relationship, Validation, Lifecycle, Version). Schemas 003a/003b/003c decompose mapping into engine, reasoning, and optimization. Schema 024 (Intelligence Governance) provides 6 governance decisions: Continue, Pause, Restart, AcquireInformation, Escalate, Terminate.</li>
+      <li><strong>Engine depth verified:</strong> All 21 UIOS engine specs read. Each engine has a single responsibility, defined dependencies, and structured outputs. UIK (Universal Intelligence Kernel) is the foundation with zero dependencies. IOE (Intelligence Orchestration Engine) coordinates all engines. XTE (Explainability and Traceability Engine) depends on all engines for full provenance.</li>
+      <li><strong>ROS depth verified:</strong> All 21 ROS documents read. ROS-004 is a placeholder referencing PURF. ROS-005 (RUCA) is the core methodology document. ROS-021 (MASO) is the master architecture governing ROS-001 through ROS-020. 4 functional layers: Governance, Intelligence, Engineering, Management.</li>
+      <li><strong>PURF depth verified:</strong> All 11 PURF layer documents read. UML operates continuously across every PURF stage. RRL emphasizes resilience, not just risk minimization. VRL requires measurable business value before approval. XL ensures every output is explainable to its intended audience. AOL converts validated decisions into coordinated execution across humans, AI agents, and industrial systems.</li>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Generated by Cascade (AI coding agent) | 2026-07-30 | External Tools Framework Feedback Report<br>
+  4 top-level directories | 25 CITM schemas | 11 PURF layers | 21 UIOS engines | 21 ROS documents | 12 M.A.D. framework docs | 3 external dependencies
+</div>
+
+</body>
+</html>

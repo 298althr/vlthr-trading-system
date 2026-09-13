@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLTHR Pattern Recognition & Feature Engineering Spec</title>
+<style>
+/* ── OpenAI Dark Mode Design System ── */
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #1c2128;
+  --bg-hover: #21262d;
+  --border-default: #30363d;
+  --border-muted: #21262d;
+  --text-primary: #e6edf3;
+  --text-secondary: #7d8590;
+  --text-tertiary: #6e7681;
+  --accent-blue: #58a6ff;
+  --accent-green: #3fb950;
+  --accent-red: #f85149;
+  --accent-amber: #d29922;
+  --accent-purple: #bc8cff;
+  --accent-cyan: #39d2c0;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Sidebar Nav ── */
+.sidebar {
+  position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+  background: var(--bg-secondary); border-right: 1px solid var(--border-default);
+  overflow-y: auto; padding: 24px 16px;
+}
+.sidebar h2 {
+  font-size: 14px; font-weight: 600; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+  padding: 0 8px;
+}
+.nav-item {
+  display: block; padding: 8px 12px; margin-bottom: 2px;
+  color: var(--text-secondary); text-decoration: none;
+  border-radius: var(--radius-sm); font-size: 14px;
+  transition: all 0.15s ease;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-item.active { background: var(--bg-tertiary); color: var(--accent-blue); }
+.nav-item.sub { padding-left: 28px; font-size: 13px; }
+
+/* ── Main Content ── */
+.main { margin-left: 280px; padding: 48px 24px 80px; }
+.section { margin-bottom: 64px; }
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-default);
+}
+.section-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg-tertiary); border: 1px solid var(--border-default);
+  font-size: 14px; font-weight: 600; color: var(--accent-blue);
+}
+.section-title { font-size: 24px; font-weight: 600; }
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-secondary); border: 1px solid var(--border-default);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-title { font-size: 18px; font-weight: 600; }
+.card-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+/* ── Badges ── */
+.badge {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 12px; font-weight: 500;
+}
+.badge-blue { background: rgba(88,166,255,0.15); color: var(--accent-blue); border: 1px solid rgba(88,166,255,0.3); }
+.badge-green { background: rgba(63,185,80,0.15); color: var(--accent-green); border: 1px solid rgba(63,185,80,0.3); }
+.badge-red { background: rgba(248,81,73,0.15); color: var(--accent-red); border: 1px solid rgba(248,81,73,0.3); }
+.badge-amber { background: rgba(210,153,34,0.15); color: var(--accent-amber); border: 1px solid rgba(210,153,34,0.3); }
+.badge-purple { background: rgba(188,140,255,0.15); color: var(--accent-purple); border: 1px solid rgba(188,140,255,0.3); }
+.badge-cyan { background: rgba(57,210,192,0.15); color: var(--accent-cyan); border: 1px solid rgba(57,210,192,0.3); }
+.badge-gray { background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-default); }
+
+/* ── Tables ── */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border-muted); }
+th { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+td { font-size: 14px; }
+tr:hover { background: var(--bg-tertiary); }
+
+/* ── Code Blocks ── */
+code {
+  font-family: var(--font-mono); font-size: 13px;
+  background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px;
+  color: var(--accent-cyan);
+}
+pre {
+  background: var(--bg-secondary); border: 1px solid var(--border-default);
+  border-radius: var(--radius); padding: 16px; overflow-x: auto;
+  margin: 12px 0;
+}
+pre code { background: none; padding: 0; color: var(--text-primary); }
+
+/* ── Stat Grid ── */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+.stat-box {
+  background: var(--bg-tertiary); border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm); padding: 20px;
+}
+.stat-value { font-size: 36px; font-weight: 700; line-height: 1; }
+.stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+.stat-delta { font-size: 12px; margin-top: 4px; }
+
+/* ── Phase Cards ── */
+.phase-card {
+  background: var(--bg-secondary); border: 1px solid var(--border-default);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+  border-left: 4px solid var(--accent-blue);
+}
+.phase-card.p1 { border-left-color: var(--accent-green); }
+.phase-card.p2 { border-left-color: var(--accent-blue); }
+.phase-card.p3 { border-left-color: var(--accent-purple); }
+.phase-card.p4 { border-left-color: var(--accent-amber); }
+.phase-card.p5 { border-left-color: var(--accent-cyan); }
+.phase-card.p6 { border-left-color: var(--accent-red); }
+.phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.phase-num { font-size: 20px; font-weight: 700; }
+.phase-title { font-size: 18px; font-weight: 600; }
+.phase-body { margin-left: 0; }
+.phase-body h4 { font-size: 15px; font-weight: 600; margin: 16px 0 8px; color: var(--text-primary); }
+.phase-body ul { list-style: none; padding: 0; }
+.phase-body li { padding: 4px 0 4px 20px; position: relative; }
+.phase-body li::before { content: ''; position: absolute; left: 0; top: 12px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); }
+
+/* ── Callout ── */
+.callout {
+  border-radius: var(--radius); padding: 16px 20px; margin: 16px 0;
+  border: 1px solid;
+}
+.callout-info { background: rgba(88,166,255,0.08); border-color: rgba(88,166,255,0.2); }
+.callout-warn { background: rgba(210,153,34,0.08); border-color: rgba(210,153,34,0.2); }
+.callout-danger { background: rgba(248,81,73,0.08); border-color: rgba(248,81,73,0.2); }
+.callout-success { background: rgba(63,185,80,0.08); border-color: rgba(63,185,80,0.2); }
+.callout-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+
+/* ── Progress Bar ── */
+.progress-bar { height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; margin: 8px 0; }
+.progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+
+/* ── Misc ── */
+p { margin-bottom: 12px; color: var(--text-primary); }
+h3 { font-size: 20px; font-weight: 600; margin: 24px 0 12px; }
+h4 { font-size: 16px; font-weight: 600; margin: 16px 0 8px; }
+.text-secondary { color: var(--text-secondary); }
+.text-amber { color: var(--accent-amber); }
+.text-red { color: var(--accent-red); }
+.text-green { color: var(--accent-green); }
+.text-blue { color: var(--accent-blue); }
+.text-purple { color: var(--accent-purple); }
+.text-cyan { color: var(--accent-cyan); }
+.mono { font-family: var(--font-mono); }
+.divider { height: 1px; background: var(--border-default); margin: 24px 0; }
+.tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- SIDEBAR NAV                                                   -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<nav class="sidebar">
+  <h2>Specification</h2>
+  <a href="#sec1" class="nav-item">1. Executive Summary</a>
+  <a href="#sec1-audit" class="nav-item sub">1.1 Current State Audit</a>
+  <a href="#sec1-gap" class="nav-item sub">1.2 Gap Analysis</a>
+  <a href="#sec2" class="nav-item">2. Pattern Catalog</a>
+  <a href="#sec2-trend" class="nav-item sub">2.1 Trend Line Patterns</a>
+  <a href="#sec2-sr" class="nav-item sub">2.2 Support / Resistance</a>
+  <a href="#sec2-curve" class="nav-item sub">2.3 Curvature Patterns</a>
+  <a href="#sec2-accum" class="nav-item sub">2.4 Accumulation / Distribution</a>
+  <a href="#sec2-candle" class="nav-item sub">2.5 Candlestick Patterns</a>
+  <a href="#sec2-struct" class="nav-item sub">2.6 Market Structure</a>
+  <a href="#sec3" class="nav-item">3. Feature Engineering</a>
+  <a href="#sec3-ratio" class="nav-item sub">3.1 Ratio Features</a>
+  <a href="#sec3-composite" class="nav-item sub">3.2 Composite Features</a>
+  <a href="#sec3-zscore" class="nav-item sub">3.3 Z-Score Features</a>
+  <a href="#sec3-conditional" class="nav-item sub">3.4 Conditional Features</a>
+  <a href="#sec3-cross" class="nav-item sub">3.5 Cross-Timeframe</a>
+  <a href="#sec4" class="nav-item">4. Implementation Phases</a>
+  <a href="#sec4-p1" class="nav-item sub">Phase 1: Foundation</a>
+  <a href="#sec4-p2" class="nav-item sub">Phase 2: Chart Patterns</a>
+  <a href="#sec4-p3" class="nav-item sub">Phase 3: Advanced Patterns</a>
+  <a href="#sec4-p4" class="nav-item sub">Phase 4: Feature Engineering</a>
+  <a href="#sec4-p5" class="nav-item sub">Phase 5: Integration</a>
+  <a href="#sec4-p6" class="nav-item sub">Phase 6: Calibration</a>
+  <a href="#sec5" class="nav-item">5. Methodology</a>
+  <a href="#sec5-design" class="nav-item sub">5.1 Backtest Design</a>
+  <a href="#sec5-validate" class="nav-item sub">5.2 Validation Gates</a>
+  <a href="#sec5-metrics" class="nav-item sub">5.3 Success Metrics</a>
+  <a href="#sec6" class="nav-item">6. Open-Source References</a>
+  <a href="#sec7" class="nav-item">7. Risk Assessment</a>
+</nav>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- MAIN CONTENT                                                   -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<main class="main">
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HEADER                                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div style="margin-bottom: 48px;">
+  <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">
+    Pattern Recognition & Feature Engineering Specification
+  </h1>
+  <p class="text-secondary" style="font-size: 16px;">
+    VLTHR Trading System. Frozen backtest v2. Enriched CSV with 84 columns.
+    16,711 signal records. 925 closed trades. 5 symbols. 180-day window.
+  </p>
+  <div class="tag-row" style="margin-top: 16px;">
+    <span class="badge badge-blue">SPEC v1.0</span>
+    <span class="badge badge-green">Backtest Frozen</span>
+    <span class="badge badge-amber">6 Phases Planned</span>
+    <span class="badge badge-purple">Pure Python</span>
+    <span class="badge badge-cyan">No New Infrastructure</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: EXECUTIVE SUMMARY & CURRENT STATE AUDIT            -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="sec1" class="section">
+  <div class="section-header">
+    <span class="section-num">1</span>
+    <span class="section-title">Executive Summary & Current State Audit</span>
+  </div>
+
+  <p>
+    This specification defines the plan for adding chart pattern recognition and feature engineering
+    to the VLTHR trading system. The system currently operates on point-in-time indicator values
+    with zero pattern recognition capability. This document catalogs every pattern and engineered
+    feature to implement, defines a 6-phase rollout order, and specifies the backtest validation
+    strategy for each phase.
+  </p>
+
+  <!-- ── 1.1 Current State Audit ── -->
+  <h3 id="sec1-audit">1.1 Current State Audit</h3>
+
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="stat-value text-red">0</div>
+      <div class="stat-label">Chart Patterns Recognized</div>
+      <div class="stat-delta text-secondary">No trend lines, S/R, curvature, or accumulation detection</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value text-amber">23</div>
+      <div class="stat-label">Features in Live Pipeline</div>
+      <div class="stat-delta text-secondary">Raw + computed + derived scoring</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value text-blue">30</div>
+      <div class="stat-label">Probe Features (Shadow)</div>
+      <div class="stat-delta text-secondary">V3 probe engine, not wired to decisions</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value text-green">84</div>
+      <div class="stat-label">CSV Columns (Backtest)</div>
+      <div class="stat-delta text-secondary">Enriched logging, analysis only</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value text-purple">15</div>
+      <div class="stat-label">Inputs to DQS Formula</div>
+      <div class="stat-delta text-secondary">Sole decision engine</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value text-cyan">12</div>
+      <div class="stat-label">Pipeline Gates</div>
+      <div class="stat-delta text-secondary">Sequential filters post-DQS</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Live Pipeline Feature Inventory</span>
+      <span class="badge badge-gray">23 features</span>
+    </div>
+
+    <h4>Raw Enriched Data (11 columns)</h4>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Source</th><th>Type</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>open</code></td><td>Bybit OHLCV</td><td>Price</td></tr>
+        <tr><td><code>high</code></td><td>Bybit OHLCV</td><td>Price</td></tr>
+        <tr><td><code>low</code></td><td>Bybit OHLCV</td><td>Price</td></tr>
+        <tr><td><code>close</code></td><td>Bybit OHLCV</td><td>Price</td></tr>
+        <tr><td><code>volume</code></td><td>Bybit OHLCV</td><td>Volume</td></tr>
+        <tr><td><code>turnover</code></td><td>Bybit OHLCV</td><td>Notional Volume</td></tr>
+        <tr><td><code>open_interest</code></td><td>Bybit OI</td><td>Positioning</td></tr>
+        <tr><td><code>funding_rate</code></td><td>Bybit Funding</td><td>Cost of Carry</td></tr>
+        <tr><td><code>buyRatio</code></td><td>Bybit LS Ratio</td><td>Sentiment</td></tr>
+        <tr><td><code>sellRatio</code></td><td>Bybit LS Ratio</td><td>Sentiment</td></tr>
+        <tr><td><code>timestamp</code></td><td>Bybit OHLCV</td><td>Time</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Computed Indicators (4)</h4>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Period</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>atr</code></td><td>Wilder's Average True Range</td><td>14</td></tr>
+        <tr><td><code>rsi</code></td><td>Relative Strength Index</td><td>14</td></tr>
+        <tr><td><code>adx</code></td><td>Average Directional Index</td><td>14</td></tr>
+        <tr><td><code>session</code></td><td>Asia / EU / US classification</td><td>Hour of day</td></tr>
+      </tbody>
+    </table>
+
+    <h4>4h Context Features (3)</h4>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ctx_adx</code></td><td>ADX on 4h bars</td><td>4h enriched parquet</td></tr>
+        <tr><td><code>ctx_log_ret_4h</code></td><td>ln(close / prev_close)</td><td>4h enriched parquet</td></tr>
+        <tr><td><code>bull_4h</code></td><td>EMA8 > EMA21 (binary)</td><td>4h enriched parquet</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Derived Scoring Features (5)</h4>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>tech_raw</code></td><td>RSI + ADX + momentum composite</td><td>DQS technical domain</td></tr>
+        <tr><td><code>struct_raw</code></td><td>Spread + depth + imbalance + funding + OI</td><td>DQS structural domain</td></tr>
+        <tr><td><code>ctx_raw</code></td><td>Session + symbol quality</td><td>DQS contextual domain</td></tr>
+        <tr><td><code>contra_penalty</code></td><td>Contradiction count across domains</td><td>DQS penalty</td></tr>
+        <tr><td><code>calibrated_prob</code></td><td>DQS-to-win-probability curve</td><td>Gate threshold</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">V3 Probe Engine (Shadow Mode)</span>
+      <span class="badge badge-blue">30 features, not live</span>
+    </div>
+    <p class="text-secondary">
+      12 probe categories in <code>pipeline/engine/v3/discovery/probe_engine.py</code>.
+      Each computes a feature and evaluates its Information Coefficient (IC) against forward returns.
+      Results stored in feature registry. Not wired into DQS or gate decisions.
+    </p>
+    <table>
+      <thead>
+        <tr><th>Probe Type</th><th>Features</th><th>Examples</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Trend</td><td>7</td><td><code>trend_ret_6/12/24/48/96</code>, <code>trend_ema_slope_20/50</code></td></tr>
+        <tr><td>Volatility</td><td>4</td><td><code>vol_atr_pct_14/28/56</code>, <code>vol_pctile_96</code></td></tr>
+        <tr><td>Liquidity</td><td>2</td><td><code>liq_vol_ratio_20</code>, <code>liq_spread_proxy</code></td></tr>
+        <tr><td>Orderflow</td><td>2</td><td><code>of_cum_delta_6/24</code></td></tr>
+        <tr><td>Time</td><td>2</td><td><code>time_hour</code>, <code>time_dow</code></td></tr>
+        <tr><td>Fractal</td><td>2</td><td><code>fractal_hurst_10/20</code></td></tr>
+        <tr><td>Correlation</td><td>3</td><td><code>corr_btc_48/96</code>, <code>corr_btc_leadlag_48</code></td></tr>
+        <tr><td>Regime</td><td>2</td><td><code>regime_adx_14</code>, <code>regime_trend_dir</code></td></tr>
+        <tr><td>Auction</td><td>4</td><td><code>auc_funding_rate</code>, <code>auc_funding_zscore_96</code>, <code>auc_oi_delta_96</code>, <code>auc_ls_ratio</code></td></tr>
+        <tr><td>Risk</td><td>3</td><td><code>risk_var95_48/96</code>, <code>risk_drawdown_96</code></td></tr>
+        <tr><td>Capital</td><td>2</td><td><code>cap_turnover_ratio_20</code>, <code>cap_vwap_dev_20</code></td></tr>
+        <tr><td>Decision</td><td>3</td><td><code>dec_rsi</code>, <code>dec_rsi_momentum_3</code>, <code>dec_log_ret_4h</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">DQS Decision Formula</span>
+      <span class="badge badge-purple">15 inputs</span>
+    </div>
+    <p>The sole decision engine. Produces a 0-100 score from 15 input variables.</p>
+    <pre><code>DQS = (tech_raw * 0.40 + struct_raw * 0.30 + ctx_raw * 0.30
+      + pullback_bonus + liquidity_bonus)
+      * min(trend_mult * session_mult * symbol_mult, 1.20)
+      - contra_penalty - regime_penalty</code></pre>
+    <p class="text-secondary">
+      12 sequential gates then filter signals post-DQS: regime, calibration, correlation,
+      risk budget, trade count, directional, DQ score, crowding, daily loss, and others.
+      Gates use thresholds, not patterns.
+    </p>
+  </div>
+
+  <!-- ── 1.2 Gap Analysis ── -->
+  <h3 id="sec1-gap">1.2 Gap Analysis</h3>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Current</th><th>Target</th><th>Gap</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chart Patterns</td>
+          <td class="text-red">0</td>
+          <td>15+</td>
+          <td class="text-red">Critical</td>
+        </tr>
+        <tr>
+          <td>Candlestick Patterns</td>
+          <td class="text-red">0</td>
+          <td>8+</td>
+          <td class="text-red">Critical</td>
+        </tr>
+        <tr>
+          <td>Trend Line Geometry</td>
+          <td class="text-red">0</td>
+          <td>5</td>
+          <td class="text-red">Critical</td>
+        </tr>
+        <tr>
+          <td>Support / Resistance</td>
+          <td class="text-red">0</td>
+          <td>4</td>
+          <td class="text-red">Critical</td>
+        </tr>
+        <tr>
+          <td>Curvature / Acceleration</td>
+          <td class="text-red">0</td>
+          <td>3</td>
+          <td class="text-amber">High</td>
+        </tr>
+        <tr>
+          <td>Accumulation / Distribution</td>
+          <td class="text-red">0</td>
+          <td>3</td>
+          <td class="text-amber">High</td>
+        </tr>
+        <tr>
+          <td>Feature Combinations</td>
+          <td class="text-red">0</td>
+          <td>20+</td>
+          <td class="text-amber">High</td>
+        </tr>
+        <tr>
+          <td>Raw Features (Live)</td>
+          <td class="text-amber">23</td>
+          <td>60-80</td>
+          <td class="text-amber">High</td>
+        </tr>
+        <tr>
+          <td>Probe Features (Shadow)</td>
+          <td class="text-blue">30</td>
+          <td>Promote to live</td>
+          <td class="text-blue">Medium</td>
+        </tr>
+        <tr>
+          <td>Pattern-to-Decision Link</td>
+          <td class="text-red">None</td>
+          <td>DQS integration</td>
+          <td class="text-red">Critical</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-danger">
+    <div class="callout-title">Critical Finding</div>
+    <p>
+      The system has zero pattern recognition. It evaluates the current bar's indicator values
+      without analyzing price geometry, multi-bar structures, or chart formations. This means
+      the system cannot distinguish a breakout from a false push, a pullback from a reversal,
+      or accumulation from distribution. All trading decisions rely on scalar indicator values
+      at a single point in time.
+    </p>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Existing Infrastructure</div>
+    <p>
+      The enriched DataFrame already contains OHLCV, open_interest, funding_rate, buy/sell ratios,
+      ATR, RSI, ADX, session, and 4h context. All pattern detection and feature engineering can
+      operate on this existing DataFrame. No new data sources, services, or infrastructure required.
+      Pure Python functions using pandas, numpy, and scipy.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: PATTERN RECOGNITION CATALOG                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="sec2" class="section">
+  <div class="section-header">
+    <span class="section-num">2</span>
+    <span class="section-title">Pattern Recognition Catalog</span>
+  </div>
+  <p>
+    30 patterns across 6 categories. Each pattern is a pure Python function that takes
+    the enriched DataFrame (last N bars) and returns a dict of pattern features.
+    All patterns output: <code>detected</code> (bool), <code>strength</code> (0-1),
+    <code>direction</code> (bullish/bearish/neutral), and pattern-specific metadata.
+  </p>
+</div>
+
+<!-- SECTION 2 CONTENT -->
+<div id="sec2-content">
+
+  <!-- ── 2.1 Trend Line Patterns ── -->
+  <h3 id="sec2-trend" style="margin-top: 48px;">2.1 Trend Line Patterns (5)</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.1.1 Converging Trend Lines (Wedge)</span>
+      <div class="tag-row">
+        <span class="badge badge-green">Rising Wedge</span>
+        <span class="badge badge-red">Falling Wedge</span>
+        <span class="badge badge-blue">Symmetrical Triangle</span>
+      </div>
+    </div>
+    <p><strong>Inputs:</strong> Last 40-60 bars of OHLCV. Pivot highs and pivot lows.</p>
+    <p><strong>Algorithm:</strong></p>
+    <ul>
+      <li>Detect pivot highs and lows using fractal method (left=3, right=3)</li>
+      <li>Linear regression on pivot highs: slope_max, intercept_max, r_max</li>
+      <li>Linear regression on pivot lows: slope_min, intercept_min, r_min</li>
+      <li>Convergence test: intersection point exists ahead, within 3x lookback distance</li>
+      <li>Slope ratio test: 0.75 and 1.25 (same direction, converging)</li>
+    </ul>
+    <p><strong>Formula:</strong></p>
+    <pre><code># Pivot detection
+pivot_high[i] = high[i] == max(high[i-3 : i+4])
+pivot_low[i]  = low[i]  == min(low[i-3  : i+4])
+
+# Linear regression on pivots
+slope_max, interc_max, r_max = scipy.stats.linregress(x_max, y_max)
+slope_min, interc_min, r_min = scipy.stats.linregress(x_min, y_min)
+
+# Convergence: intersection ahead
+x_intersect = (interc_min - interc_max) / (slope_max - slope_min)
+converges = x_intersect > max(all_pivot_xs)
+           and x_intersect - max(all_pivot_xs) < 3 * lookback
+
+# Classification
+if slope_min > 0 and slope_max > 0 and slope_min/slope_max in [0.75, 1.25]:
+    pattern = "rising_wedge"  # bearish
+elif slope_min < 0 and slope_max < 0 and slope_min/slope_max in [0.75, 1.25]:
+    pattern = "falling_wedge"  # bullish
+elif slope_max < 0 and slope_min > 0:
+    pattern = "symmetrical_triangle"  # neutral, breakout-dependent</code></pre>
+    <p><strong>Output fields:</strong> <code>wedge_detected</code>, <code>wedge_type</code>, <code>wedge_strength</code> (min(r_max, r_min)), <code>wedge_bars_to_apex</code>, <code>wedge_slope_ratio</code></p>
+    <p class="text-secondary"><strong>Reference:</strong> <code>zeta-zetra/code</code> wedge.py on GitHub. Uses scipy.stats.linregress with r-value threshold of 0.9.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.1.2 Ascending Triangle</span>
+      <span class="badge badge-green">Bullish</span>
+    </div>
+    <p><strong>Algorithm:</strong> Flat resistance (horizontal highs) + rising support (positive slope lows).</p>
+    <pre><code># Horizontal resistance test
+resistance_levels = cluster(pivot_highs, tolerance=0.5 * atr)
+is_flat_top = len(set(resistance_levels)) == 1 and r_max < 0.3
+
+# Rising support test
+is_rising_bottom = slope_min > 0 and r_min > 0.8
+
+pattern = "ascending_triangle" if is_flat_top and is_rising_bottom</code></pre>
+    <p><strong>Output:</strong> <code>asc_triangle_detected</code>, <code>asc_triangle_strength</code>, <code>asc_triangle_resistance_level</code>, <code>asc_triangle_support_slope</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.1.3 Descending Triangle</span>
+      <span class="badge badge-red">Bearish</span>
+    </div>
+    <p><strong>Algorithm:</strong> Flat support (horizontal lows) + falling resistance (negative slope highs).</p>
+    <pre><code># Horizontal support test
+support_levels = cluster(pivot_lows, tolerance=0.5 * atr)
+is_flat_bottom = len(set(support_levels)) == 1 and r_min < 0.3
+
+# Falling resistance test
+is_falling_top = slope_max < 0 and r_max > 0.8
+
+pattern = "descending_triangle" if is_flat_bottom and is_falling_top</code></pre>
+    <p><strong>Output:</strong> <code>desc_triangle_detected</code>, <code>desc_triangle_strength</code>, <code>desc_triangle_support_level</code>, <code>desc_triangle_resistance_slope</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.1.4 Parallel Channel (Ascending / Descending)</span>
+      <div class="tag-row">
+        <span class="badge badge-green">Bull Channel</span>
+        <span class="badge badge-red">Bear Channel</span>
+      </div>
+    </div>
+    <p><strong>Algorithm:</strong> Two parallel trend lines with same slope direction.</p>
+    <pre><code># Parallel test: slopes within 15% of each other
+slope_ratio = slope_min / slope_max if slope_max != 0 else 0
+is_parallel = 0.85 <= abs(slope_ratio) <= 1.15
+
+# Channel width consistency
+channel_widths = [y_max[i] - y_min[i] for i in range(len(x))]
+width_cv = std(channel_widths) / mean(channel_widths)
+is_consistent = width_cv < 0.3
+
+if is_parallel and is_consistent:
+    if slope_max > 0: pattern = "ascending_channel"
+    elif slope_max < 0: pattern = "descending_channel"</code></pre>
+    <p><strong>Output:</strong> <code>channel_detected</code>, <code>channel_type</code>, <code>channel_slope</code>, <code>channel_width</code>, <code>channel_touches</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.1.5 Trend Line Break / Retest</span>
+      <span class="badge badge-amber">Breakout Signal</span>
+    </div>
+    <p><strong>Algorithm:</strong> Detect established trend line, then price breaks through and retests.</p>
+    <pre><code># Established trend line (min 3 touches, r > 0.8)
+trend_line = linregress(pivot_points)
+# Break: close crosses trend line
+broke = close[-1] > trend_line_at[-1] if was_resistance else close[-1] < trend_line_at[-1]
+# Retest: price returns to within 0.5 ATR of trend line after break
+retest = abs(close[-1] - trend_line_at[-1]) < 0.5 * atr</code></pre>
+    <p><strong>Output:</strong> <code>trend_break_detected</code>, <code>trend_break_direction</code>, <code>trend_break_retest</code> (bool), <code>trend_break_strength</code></p>
+  </div>
+
+  <!-- ── 2.2 Support / Resistance ── -->
+  <h3 id="sec2-sr">2.2 Support / Resistance (4)</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.2.1 Horizontal Support / Resistance</span>
+      <span class="badge badge-blue">Multi-touch</span>
+    </div>
+    <p><strong>Algorithm:</strong> Cluster price levels where price reversed 3+ times.</p>
+    <pre><code># Identify all pivot highs and lows
+pivots = list(pivot_highs) + list(pivot_lows)
+
+# Cluster by price proximity (within 0.5 ATR)
+clusters = []
+for p in pivots:
+    placed = False
+    for c in clusters:
+        if abs(p - c.center) < 0.5 * atr:
+            c.add(p)
+            placed = True
+            break
+    if not placed:
+        clusters.append(Cluster(center=p, touches=[p]))
+
+# Significant levels: 3+ touches
+sr_levels = [c for c in clusters if len(c.touches) >= 3]
+near_support = any(abs(close - s.center) < 0.5 * atr for s in sr_levels if s.center < close)
+near_resistance = any(abs(close - r.center) < 0.5 * atr for r in sr_levels if r.center > close)</code></pre>
+    <p><strong>Output:</strong> <code>sr_level_count</code>, <code>near_support</code>, <code>near_resistance</code>, <code>nearest_support_dist_atr</code>, <code>nearest_resistance_dist_atr</code>, <code>support_touches</code>, <code>resistance_touches</code></p>
+    <p class="text-secondary"><strong>Reference:</strong> <code>keithorange/PatternPy</code> implements horizontal S/R with similar clustering approach.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.2.2 Dynamic Support (Rising)</span>
+      <span class="badge badge-green">Bullish</span>
+    </div>
+    <p><strong>Algorithm:</strong> Linear regression on swing lows with positive slope, price currently above.</p>
+    <pre><code>rising_support = slope_min > 0 and r_min > 0.8 and close > (slope_min * len + interc_min)
+support_strength = r_min * min(touches / 5, 1.0)</code></pre>
+    <p><strong>Output:</strong> <code>rising_support_detected</code>, <code>rising_support_slope</code>, <code>rising_support_strength</code>, <code>rising_support_dist_atr</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.2.3 Dynamic Resistance (Falling)</span>
+      <span class="badge badge-red">Bearish</span>
+    </div>
+    <p><strong>Algorithm:</strong> Linear regression on swing highs with negative slope, price currently below.</p>
+    <pre><code>falling_resistance = slope_max < 0 and r_max > 0.8 and close < (slope_max * len + interc_max)
+resistance_strength = r_max * min(touches / 5, 1.0)</code></pre>
+    <p><strong>Output:</strong> <code>falling_resistance_detected</code>, <code>falling_resistance_slope</code>, <code>falling_resistance_strength</code>, <code>falling_resistance_dist_atr</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.2.4 Break of Structure (BoS) / Change of Character (CHoCH)</span>
+      <span class="badge badge-purple">Smart Money Concept</span>
+    </div>
+    <p><strong>Algorithm:</strong> Detect swing highs/lows, then classify break as continuation (BoS) or reversal (CHoCH).</p>
+    <pre><code># Track swing sequence
+swings = detect_swings(df, left=3, right=3)
+
+# Last confirmed swing high/low
+last_swing_high = swings[-2].price if swings[-2].type == "high"
+last_swing_low  = swings[-2].price if swings[-2].type == "low"
+
+# Bullish BoS: close breaks above last swing high in uptrend
+bullish_bos = close > last_swing_high and trend == "up"
+
+# Bearish CHoCH: close breaks below last swing low in uptrend (reversal)
+bearish_choch = close < last_swing_low and trend == "up"
+
+# Bullish CHoCH: close breaks above last swing high in downtrend (reversal)
+bullish_choch = close > last_swing_high and trend == "down"</code></pre>
+    <p><strong>Output:</strong> <code>bos_detected</code>, <code>bos_type</code> (continuation/reversal), <code>bos_direction</code>, <code>choch_detected</code>, <code>choch_direction</code></p>
+    <p class="text-secondary"><strong>Reference:</strong> <code>fortunato/pymarket-structure</code> implements BoS/CHoCH with 67 output columns.</p>
+  </div>
+
+  <!-- ── 2.3 Curvature Patterns ── -->
+  <h3 id="sec2-curve">2.3 Curvature Patterns (3)</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.3.1 Price Curvature (Quadratic Fit)</span>
+      <span class="badge badge-cyan">Mathematical</span>
+    </div>
+    <p><strong>Algorithm:</strong> Fit quadratic polynomial to last N closes. Extract curvature coefficient.</p>
+    <pre><code># Quadratic fit: y = a*x^2 + b*x + c
+x = np.arange(len(closes[-60:]))
+coeffs = np.polyfit(x, closes[-60:], deg=2)
+curvature = coeffs[0]  # second derivative / 2
+
+# Normalize to ATR units
+curvature_atr = curvature / atr
+
+# Classification
+if curvature_atr > threshold_bullish:
+    curve_type = "convex_up"    # accumulation bottom
+elif curvature_atr < -threshold_bearish:
+    curve_type = "concave_down"  # distribution top
+else:
+    curve_type = "linear"</code></pre>
+    <p><strong>Output:</strong> <code>price_curvature</code>, <code>price_curvature_atr</code>, <code>curve_type</code>, <code>curve_r_squared</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.3.2 Volume Curvature</span>
+      <span class="badge badge-cyan">Mathematical</span>
+    </div>
+    <p><strong>Algorithm:</strong> Quadratic fit on volume. Detect volume acceleration or deceleration.</p>
+    <pre><code>vol_coeffs = np.polyfit(x, volumes[-60:], deg=2)
+vol_curvature = vol_coeffs[0]
+vol_curvature_atr = vol_curvature / (atr * volume_mean)
+
+# Volume acceleration = potential breakout building
+# Volume deceleration = exhaustion</code></pre>
+    <p><strong>Output:</strong> <code>vol_curvature</code>, <code>vol_curvature_atr</code>, <code>vol_curve_type</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.3.3 RSI Curvature (Momentum Acceleration)</span>
+      <span class="badge badge-cyan">Mathematical</span>
+    </div>
+    <p><strong>Algorithm:</strong> Quadratic fit on RSI values. Detect momentum building or fading.</p>
+    <pre><code>rsi_coeffs = np.polyfit(x, rsi_values[-40:], deg=2)
+rsi_curvature = rsi_coeffs[0]
+
+# Positive RSI curvature in oversold = momentum building (bullish)
+# Negative RSI curvature in overbought = momentum fading (bearish)</code></pre>
+    <p><strong>Output:</strong> <code>rsi_curvature</code>, <code>rsi_curve_type</code></p>
+  </div>
+
+  <!-- ── 2.4 Accumulation / Distribution ── -->
+  <h3 id="sec2-accum">2.4 Accumulation / Distribution (3)</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.4.1 Wyckoff Phase Detection</span>
+      <span class="badge badge-purple">Multi-stage</span>
+    </div>
+    <p><strong>Algorithm:</strong> Detect trading range, then classify phase A-E using volume, price, and structure signals.</p>
+    <pre><code># Step 1: Detect trading range
+support, resistance = detect_range(pivots, atr)
+range_size = resistance - support
+in_range = range_size < 5 * atr and touches >= 4
+
+# Step 2: Phase scoring
+scores = {"phase_a": 0, "phase_b": 0, "phase_c": 0, "phase_d": 0, "phase_e": 0}
+
+# Phase A: Selling/buying climax + automatic reaction
+if detect_selling_climax(volume, price): scores["phase_a"] += 2.0
+if detect_automatic_reaction(price): scores["phase_a"] += 1.5
+
+# Phase B: Secondary tests, OBV rising while price flat
+if count_secondary_tests(support) > 0: scores["phase_b"] += 1.5 * count
+if obv_rising_and_price_flat(): scores["phase_b"] += 1.0
+
+# Phase C: Spring (price dips below support then recovers)
+if detect_spring(close, support): scores["phase_c"] += 3.0
+if detect_upthrust(close, resistance): scores["phase_c"] += 3.0
+
+# Phase D: Sign of Strength (SOS) or Sign of Weakness (SOW)
+if detect_sos(close, resistance): scores["phase_d"] += 2.0
+if detect_sow(close, support): scores["phase_d"] += 2.0
+
+# Phase E: Breakout confirmed
+if price_above_resistance and trend_bullish: scores["phase_e"] += 1.5
+
+wyckoff_phase = argmax(scores)
+wyckoff_confidence = max(scores.values()) / sum(scores.values())</code></pre>
+    <p><strong>Output:</strong> <code>wyckoff_phase</code> (A-E), <code>wyckoff_sub_phase</code>, <code>wyckoff_confidence</code>, <code>wyckoff_range_support</code>, <code>wyckoff_range_resistance</code></p>
+    <p class="text-secondary"><strong>Reference:</strong> <code>gopheroid/go-wyckoff</code> spec, <code>Martinolli/marketflow</code> WyckoffAnalyzer, <code>srlcarlg/srl-python-indicators</code> WeisWyckoffSystem.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.4.2 Volume Spread Analysis (VSA)</span>
+      <span class="badge badge-amber">Effort vs Result</span>
+    </div>
+    <p><strong>Algorithm:</strong> Compare bar spread (high-low) to volume. Detect effort without result.</p>
+    <pre><code># Effort = volume, Result = price spread
+spread = (high - low) / close
+vol_effort = volume / volume_mean_20
+
+# Anomalies
+narrow_spread_high_vol = spread < 0.3 * avg_spread and vol_effort > 2.0  # effort, no result
+wide_spread_low_vol = spread > 2.0 * avg_spread and vol_effort < 0.5    # result, no effort
+
+# Upthrust: wide spread up, close near low, high volume
+upthrust = (close - low) < 0.3 * (high - low) and vol_effort > 1.5 and spread > avg_spread
+
+# Spring: wide spread down, close near high, high volume
+spring = (high - close) < 0.3 * (high - low) and vol_effort > 1.5 and spread > avg_spread</code></pre>
+    <p><strong>Output:</strong> <code>vsa_narrow_high_vol</code>, <code>vsa_wide_low_vol</code>, <code>vsa_upthrust</code>, <code>vsa_spring</code>, <code>vsa_effort_result_ratio</code></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">2.4.3 Order Block Detection</span>
+      <span class="badge badge-purple">Institutional</span>
+    </div>
+    <p><strong>Algorithm:</strong> Identify last down-candle before a strong bullish move (bullish OB) or last up-candle before strong bearish move (bearish OB).</p>
+    <pre><code># Bullish order block: last bearish candle before strong bullish move
+for i in range(len(df)-2, max(0, len(df)-20), -1):
+    if df.close[i] < df.open[i]:  # bearish candle
+        next_move = (df.close[i+2] - df.close[i]) / df.close[i]
+        if next_move > 2 * atr_pct:  # strong bullish move follows
+            ob_high = df.high[i]
+            ob_low = df.low[i]
+            price_in_ob = ob_low <= close <= ob_high
+            break</code></pre>
+    <p><strong>Output:</strong> <code>bull_ob_detected</code>, <code>bull_ob_high</code>, <code>bull_ob_low</code>, <code>price_in_bull_ob</code>, <code>bear_ob_detected</code>, <code>price_in_bear_ob</code></p>
+  </div>
+
+  <!-- ── 2.5 Candlestick Patterns ── -->
+  <h3 id="sec2-candle">2.5 Candlestick Patterns (8)</h3>
+
+  <div class="card">
+    <p>Single-bar and two-bar patterns computed from OHLC ratios. Each returns a boolean and strength score.</p>
+    <table>
+      <thead>
+        <tr><th>Pattern</th><th>Type</th><th>Detection Logic</th><th>Bias</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Doji</strong></td><td>Single</td><td><code>abs(close - open) / (high - low + 1e-10) &lt; 0.1</code></td><td>Neutral</td></tr>
+        <tr><td><strong>Hammer</strong></td><td>Single</td><td><code>lower_wick / body &gt; 2 and upper_wick / body &lt; 0.5 and body &gt; 0</code></td><td>Bullish</td></tr>
+        <tr><td><strong>Shooting Star</strong></td><td>Single</td><td><code>upper_wick / body &gt; 2 and lower_wick / body &lt; 0.5 and body &gt; 0</code></td><td>Bearish</td></tr>
+        <tr><td><strong>Bullish Engulfing</strong></td><td>Two-bar</td><td><code>prev_close &lt; prev_open and close &gt; open and close &gt; prev_open and open &lt; prev_close</code></td><td>Bullish</td></tr>
+        <tr><td><strong>Bearish Engulfing</strong></td><td>Two-bar</td><td><code>prev_close &gt; prev_open and close &lt; open and close &lt; prev_open and open &gt; prev_close</code></td><td>Bearish</td></tr>
+        <tr><td><strong>Pin Bar (Bullish)</strong></td><td>Single</td><td><code>lower_wick &gt; 2 * body and close &gt; midpoint of range</code></td><td>Bullish</td></tr>
+        <tr><td><strong>Pin Bar (Bearish)</strong></td><td>Single</td><td><code>upper_wick &gt; 2 * body and close &lt; midpoint of range</code></td><td>Bearish</td></tr>
+        <tr><td><strong>Inside Bar</strong></td><td>Two-bar</td><td><code>high &lt; prev_high and low &gt; prev_low</code></td><td>Neutral</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Output fields per pattern:</strong> <code>cdl_{pattern_name}</code> (bool), <code>cdl_{pattern_name}_strength</code> (0-1)</p>
+    <p class="text-secondary"><strong>Reference:</strong> <code>tonylyliu/price-action-lib</code> implements 44+ candlestick patterns. TA-Lib has 63 patterns. We implement the 8 most relevant for crypto 15m bars.</p>
+  </div>
+
+  <!-- ── 2.6 Market Structure ── -->
+  <h3 id="sec2-struct">2.6 Market Structure (7)</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Market Structure Patterns</span>
+      <span class="badge badge-gray">7 patterns</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Pattern</th><th>Algorithm</th><th>Output Fields</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Higher Highs / Higher Lows</strong></td>
+          <td>Sequence of pivots where each high &gt; prev high and each low &gt; prev low</td>
+          <td><code>hh_hl_trend</code>, <code>hh_count</code>, <code>hl_count</code></td>
+        </tr>
+        <tr>
+          <td><strong>Lower Highs / Lower Lows</strong></td>
+          <td>Sequence of pivots where each high &lt; prev high and each low &lt; prev low</td>
+          <td><code>lh_ll_trend</code>, <code>lh_count</code>, <code>ll_count</code></td>
+        </tr>
+        <tr>
+          <td><strong>Head and Shoulders</strong></td>
+          <td>Three peaks: left shoulder, higher head, right shoulder. Shoulders within 3% of each other. Neckline = low between shoulders.</td>
+          <td><code>hs_detected</code>, <code>hs_type</code> (regular/inverse), <code>hs_neckline</code>, <code>hs_strength</code></td>
+        </tr>
+        <tr>
+          <td><strong>Double Top / Bottom</strong></td>
+          <td>Two peaks at same level (within 0.5 ATR). Trough between them &gt; 1 ATR deep.</td>
+          <td><code>dt_detected</code>, <code>dt_type</code> (top/bottom), <code>dt_level</code>, <code>dt_strength</code></td>
+        </tr>
+        <tr>
+          <td><strong>Fair Value Gap (FVG)</strong></td>
+          <td>Gap between candle 1 high and candle 3 low (bullish FVG) or candle 1 low and candle 3 high (bearish FVG).</td>
+          <td><code>fvg_bullish</code>, <code>fvg_bearish</code>, <code>fvg_size_atr</code>, <code>price_in_fvg</code></td>
+        </tr>
+        <tr>
+          <td><strong>Liquidity Sweep</strong></td>
+          <td>Price wicks beyond recent swing high/low then closes back inside. Stop hunt pattern.</td>
+          <td><code>liquidity_sweep</code>, <code>sweep_direction</code>, <code>sweep_magnitude_atr</code></td>
+        </tr>
+        <tr>
+          <td><strong>Equal Highs / Lows</strong></td>
+          <td>Two or more pivots at same price level (within 0.2 ATR). Indicates liquidity pool.</td>
+          <td><code>equal_highs</code>, <code>equal_lows</code>, <code>eq_level</code>, <code>eq_count</code></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="text-secondary"><strong>References:</strong> <code>tonylyliu/price-action-lib</code> for FVG and order blocks. <code>Ted88368/TradingPatternScanner</code> for head and shoulders using Savitzky-Golay filtering. <code>vltech55/strata-market-structure</code> for BoS/CHoCH/Wyckoff in production.</p>
+  </div>
+
+  <!-- ── Pattern Summary Table ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Pattern Summary</span>
+      <span class="badge badge-blue">30 patterns total</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Count</th><th>Output Fields</th><th>Phase</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Trend Line Patterns</td><td>5</td><td>20</td><td>Phase 1</td></tr>
+        <tr><td>Support / Resistance</td><td>4</td><td>18</td><td>Phase 1</td></tr>
+        <tr><td>Curvature</td><td>3</td><td>9</td><td>Phase 2</td></tr>
+        <tr><td>Accumulation / Distribution</td><td>3</td><td>15</td><td>Phase 3</td></tr>
+        <tr><td>Candlestick</td><td>8</td><td>16</td><td>Phase 2</td></tr>
+        <tr><td>Market Structure</td><td>7</td><td>22</td><td>Phase 3</td></tr>
+        <tr style="border-top: 2px solid var(--border-default);">
+          <td><strong>Total</strong></td><td><strong>30</strong></td><td><strong>100</strong></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<!-- END SECTION 2 CONTENT -->
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: FEATURE ENGINEERING CATALOG                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="sec3" class="section">
+  <div class="section-header">
+    <span class="section-num">3</span>
+    <span class="section-title">Feature Engineering Catalog</span>
+  </div>
+  <p>
+    25 engineered features across 5 categories. Each feature is derived from existing
+    raw or computed features. These are not patterns. They are higher-order numerical
+    transformations that capture relationships, normalizations, and conditional states
+    that the raw indicators alone do not express.
+  </p>
+
+  <!-- ── 3.1 Ratio Features ── -->
+  <h3 id="sec3-ratio">3.1 Ratio Features (6)</h3>
+
+  <div class="card">
+    <p>Ratio features express the relationship between two existing features as a single scalar. They normalize across symbols and price levels.</p>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Rationale</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>oi_to_volume_ratio</code></td>
+          <td><code>open_interest / rolling_mean(volume, 20)</code></td>
+          <td>High OI relative to volume signals positioning buildup without churn. Potential squeeze setup.</td>
+        </tr>
+        <tr>
+          <td><code>funding_to_atr_ratio</code></td>
+          <td><code>funding_rate / (atr / close)</code></td>
+          <td>Normalizes funding cost against volatility. High funding in low vol = crowded trade.</td>
+        </tr>
+        <tr>
+          <td><code>ls_ratio_spread</code></td>
+          <td><code>buyRatio - sellRatio</code></td>
+          <td>Net sentiment from long/short ratio. Positive = bullish crowd, negative = bearish crowd.</td>
+        </tr>
+        <tr>
+          <td><code>volume_turnover_ratio</code></td>
+          <td><code>volume * close / turnover</code></td>
+          <td>Detects average trade size. Low ratio = large traders dominant. High ratio = retail dominant.</td>
+        </tr>
+        <tr>
+          <td><code>rsi_to_adx_ratio</code></td>
+          <td><code>rsi / (adx + 1)</code></td>
+          <td>Momentum relative to trend strength. High RSI with low ADX = fading momentum. Low RSI with high ADX = strong counter-trend.</td>
+        </tr>
+        <tr>
+          <td><code>price_to_vwap_dev</code></td>
+          <td><code>(close - vwap_20) / atr</code></td>
+          <td>Distance from volume-weighted average price in ATR units. Mean reversion signal.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 3.2 Composite Features ── -->
+  <h3 id="sec3-composite">3.2 Composite Features (5)</h3>
+
+  <div class="card">
+    <p>Composite features combine 3+ raw features into a single score that captures a multi-dimensional market state.</p>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Rationale</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>momentum_composite</code></td>
+          <td><code>(rsi - 50) / 50 * adx / 50 * sign(ctx_log_ret_4h)</code></td>
+          <td>Unified momentum score. Combines RSI direction, ADX strength, and 4h context. Range: -1 to +1.</td>
+        </tr>
+        <tr>
+          <td><code>positioning_composite</code></td>
+          <td><code>sigmoid(ls_ratio_spread * 2) * sigmoid(funding_z * 2) * sign(oi_delta_24)</code></td>
+          <td>Combines L/S ratio, funding z-score, and OI change direction. Detects crowded positioning.</td>
+        </tr>
+        <tr>
+          <td><code>volatility_regime_score</code></td>
+          <td><code>atr_rank * 0.5 + vol_pctile_96 * 0.3 + (1 - efficiency_ratio) * 0.2</code></td>
+          <td>Composite volatility estimate. High = volatile/choppy. Low = calm/trending.</td>
+        </tr>
+        <tr>
+          <td><code>structure_quality_score</code></td>
+          <td><code>adx / 50 * 0.4 + efficiency_ratio * 0.3 + (1 - atr_rank) * 0.3</code></td>
+          <td>Measures how clean the trend is. High = strong directional move. Low = noisy/choppy.</td>
+        </tr>
+        <tr>
+          <td><code>confluence_score</code></td>
+          <td><code>sum([near_support, rising_support, bullish_bos, wedge_bullish, cdl_hammer]) / 5</code></td>
+          <td>Count of bullish pattern features active simultaneously. Range: 0 to 1. High confluence = high probability setup.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 3.3 Z-Score Features ── -->
+  <h3 id="sec3-zscore">3.3 Z-Score Features (6)</h3>
+
+  <div class="card">
+    <p>Z-score features normalize any feature against its rolling statistics. This makes cross-symbol and cross-time comparison valid. All z-scores use a 96-bar (24h) lookback window.</p>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Rationale</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>rsi_zscore_96</code></td>
+          <td><code>(rsi - rolling_mean(rsi, 96)) / rolling_std(rsi, 96)</code></td>
+          <td>RSI relative to its recent range. Z &gt; 2 = overbought by historical standard. Z &lt; -2 = oversold.</td>
+        </tr>
+        <tr>
+          <td><code>volume_zscore_96</code></td>
+          <td><code>(volume - rolling_mean(volume, 96)) / rolling_std(volume, 96)</code></td>
+          <td>Volume spike detection. Z &gt; 2 = abnormal volume. Used for breakout confirmation.</td>
+        </tr>
+        <tr>
+          <td><code>funding_zscore_96</code></td>
+          <td><code>(funding_rate - rolling_mean(funding_rate, 96)) / rolling_std(funding_rate, 96)</code></td>
+          <td>Funding rate anomaly. Extreme positive = crowded long. Extreme negative = crowded short.</td>
+        </tr>
+        <tr>
+          <td><code>oi_zscore_96</code></td>
+          <td><code>(open_interest - rolling_mean(open_interest, 96)) / rolling_std(open_interest, 96)</code></td>
+          <td>OI anomaly. Sudden OI spike with price move = new positions entering. Sudden drop = unwind.</td>
+        </tr>
+        <tr>
+          <td><code>spread_zscore_96</code></td>
+          <td><code>((high - low) - rolling_mean(high - low, 96)) / rolling_std(high - low, 96)</code></td>
+          <td>Bar spread anomaly. Detects volatility expansion or contraction relative to recent history.</td>
+        </tr>
+        <tr>
+          <td><code>buy_ratio_zscore_96</code></td>
+          <td><code>(buyRatio - rolling_mean(buyRatio, 96)) / rolling_std(buyRatio, 96)</code></td>
+          <td>Sentiment shift detection. Sudden z-score change = potential directional move building.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 3.4 Conditional Features ── -->
+  <h3 id="sec3-conditional">3.4 Conditional Features (4)</h3>
+
+  <div class="card">
+    <p>Conditional features are binary or categorical states derived from threshold logic on existing features. They encode market context that gates or modifies trading behavior.</p>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Rationale</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>volatility_expansion</code></td>
+          <td><code>1 if atr_rank &gt; 0.8 and atr_rank_trend &gt; 0 else 0</code></td>
+          <td>Binary flag for volatility expanding. Suppresses mean reversion entries. Enables wider stops.</td>
+        </tr>
+        <tr>
+          <td><code>trend_exhaustion_flag</code></td>
+          <td><code>1 if adx &gt; 40 and rsi_divergence_bearish else 0</code></td>
+          <td>ADX above 40 with bearish RSI divergence = trend likely exhausting. Reduces trend-following conviction.</td>
+        </tr>
+        <tr>
+          <td><code>funding_extreme_flag</code></td>
+          <td><code>1 if abs(funding_zscore_96) &gt; 2.5 else 0</code></td>
+          <td>Extreme funding = potential squeeze. Contrarian signal. Flag enables reversal strategy bias.</td>
+        </tr>
+        <tr>
+          <td><code>liquidity_dry_up</code></td>
+          <td><code>1 if volume_zscore_96 &lt; -1.5 and oi_zscore_96 &lt; -1.0 else 0</code></td>
+          <td>Both volume and OI dropping. Market participants exiting. High risk of choppy, low-liquidity conditions.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 3.5 Cross-Timeframe Features ── -->
+  <h3 id="sec3-cross">3.5 Cross-Timeframe Features (4)</h3>
+
+  <div class="card">
+    <p>These features compare the 15m bar state against the 4h context. They detect alignment or conflict between timeframes, which is critical for trade quality.</p>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Formula</th><th>Rationale</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>tf_alignment_score</code></td>
+          <td><code>sign(rsi_15m - 50) * sign(ctx_log_ret_4h) * bull_4h</code></td>
+          <td>+1 if 15m momentum, 4h return, and 4h EMA trend all agree. -1 if all disagree. 0 if mixed.</td>
+        </tr>
+        <tr>
+          <td><code>adx_divergence</code></td>
+          <td><code>ctx_adx - adx</code></td>
+          <td>4h ADX minus 15m ADX. Positive = higher timeframe trend stronger than lower. Negative = lower timeframe accelerating.</td>
+        </tr>
+        <tr>
+          <td><code>volatility_ratio_4h_15m</code></td>
+          <td><code>atr_4h_pct / atr_15m_pct</code></td>
+          <td>Ratio of 4h ATR% to 15m ATR%. High ratio = 4h move not yet reflected in 15m. Low ratio = 15m overextended relative to 4h.</td>
+        </tr>
+        <tr>
+          <td><code>multi_tf_confluence</code></td>
+          <td><code>count_agree([bull_4h, rsi_15m &gt; 50, adx &gt; 25, ctx_adx &gt; 25]) / 4</code></td>
+          <td>Fraction of timeframe signals that agree. 1.0 = full alignment. 0.0 = full disagreement. 0.5 = mixed.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Feature Engineering Summary ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Feature Engineering Summary</span>
+      <span class="badge badge-blue">25 features total</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Count</th><th>Phase</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ratio Features</td><td>6</td><td>Phase 4</td></tr>
+        <tr><td>Composite Features</td><td>5</td><td>Phase 4</td></tr>
+        <tr><td>Z-Score Features</td><td>6</td><td>Phase 4</td></tr>
+        <tr><td>Conditional Features</td><td>4</td><td>Phase 5</td></tr>
+        <tr><td>Cross-Timeframe Features</td><td>4</td><td>Phase 5</td></tr>
+        <tr style="border-top: 2px solid var(--border-default);">
+          <td><strong>Total</strong></td><td><strong>25</strong></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Combined Output</div>
+    <p>
+      30 patterns produce 100 pattern output fields. 25 engineered features produce 25 new columns.
+      Total new features: 125. Combined with existing 23 live features and 30 shadow probe features,
+      the system will have 178 features available. Not all will enter DQS. Phase 5 determines which
+      features get promoted to the scoring formula through IC analysis and backtest validation.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: PHASE-BY-PHASE IMPLEMENTATION PLAN                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="sec4" class="section">
+  <div class="section-header">
+    <span class="section-num">4</span>
+    <span class="section-title">Phase-by-Phase Implementation Plan</span>
+  </div>
+  <p>
+    6 phases ordered by dependency and impact. Each phase produces a standalone module
+    that is backtested independently before the next phase begins. No phase modifies
+    the DQS formula until Phase 5. Phases 1-4 are pure feature generation. Phase 5
+    integrates. Phase 6 calibrates.
+  </p>
+
+  <!-- ── Phase 1 ── -->
+  <div id="sec4-p1" class="phase-card p1">
+    <div class="phase-header">
+      <span class="phase-num text-green">Phase 1</span>
+      <span class="phase-title">Foundation: Pivot Detection, Trend Lines, S/R</span>
+    </div>
+    <div class="phase-body">
+      <h4>Deliverables</h4>
+      <ul>
+        <li><code>pipeline/engine/patterns/pivot_detector.py</code> - Fractal pivot detection (left=3, right=3)</li>
+        <li><code>pipeline/engine/patterns/trend_lines.py</code> - Linear regression on pivots, wedge/triangle detection</li>
+        <li><code>pipeline/engine/patterns/support_resistance.py</code> - Horizontal S/R clustering, dynamic S/R</li>
+        <li><code>pipeline/engine/patterns/__init__.py</code> - Module init with <code>detect_all_patterns(df)</code> entry point</li>
+      </ul>
+      <h4>Patterns Implemented (9)</h4>
+      <ul>
+        <li>Converging trend lines (wedge, symmetrical triangle)</li>
+        <li>Ascending triangle, descending triangle</li>
+        <li>Parallel channel (ascending, descending)</li>
+        <li>Trend line break / retest</li>
+        <li>Horizontal support / resistance</li>
+        <li>Dynamic support (rising), dynamic resistance (falling)</li>
+        <li>Break of Structure (BoS) / Change of Character (CHoCH)</li>
+      </ul>
+      <h4>Output</h4>
+      <ul>
+        <li>38 pattern output fields added to enriched DataFrame</li>
+        <li>Pattern features logged to backtest CSV (new columns prefixed <code>pat_</code>)</li>
+        <li>No DQS modification. No live pipeline changes.</li>
+      </ul>
+      <h4>Dependencies</h4>
+      <ul>
+        <li><code>scipy</code> for <code>linregress</code> (already in requirements)</li>
+        <li><code>numpy</code>, <code>pandas</code> (already available)</li>
+      </ul>
+      <h4>Validation</h4>
+      <ul>
+        <li>Run backtest with pattern columns logged but not used in scoring</li>
+        <li>Verify no look-ahead bias: pivot detection uses only past bars</li>
+        <li>Check pattern detection rate per symbol (expect 5-20% of bars have at least 1 pattern)</li>
+        <li>IC analysis: compute correlation between each pattern field and 12-bar forward returns</li>
+      </ul>
+      <h4>Estimated Effort</h4>
+      <ul>
+        <li>3-4 implementation sessions</li>
+        <li>1 backtest validation session</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Phase 2 ── -->
+  <div id="sec4-p2" class="phase-card p2">
+    <div class="phase-header">
+      <span class="phase-num text-blue">Phase 2</span>
+      <span class="phase-title">Curvature & Candlestick Patterns</span>
+    </div>
+    <div class="phase-body">
+      <h4>Deliverables</h4>
+      <ul>
+        <li><code>pipeline/engine/patterns/curvature.py</code> - Quadratic fit on price, volume, RSI</li>
+        <li><code>pipeline/engine/patterns/candlesticks.py</code> - 8 candlestick pattern detectors</li>
+      </ul>
+      <h4>Patterns Implemented (11)</h4>
+      <ul>
+        <li>Price curvature (quadratic fit, convex/concave classification)</li>
+        <li>Volume curvature (acceleration/deceleration)</li>
+        <li>RSI curvature (momentum acceleration)</li>
+        <li>Doji, hammer, shooting star</li>
+        <li>Bullish engulfing, bearish engulfing</li>
+        <li>Bullish pin bar, bearish pin bar</li>
+        <li>Inside bar</li>
+      </ul>
+      <h4>Output</h4>
+      <ul>
+        <li>25 pattern output fields (9 curvature + 16 candlestick)</li>
+        <li>Logged to backtest CSV with <code>pat_</code> prefix</li>
+        <li>No DQS modification.</li>
+      </ul>
+      <h4>Dependencies</h4>
+      <ul>
+        <li><code>numpy.polyfit</code> for quadratic fit (already available)</li>
+        <li>Phase 1 pivot detector for inside bar confirmation</li>
+      </ul>
+      <h4>Validation</h4>
+      <ul>
+        <li>Backtest with all Phase 1 + Phase 2 patterns logged</li>
+        <li>IC analysis on curvature features vs forward returns</li>
+        <li>Candlestick pattern frequency check (expect 2-10% detection rate per pattern)</li>
+        <li>Verify candlestick patterns fire at meaningful locations (near S/R, not random)</li>
+      </ul>
+      <h4>Estimated Effort</h4>
+      <ul>
+        <li>2 implementation sessions</li>
+        <li>1 backtest validation session</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Phase 3 ── -->
+  <div id="sec4-p3" class="phase-card p3">
+    <div class="phase-header">
+      <span class="phase-num text-purple">Phase 3</span>
+      <span class="phase-title">Advanced Patterns: Wyckoff, VSA, Market Structure</span>
+    </div>
+    <div class="phase-body">
+      <h4>Deliverables</h4>
+      <ul>
+        <li><code>pipeline/engine/patterns/wyckoff.py</code> - Phase A-E detection with scoring</li>
+        <li><code>pipeline/engine/patterns/vsa.py</code> - Volume spread analysis</li>
+        <li><code>pipeline/engine/patterns/order_blocks.py</code> - OB detection</li>
+        <li><code>pipeline/engine/patterns/market_structure.py</code> - HH/HL, LH/LL, H&S, double top/bottom, FVG, liquidity sweep, equal highs/lows</li>
+      </ul>
+      <h4>Patterns Implemented (10)</h4>
+      <ul>
+        <li>Wyckoff phase detection (A-E with sub-phases)</li>
+        <li>Volume Spread Analysis (effort vs result, upthrust, spring)</li>
+        <li>Order block detection (bullish, bearish)</li>
+        <li>Higher highs / higher lows sequence</li>
+        <li>Lower highs / lower lows sequence</li>
+        <li>Head and shoulders (regular, inverse)</li>
+        <li>Double top / double bottom</li>
+        <li>Fair value gap (bullish, bearish)</li>
+        <li>Liquidity sweep</li>
+        <li>Equal highs / equal lows</li>
+      </ul>
+      <h4>Output</h4>
+      <ul>
+        <li>37 pattern output fields</li>
+        <li>All 30 patterns now complete (100 output fields total across Phases 1-3)</li>
+        <li>Logged to backtest CSV. No DQS modification.</li>
+      </ul>
+      <h4>Dependencies</h4>
+      <ul>
+        <li>Phase 1 pivot detector and S/R levels (for Wyckoff range detection)</li>
+        <li>Phase 1 BoS/CHoCH (for market structure sequence)</li>
+        <li>OBV computation (simple: <code>cumsum(sign(close - prev_close) * volume)</code>)</li>
+      </ul>
+      <h4>Validation</h4>
+      <ul>
+        <li>Full backtest with all 30 patterns logged</li>
+        <li>IC analysis on all 100 pattern fields</li>
+        <li>Wyckoff phase distribution check (expect Phase B most common, Phase C rarest)</li>
+        <li>Order block retest rate (expect 40-60% of OBs get retested within 20 bars)</li>
+        <li>Head and shoulders detection rate (expect 0.5-2% of bars, very rare)</li>
+      </ul>
+      <h4>Estimated Effort</h4>
+      <ul>
+        <li>4-5 implementation sessions (Wyckoff is complex)</li>
+        <li>2 backtest validation sessions</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Phase 4 ── -->
+  <div id="sec4-p4" class="phase-card p4">
+    <div class="phase-header">
+      <span class="phase-num text-amber">Phase 4</span>
+      <span class="phase-title">Feature Engineering: Ratios, Composites, Z-Scores</span>
+    </div>
+    <div class="phase-body">
+      <h4>Deliverables</h4>
+      <ul>
+        <li><code>pipeline/engine/features/ratio_features.py</code> - 6 ratio features</li>
+        <li><code>pipeline/engine/features/composite_features.py</code> - 5 composite scores</li>
+        <li><code>pipeline/engine/features/zscore_features.py</code> - 6 z-score normalizations</li>
+        <li><code>pipeline/engine/features/__init__.py</code> - Module init with <code>compute_all_features(df)</code></li>
+      </ul>
+      <h4>Features Implemented (17)</h4>
+      <ul>
+        <li>6 ratio features (oi_to_volume, funding_to_atr, ls_spread, vol_turnover, rsi_adx, vwap_dev)</li>
+        <li>5 composite features (momentum, positioning, vol_regime, structure_quality, confluence)</li>
+        <li>6 z-score features (rsi, volume, funding, oi, spread, buy_ratio z-scores)</li>
+      </ul>
+      <h4>Output</h4>
+      <ul>
+        <li>17 new feature columns added to enriched DataFrame</li>
+        <li>Logged to backtest CSV with <code>feat_</code> prefix</li>
+        <li>No DQS modification.</li>
+      </ul>
+      <h4>Dependencies</h4>
+      <ul>
+        <li>All existing raw features (OHLCV, OI, funding, LS ratio)</li>
+        <li>Phase 1-3 pattern fields (for confluence_score composite)</li>
+        <li>VWAP computation (simple: <code>cumsum(turnover) / cumsum(volume)</code> rolling 20)</li>
+      </ul>
+      <h4>Validation</h4>
+      <ul>
+        <li>Backtest with all pattern + engineered features logged</li>
+        <li>IC analysis on all 17 engineered features</li>
+        <li>Check for NaN/inf in any feature (must be zero NaN in final output)</li>
+        <li>Distribution check: z-scores should be approximately N(0, 1)</li>
+        <li>Confluence score correlation with win rate (expect positive correlation)</li>
+      </ul>
+      <h4>Estimated Effort</h4>
+      <ul>
+        <li>2-3 implementation sessions</li>
+        <li>1 backtest validation session</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Phase 5 ── -->
+  <div id="sec4-p5" class="phase-card p5">
+    <div class="phase-header">
+      <span class="phase-num text-cyan">Phase 5</span>
+      <span class="phase-title">DQS Integration & Conditional Features</span>
+    </div>
+    <div class="phase-body">
+      <h4>Deliverables</h4>
+      <ul>
+        <li><code>pipeline/engine/features/conditional_features.py</code> - 4 conditional flags</li>
+        <li><code>pipeline/engine/features/cross_tf_features.py</code> - 4 cross-timeframe features</li>
+        <li>Modified <code>adaptive_scorer.py</code> - New pattern and feature inputs to DQS</li>
+        <li>Modified <code>v2_filters.py</code> - Pattern-aware filter additions</li>
+        <li>Modified <code>backtest_runner.py</code> - Pattern features in signal/entry/exit logging</li>
+      </ul>
+      <h4>DQS Integration Plan</h4>
+      <p>The DQS formula gains a new domain: <code>pattern_raw</code>. Weight allocation shifts to accommodate it.</p>
+      <pre><code># Current
+DQS = tech_raw * 0.40 + struct_raw * 0.30 + ctx_raw * 0.30 + bonuses - penalties
+
+# Proposed (Phase 5)
+DQS = tech_raw * 0.30 + struct_raw * 0.25 + ctx_raw * 0.20 + pattern_raw * 0.25
+      + bonuses - penalties</code></pre>
+      <p><code>pattern_raw</code> is computed from the 100 pattern output fields:</p>
+      <pre><code>pattern_raw = (
+    confluence_score * 30        # 0-1, weighted highest
+    + wyckoff_confidence * 20    # 0-1, phase C/D/E bullish bias
+    + wedge_strength * 10        # 0-1, pattern quality
+    + bos_detected * 10          # 0/1, structure break
+    + sr_proximity_score * 10    # 0-1, near support/resistance
+    + cdl_pattern_count * 5      # 0-8, candlestick confluence
+    + trend_break_retest * 5     # 0/1, confirmed breakout
+    + curvature_alignment * 10   # -1 to +1, price/vol curvature agreement
+) * pattern_regime_mult</code></pre>
+      <p><code>pattern_regime_mult</code> adjusts pattern weight by regime:</p>
+      <ul>
+        <li>TRENDING: 1.2 (patterns more reliable in trends)</li>
+        <li>RANGING: 0.8 (patterns less reliable in chop)</li>
+        <li>VOLATILE: 0.6 (patterns unreliable in high vol)</li>
+        <li>MIXED: 1.0 (neutral)</li>
+      </ul>
+      <h4>V2 Filter Additions</h4>
+      <ul>
+        <li>Pattern confirmation filter: require <code>confluence_score &gt;= 0.3</code> for DQS 40-60 signals</li>
+        <li>Wyckoff phase filter: reject LONG if <code>wyckoff_phase == "distribution"</code>, reject SHORT if <code>wyckoff_phase == "accumulation"</code></li>
+        <li>Liquidity sweep filter: if <code>liquidity_sweep</code> detected, require higher DQS (+10)</li>
+      </ul>
+      <h4>Output</h4>
+      <ul>
+        <li>8 new feature columns (4 conditional + 4 cross-timeframe)</li>
+        <li>Modified DQS formula with <code>pattern_raw</code> domain</li>
+        <li>3 new V2 filter rules</li>
+        <li>All 125 new features now influence trading decisions</li>
+      </ul>
+      <h4>Validation</h4>
+      <ul>
+        <li>Full backtest with modified DQS. Compare against frozen baseline.</li>
+        <li>Must pass all 6 backtest gates (see Section 5).</li>
+        <li>Win rate must not decrease by more than 2pp.</li>
+        <li>Profit factor must not decrease.</li>
+        <li>Expectancy must not decrease.</li>
+        <li>Per-symbol breakdown: no symbol should degrade significantly.</li>
+        <li>Stress test: run latency stressor to confirm pattern features do not increase sensitivity to data delays.</li>
+      </ul>
+      <div class="callout callout-warn">
+        <div class="callout-title">Critical Phase</div>
+        <p>
+          This is the first phase that modifies the DQS formula and V2 filters.
+          All changes must be validated against the frozen backtest baseline.
+          If any gate fails, revert DQS changes and re-examine feature selection.
+        </p>
+      </div>
+      <h4>Estimated Effort</h4>
+      <ul>
+        <li>3-4 implementation sessions</li>
+        <li>3-4 backtest validation sessions (iterative tuning)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Phase 6 ── -->
+  <div id="sec4-p6" class="phase-card p6">
+    <div class="phase-header">
+      <span class="phase-num text-red">Phase 6</span>
+      <span class="phase-title">Calibration & Live Deployment</span>
+    </div>
+    <div class="phase-body">
+      <h4>Deliverables</h4>
+      <ul>
+        <li>Updated <code>calibration.json</code> with new DQS-to-probability curve (now includes pattern_raw)</li>
+        <li>Updated <code>portfolio_config.py</code> with any new thresholds from backtest results</li>
+        <li>Updated <code>portfolio_orchestrator.py</code> to call pattern/feature modules in scan loop</li>
+        <li>Updated <code>_extract_market_state()</code> in backtest runner to log pattern features at signal/entry/exit</li>
+        <li>Performance benchmark: pattern + feature computation must complete in under 50ms per symbol per scan</li>
+      </ul>
+      <h4>Deployment Steps</h4>
+      <ul>
+        <li>1. Run final backtest with all features and modified DQS. Confirm all gates pass.</li>
+        <li>2. Run stress test (5 stages x 3 modes). Confirm no degradation vs baseline.</li>
+        <li>3. Update calibration curve with new DQS distribution.</li>
+        <li>4. Deploy to live pipeline with Docker services restart.</li>
+        <li>5. Monitor first 48 hours: signal count, approval rate, pattern detection rate.</li>
+        <li>6. After 1 week: compare live trade outcomes vs backtest expectations.</li>
+      </ul>
+      <h4>Rollback Plan</h4>
+      <ul>
+        <li>Git revert to pre-Phase 5 commit restores original DQS and V2 filters.</li>
+        <li>Pattern/feature modules remain in codebase but are not called if DQS reverts.</li>
+        <li>No data format changes. Enriched parquets unchanged. Backtest CSV gains columns but old columns are unaffected.</li>
+      </ul>
+      <h4>Estimated Effort</h4>
+      <ul>
+        <li>2 implementation sessions (wiring + calibration)</li>
+        <li>2 validation sessions (final backtest + stress test)</li>
+        <li>1 deployment session</li>
+        <li>1 week live monitoring</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Phase Timeline ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Phase Timeline</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Phase</th><th>Focus</th><th>Patterns/Features</th><th>DQS Modified?</th><th>Sessions</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-green">1</td><td>Foundation: Pivots, Trend Lines, S/R</td><td>9 patterns, 38 fields</td><td class="text-red">No</td><td>4-5</td></tr>
+        <tr><td class="text-blue">2</td><td>Curvature & Candlesticks</td><td>11 patterns, 25 fields</td><td class="text-red">No</td><td>3</td></tr>
+        <tr><td class="text-purple">3</td><td>Advanced: Wyckoff, VSA, Structure</td><td>10 patterns, 37 fields</td><td class="text-red">No</td><td>6-7</td></tr>
+        <tr><td class="text-amber">4</td><td>Feature Engineering</td><td>17 features</td><td class="text-red">No</td><td>3-4</td></tr>
+        <tr><td class="text-cyan">5</td><td>DQS Integration</td><td>8 features + DQS change</td><td class="text-green">Yes</td><td>6-8</td></tr>
+        <tr><td class="text-red">6</td><td>Calibration & Live Deploy</td><td>Wiring + calibration</td><td class="text-green">Yes</td><td>5 + 1 week</td></tr>
+        <tr style="border-top: 2px solid var(--border-default);">
+          <td><strong>Total</strong></td><td></td><td><strong>125 new fields</strong></td><td></td><td><strong>27-32 sessions</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: METHODOLOGY & BACKTEST VALIDATION STRATEGY          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="sec5" class="section">
+  <div class="section-header">
+    <span class="section-num">5</span>
+    <span class="section-title">Methodology & Backtest Validation Strategy</span>
+  </div>
+
+  <!-- ── 5.1 Backtest Design ── -->
+  <h3 id="sec5-design">5.1 Backtest Design</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Backtest Configuration</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Parameter</th><th>Value</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Data period</td><td>180 days (Jan 1 - Jun 30, 2026)</td><td>Same frozen window as baseline</td></tr>
+        <tr><td>Symbols</td><td>BTCUSDT, ETHUSDT, SOLUSDT, XRPUSDT, BNBUSDT</td><td>Same 5 symbols</td></tr>
+        <tr><td>Timeframe</td><td>15m bars</td><td>Enriched with 4h context</td></tr>
+        <tr><td>Initial capital</td><td>$10,000</td><td>Same as baseline</td></tr>
+        <tr><td>Max leverage</td><td>4x</td><td>Do not change</td></tr>
+        <tr><td>Max active trades</td><td>8</td><td>Do not change</td></tr>
+        <tr><td>Scan interval</td><td>300s (5min)</td><td>Do not change</td></tr>
+        <tr><td>Fee model</td><td>0.055% per side</td><td>Bybit taker fee</td></tr>
+        <tr><td>Slippage</td><td>0.01% per trade</td><td>Conservative estimate</td></tr>
+        <tr><td>Baseline</td><td>Frozen backtest v2</td><td>925 closed trades, PF 2.83, WR 56.4%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Validation Approach: A/B Comparison</span>
+      <span class="badge badge-blue">Phases 1-4</span>
+    </div>
+    <p>
+      Phases 1-4 do not modify DQS. Validation is observational. Run the backtest with
+      pattern and feature columns logged but not used in scoring. Compare trade outcomes
+      to the frozen baseline. Trades should be identical. Any difference indicates a bug
+      (data leakage, column collision, or accidental DQS modification).
+    </p>
+    <pre><code># Phase 1-4 validation: trades must be identical
+assert backtest_trades == baseline_trades, "Phase 1-4 must not change trade outcomes"
+assert backtest_pf == baseline_pf
+assert backtest_wr == baseline_wr
+
+# Only new columns should be added
+new_cols = set(backtest_cols) - set(baseline_cols)
+assert all(col.startswith("pat_") or col.startswith("feat_") for col in new_cols)</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Validation Approach: A/B Test with DQS Changes</span>
+      <span class="badge badge-amber">Phase 5-6</span>
+    </div>
+    <p>
+      Phase 5 modifies DQS. Run two backtests: baseline (original DQS) and treatment
+      (modified DQS with pattern_raw). Compare all metrics. Treatment must pass all 6 gates
+      and not degrade any metric beyond defined thresholds.
+    </p>
+    <pre><code># Phase 5-6 validation: treatment vs baseline
+treatment = run_backtest(dqs="modified", patterns=True, features=True)
+baseline  = run_backtest(dqs="original",  patterns=True, features=True)  # log only
+
+# Gate checks (see 5.2)
+for gate in GATES:
+    assert gate.check(treatment, baseline), f"Gate {gate.name} FAILED"</code></pre>
+  </div>
+
+  <!-- ── 5.2 Validation Gates ── -->
+  <h3 id="sec5-validate">5.2 Validation Gates</h3>
+
+  <p>6 gates must all pass before a phase can advance. These are the same gates used in the frozen backtest methodology, extended with pattern-specific checks.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Gate 1: Profit Factor</span>
+      <span class="badge badge-green">Must PASS</span>
+    </div>
+    <table>
+      <tbody>
+        <tr><td><strong>Rule</strong></td><td>Treatment PF must be &ge; baseline PF</td></tr>
+        <tr><td><strong>Baseline</strong></td><td>PF 2.83</td></tr>
+        <tr><td><strong>Minimum</strong></td><td>PF &ge; 2.50 (10% degradation allowed for pattern integration)</td></tr>
+        <tr><td><strong>If FAIL</strong></td><td>Reduce pattern_raw weight. Re-run. If still fails after 3 weight adjustments, revert DQS.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Gate 2: Win Rate</span>
+      <span class="badge badge-green">Must PASS</span>
+    </div>
+    <table>
+      <tbody>
+        <tr><td><strong>Rule</strong></td><td>Treatment WR must be &ge; baseline WR - 2pp</td></tr>
+        <tr><td><strong>Baseline</strong></td><td>56.4%</td></tr>
+        <tr><td><strong>Minimum</strong></td><td>WR &ge; 54.4%</td></tr>
+        <tr><td><strong>If FAIL</strong></td><td>Pattern features may be adding noise. Check IC of each pattern field. Remove fields with |IC| &lt; 0.02.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Gate 3: Expectancy</span>
+      <span class="badge badge-green">Must PASS</span>
+    </div>
+    <table>
+      <tbody>
+        <tr><td><strong>Rule</strong></td><td>Treatment expectancy must be &ge; baseline expectancy</td></tr>
+        <tr><td><strong>Baseline</strong></td><td>$100.58 per trade</td></tr>
+        <tr><td><strong>Minimum</strong></td><td>Expectancy &ge; $90.00</td></tr>
+        <tr><td><strong>If FAIL</strong></td><td>Check if pattern features increase losing trade sizes. Review position sizing interaction.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Gate 4: Maximum Drawdown</span>
+      <span class="badge badge-amber">Soft PASS</span>
+    </div>
+    <table>
+      <tbody>
+        <tr><td><strong>Rule</strong></td><td>Treatment max DD must not exceed baseline DD by more than 20%</td></tr>
+        <tr><td><strong>Baseline</strong></td><td>To be measured from frozen baseline</td></tr>
+        <tr><td><strong>Maximum</strong></td><td>Baseline DD * 1.20</td></tr>
+        <tr><td><strong>If FAIL</strong></td><td>Non-blocking but requires investigation. May indicate pattern features increase risk concentration.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Gate 5: Per-Symbol Consistency</span>
+      <span class="badge badge-green">Must PASS</span>
+    </div>
+    <table>
+      <tbody>
+        <tr><td><strong>Rule</strong></td><td>No symbol should have PF degrade by more than 30% vs its baseline</td></tr>
+        <tr><td><strong>If FAIL</strong></td><td>Symbol-specific pattern tuning. Some patterns may not work for all symbols (e.g., SOL has different volatility profile than BTC).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Gate 6: Stress Test Resilience</span>
+      <span class="badge badge-green">Must PASS</span>
+    </div>
+    <table>
+      <tbody>
+        <tr><td><strong>Rule</strong></td><td>Run 5 stressors (latency, slippage, fee, gap, volatility). Treatment must not degrade more than baseline under any stressor.</td></tr>
+        <tr><td><strong>Key stressor</strong></td><td>Latency (most damaging in baseline: PF 3.10 to 2.46). Treatment must not be more latency-sensitive.</td></tr>
+        <tr><td><strong>If FAIL</strong></td><td>Pattern features may depend on timely data. Add staleness checks to pattern computation. Skip patterns if data is delayed by more than 2 bars.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 5.3 Success Metrics ── -->
+  <h3 id="sec5-metrics">5.3 Success Metrics</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Tier 1: Must Achieve (Blocking)</span>
+      <span class="badge badge-red">All required</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Target</th><th>Measurement</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Profit Factor</td><td>&ge; 2.50</td><td>Backtest output</td></tr>
+        <tr><td>Win Rate</td><td>&ge; 54.4%</td><td>Backtest output</td></tr>
+        <tr><td>Expectancy</td><td>&ge; $90.00</td><td>Backtest output</td></tr>
+        <tr><td>All 6 gates pass</td><td>6/6</td><td>Gate check script</td></tr>
+        <tr><td>No look-ahead bias</td><td>0 violations</td><td>Pattern unit tests with shifted data</td></tr>
+        <tr><td>No NaN in output</td><td>0 NaN fields</td><td>Post-computation NaN check</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Tier 2: Should Achieve (Non-blocking)</span>
+      <span class="badge badge-amber">Desirable</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Target</th><th>Measurement</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>PF improvement</td><td>&ge; 10% over baseline</td><td>PF 2.83 &rarr; 3.10+</td></tr>
+        <tr><td>Expectancy improvement</td><td>&ge; 15% over baseline</td><td>$100.58 &rarr; $115+</td></tr>
+        <tr><td>Pattern IC (top 10 fields)</td><td>|IC| &ge; 0.05</td><td>Correlation with 12-bar forward returns</td></tr>
+        <tr><td>Confluence score correlation</td><td>Positive with WR</td><td>Bin confluence into quartiles, check WR by quartile</td></tr>
+        <tr><td>Computation time</td><td>&lt; 50ms per symbol per scan</td><td>Timeit benchmark</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Tier 3: Diagnostic Metrics (Information Only)</span>
+      <span class="badge badge-gray">Observational</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Pattern detection rate per symbol</td><td>Confirm patterns fire at expected frequency</td></tr>
+        <tr><td>Pattern co-occurrence matrix</td><td>Identify correlated patterns for potential deduplication</td></tr>
+        <tr><td>Feature importance (IC ranked)</td><td>Guide which features to promote to DQS in Phase 5</td></tr>
+        <tr><td>Regime-conditional pattern performance</td><td>Check if patterns perform differently in TRENDING vs RANGING</td></tr>
+        <tr><td>Trade duration distribution</td><td>Verify pattern features do not change holding period profile</td></tr>
+        <tr><td>MFE/MAE distribution by pattern</td><td>Check if patterns improve MFE or reduce MAE</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">IC Analysis Protocol</div>
+    <p>
+      For each phase (1-4), compute Information Coefficient (IC) for every new field:
+      Spearman rank correlation between the field value and 12-bar forward returns.
+      IC is computed per symbol, then averaged. Fields with |IC| &lt; 0.02 across all
+      symbols are flagged as low-signal and excluded from DQS integration in Phase 5.
+      Fields with |IC| &ge; 0.05 are high-priority candidates for DQS integration.
+    </p>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Look-Ahead Bias Prevention</div>
+    <p>
+      All pattern functions receive only the enriched slice up to and including the current bar.
+      Pivot detection uses right=3, meaning a pivot is confirmed 3 bars after it forms.
+      This is by design. The 3-bar delay is the cost of confirming a pivot. No pattern
+      function may access data beyond the current bar index. Unit tests must verify this
+      by shifting the DataFrame and confirming output stability for the confirmed portion.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 6: OPEN-SOURCE REFERENCES & INTEGRATION NOTES           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="sec6" class="section">
+  <div class="section-header">
+    <span class="section-num">6</span>
+    <span class="section-title">Open-Source References & Integration Notes</span>
+  </div>
+
+  <p>
+    Surveyed 15+ open-source repositories for pattern recognition and feature engineering
+    implementations. We do not install these as dependencies. We study their algorithms
+    and reimplement in pure Python on the existing enriched DataFrame. This avoids
+    dependency bloat, version conflicts, and unnecessary abstractions.
+  </p>
+
+  <!-- ── Pattern Recognition Libraries ── -->
+  <h3>Pattern Recognition Libraries</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Chart Pattern Detection</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Repository</th><th>Language</th><th>Patterns</th><th>Relevance</th><th>Used For</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>zeta-zetra/code</code></td>
+          <td>Python</td>
+          <td>Wedge, triangle, H&S, double top/bottom</td>
+          <td class="text-green">High</td>
+          <td>Wedge detection algorithm, scipy linregress approach</td>
+        </tr>
+        <tr>
+          <td><code>keithorange/PatternPy</code></td>
+          <td>Python</td>
+          <td>Horizontal S/R, trend lines, channels</td>
+          <td class="text-green">High</td>
+          <td>S/R clustering with tolerance-based grouping</td>
+        </tr>
+        <tr>
+          <td><code>Ted88368/TradingPatternScanner</code></td>
+          <td>Python</td>
+          <td>H&S, triangles, flags using Savitzky-Golay</td>
+          <td class="text-amber">Medium</td>
+          <td>H&S detection via smoothing + peak finding</td>
+        </tr>
+        <tr>
+          <td><code>chiptunetech/stock-pattern-detection</code></td>
+          <td>Python</td>
+          <td>Cup and handle, flags, pennants</td>
+          <td class="text-amber">Medium</td>
+          <td>Polynomial fit approach for curved patterns</td>
+        </tr>
+        <tr>
+          <td><code>DavIdeBianca/chart-patterns</code></td>
+          <td>Python</td>
+          <td>Wedge, triangle, channel via regression</td>
+          <td class="text-green">High</td>
+          <td>Regression-based pattern classification logic</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Market Structure & Smart Money Concepts</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Repository</th><th>Language</th><th>Features</th><th>Relevance</th><th>Used For</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>fortunato/pymarket-structure</code></td>
+          <td>Python</td>
+          <td>BoS, CHoCH, swing detection, 67 output columns</td>
+          <td class="text-green">High</td>
+          <td>BoS/CHoCH algorithm, swing sequence tracking</td>
+        </tr>
+        <tr>
+          <td><code>vltech55/strata-market-structure</code></td>
+          <td>Python</td>
+          <td>BoS, CHoCH, Wyckoff, order blocks in production</td>
+          <td class="text-green">High</td>
+          <td>Production-tested Wyckoff and OB detection</td>
+        </tr>
+        <tr>
+          <td><code>tonylyliu/price-action-lib</code></td>
+          <td>Python</td>
+          <td>44+ candlestick patterns, FVG, order blocks</td>
+          <td class="text-green">High</td>
+          <td>Candlestick detection logic, FVG algorithm</td>
+        </tr>
+        <tr>
+          <td><code>gunjan4321/ICT-Concepts</code></td>
+          <td>Python</td>
+          <td>Order blocks, FVG, liquidity sweeps</td>
+          <td class="text-amber">Medium</td>
+          <td>Liquidity sweep detection approach</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Wyckoff & Volume Analysis</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Repository</th><th>Language</th><th>Features</th><th>Relevance</th><th>Used For</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>gopheroid/go-wyckoff</code></td>
+          <td>Go</td>
+          <td>Wyckoff phase detection specification</td>
+          <td class="text-amber">Medium</td>
+          <td>Phase A-E scoring framework (reimplemented in Python)</td>
+        </tr>
+        <tr>
+          <td><code>Martinolli/marketflow</code></td>
+          <td>Python</td>
+          <td>WyckoffAnalyzer class, volume flow analysis</td>
+          <td class="text-green">High</td>
+          <td>Wyckoff phase scoring, OBV integration</td>
+        </tr>
+        <tr>
+          <td><code>srlcarlg/srl-python-indicators</code></td>
+          <td>Python</td>
+          <td>WeisWyckoffSystem, VSA indicators</td>
+          <td class="text-green">High</td>
+          <td>VSA effort vs result, spring/upthrust detection</td>
+        </tr>
+        <tr>
+          <td><code>alpha-1/SmartTradeLab</code></td>
+          <td>Python</td>
+          <td>VSA, volume wave, supply demand zones</td>
+          <td class="text-amber">Medium</td>
+          <td>Volume spread classification thresholds</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Feature Engineering Libraries ── -->
+  <h3>Feature Engineering Libraries</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Technical Analysis Libraries</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Library</th><th>Patterns</th><th>Relevance</th><th>Used For</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>TA-Lib</code></td>
+          <td>163 indicators, 63 candlestick patterns</td>
+          <td class="text-amber">Medium</td>
+          <td>Reference for candlestick pattern formulas. Not installed (C dependency). We reimplement the 8 we need.</td>
+        </tr>
+        <tr>
+          <td><code>pandas-ta</code></td>
+          <td>130+ indicators, pattern detection</td>
+          <td class="text-amber">Medium</td>
+          <td>Reference for indicator formulas. Already have ATR, RSI, ADX. No new indicators needed.</td>
+        </tr>
+        <tr>
+          <td><code>finta</code></td>
+          <td>80+ indicators, clean pandas API</td>
+          <td class="text-blue">Low</td>
+          <td>Reference only. Our indicator set is sufficient.</td>
+        </tr>
+        <tr>
+          <td><code>ml4t-engineer</code></td>
+          <td>Feature engineering for ML trading</td>
+          <td class="text-amber">Medium</td>
+          <td>Ratio and composite feature design patterns</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Integration Strategy ── -->
+  <h3>Integration Strategy</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Why Not Install These Libraries?</span>
+    </div>
+    <div class="callout callout-danger">
+      <div class="callout-title">Decision: No New Dependencies</div>
+      <p>
+        We do not install TA-Lib, pandas-ta, finta, or any pattern library as a dependency.
+        Reasons:
+      </p>
+      <ul>
+        <li><strong>TA-Lib</strong> requires C compilation. Adds build complexity to Docker.</li>
+        <li><strong>pandas-ta</strong> is abandoned (last update 2023). Import conflicts with existing code.</li>
+        <li><strong>Pattern libraries</strong> have varying APIs, data formats, and assumptions. Integrating multiple libraries creates maintenance burden.</li>
+        <li><strong>Our needs are specific.</strong> 30 patterns and 25 features. Not 163 indicators. Reimplementing is faster than adapting a general library.</li>
+        <li><strong>Pure Python</strong> functions on the existing DataFrame avoid serialization, format conversion, and dependency management overhead.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">What We Take From Each Library</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Source</th><th>What We Extract</th><th>How</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>zeta-zetra wedge.py</td><td>Convergence test formula</td><td>Study algorithm, reimplement with our pivot detector</td></tr>
+        <tr><td>PatternPy S/R</td><td>Clustering tolerance logic</td><td>Adapt to ATR-based tolerance</td></tr>
+        <tr><td>pymarket-structure</td><td>Swing sequence tracking</td><td>Reimplement swing detection with our fractal pivots</td></tr>
+        <tr><td>price-action-lib</td><td>FVG gap detection, candlestick ratios</td><td>Copy detection logic, adapt to 15m crypto bars</td></tr>
+        <tr><td>marketflow WyckoffAnalyzer</td><td>Phase scoring framework</td><td>Reimplement scoring with our S/R and volume data</td></tr>
+        <tr><td>srl-python-indicators VSA</td><td>Effort vs result classification</td><td>Adapt thresholds for crypto volume profiles</td></tr>
+        <tr><td>TA-Lib candlestick formulas</td><td>Pattern recognition math</td><td>Reference documentation, reimplement 8 patterns</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Module Architecture</span>
+    </div>
+    <pre><code>pipeline/engine/
+  patterns/
+    __init__.py              # detect_all_patterns(df) -> dict
+    pivot_detector.py        # detect_pivots(df, left=3, right=3) -> pivots
+    trend_lines.py           # detect_wedge, detect_triangle, detect_channel, detect_trend_break
+    support_resistance.py    # detect_sr_levels, detect_dynamic_support, detect_dynamic_resistance
+    market_structure.py      # detect_bos_choch, detect_hh_hl, detect_lh_ll, detect_hs, detect_dt
+                              # detect_fvg, detect_liquidity_sweep, detect_equal_highs_lows
+    candlesticks.py          # detect_candlestick_patterns(df) -> dict of 8 patterns
+    curvature.py             # detect_price_curvature, detect_volume_curvature, detect_rsi_curvature
+    wyckoff.py               # detect_wyckoff_phase(df, pivots, sr_levels) -> phase dict
+    vsa.py                   # detect_vsa(df) -> dict
+    order_blocks.py          # detect_order_blocks(df) -> dict
+  features/
+    __init__.py              # compute_all_features(df, pattern_dict) -> dict
+    ratio_features.py        # 6 ratio features
+    composite_features.py    # 5 composite scores
+    zscore_features.py       # 6 z-score normalizations
+    conditional_features.py  # 4 conditional flags
+    cross_tf_features.py     # 4 cross-timeframe features</code></pre>
+    <p class="text-secondary">
+      Each module is independent. <code>detect_all_patterns</code> calls each pattern function
+      and merges results into a single dict. <code>compute_all_features</code> takes the
+      enriched DataFrame and the pattern dict, then computes all engineered features.
+      Both return dicts that are added as columns to the enriched DataFrame.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 7: RISK ASSESSMENT & DO-NOT-TOUCH LIST                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="sec7" class="section">
+  <div class="section-header">
+    <span class="section-num">7</span>
+    <span class="section-title">Risk Assessment & Do-Not-Touch List</span>
+  </div>
+
+  <!-- ── Risk Assessment ── -->
+  <h3>Risk Assessment</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Implementation Risks</span>
+      <span class="badge badge-red">8 risks identified</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Risk</th><th>Severity</th><th>Mitigation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>R1</td>
+          <td><strong>Look-ahead bias in pattern detection.</strong> Pivot detection with right=3 uses 3 future bars. If pattern function accesses bars beyond the current index, signals will have unrealistically high win rates in backtest but fail live.</td>
+          <td class="text-red">Critical</td>
+          <td>Unit tests: feed shifted DataFrame, verify output for confirmed bars does not change. All pattern functions receive <code>df.iloc[:idx+1]</code> only.</td>
+        </tr>
+        <tr>
+          <td>R2</td>
+          <td><strong>DQS weight rebalancing degrades performance.</strong> Shifting weights from tech/struct/ctx to pattern_raw may reduce the influence of proven indicators.</td>
+          <td class="text-red">Critical</td>
+          <td>Phase 5 A/B test against frozen baseline. 6 gates must pass. If PF drops below 2.50, revert. Iterative weight tuning with max 3 attempts.</td>
+        </tr>
+        <tr>
+          <td>R3</td>
+          <td><strong>Pattern overfitting.</strong> 125 new features on 925 trades risks curve fitting. Patterns may learn noise specific to the 180-day window.</td>
+          <td class="text-amber">High</td>
+          <td>IC analysis to filter features. Only features with |IC| &ge; 0.02 enter DQS. Walk-forward validation: split 180 days into 120 train / 60 test. Verify patterns stable across both halves.</td>
+        </tr>
+        <tr>
+          <td>R4</td>
+          <td><strong>Computation latency.</strong> 30 pattern functions + 25 feature functions per symbol per scan may exceed 5-minute scan budget.</td>
+          <td class="text-amber">High</td>
+          <td>Benchmark: target &lt; 50ms per symbol. Profile each function. Vectorize with numpy where possible. Cache pivot detection (shared across patterns).</td>
+        </tr>
+        <tr>
+          <td>R5</td>
+          <td><strong>NaN propagation.</strong> Z-score features need 96-bar warmup. Curvature needs 60 bars. Early bars in the dataset will have NaN pattern fields.</td>
+          <td class="text-amber">Medium</td>
+          <td>All pattern/feature functions must return 0.0 or neutral value for insufficient data. Never NaN. Post-computation NaN check in backtest runner.</td>
+        </tr>
+        <tr>
+          <td>R6</td>
+          <td><strong>Pattern correlation / redundancy.</strong> Multiple patterns may detect the same market condition (e.g., rising support + ascending channel + HH/HL). This inflates confluence_score without adding information.</td>
+          <td class="text-amber">Medium</td>
+          <td>Pattern co-occurrence matrix in diagnostic metrics. If two patterns co-occur &gt; 80%, merge or drop one. Confluence score weights adjusted by IC, not raw count.</td>
+        </tr>
+        <tr>
+          <td>R7</td>
+          <td><strong>Symbol-specific pattern failure.</strong> Patterns calibrated on BTC may not work on SOL (different volatility, liquidity, trend behavior).</td>
+          <td class="text-amber">Medium</td>
+          <td>Gate 5: per-symbol consistency check. If a pattern degrades a specific symbol, disable it for that symbol via config. Symbol-specific pattern weights in Phase 6.</td>
+        </tr>
+        <tr>
+          <td>R8</td>
+          <td><strong>Wyckoff phase misclassification.</strong> Wyckoff is subjective. Algorithmic phase detection may produce false positives, especially in crypto which rarely forms clean ranges.</td>
+          <td class="text-blue">Low</td>
+          <td>Wyckoff confidence threshold. Only phases with confidence &gt; 0.5 influence DQS. Phase C (spring/upthrust) gets 3x weight in scoring. Phase B gets 0.5x (too noisy).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Do-Not-Touch List ── -->
+  <h3>Do-Not-Touch List</h3>
+
+  <div class="callout callout-danger">
+    <div class="callout-title">Critical: These Must Not Change During Implementation</div>
+    <p>
+      The following parameters and components are frozen. Pattern recognition and feature
+      engineering work must not modify them. If any change is required, it must be
+      explicitly approved and documented as a separate decision.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Frozen Parameters</span>
+      <span class="badge badge-red">Do Not Touch</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Parameter</th><th>Current Value</th><th>Location</th><th>Reason</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Kelly V7 bands</td><td>As configured</td><td><code>portfolio_config.py</code></td><td>Validated by backtest stress test. DQS&ge;85 veto confirmed.</td></tr>
+        <tr><td>MR boost 3x</td><td>3x multiplier</td><td><code>adaptive_scorer.py</code></td><td>Mean reversion boost validated in Phase 1 backtest.</td></tr>
+        <tr><td>Calibration gate</td><td>0.40 threshold</td><td><code>calibration.json</code></td><td>Softened from 0.48. Only 35 samples. Do not tighten.</td></tr>
+        <tr><td>Crowding reduction</td><td>50%</td><td><code>portfolio_config.py</code></td><td>Treatment B validated. Within 0.3% of control.</td></tr>
+        <tr><td>DQ gate threshold</td><td>60</td><td><code>portfolio_config.py</code></td><td>Data quality minimum. Prevents stale data signals.</td></tr>
+        <tr><td>Max active trades</td><td>8</td><td><code>portfolio_config.py</code></td><td>Portfolio risk limit. Validated across stress tests.</td></tr>
+        <tr><td>Scan interval</td><td>300s (5min)</td><td><code>docker-compose.yml</code></td><td>Latency is most damaging stressor. 5min reduces window.</td></tr>
+        <tr><td>Max leverage</td><td>4x</td><td><code>portfolio_config.py</code></td><td>Risk limit. Position sizing cap.</td></tr>
+        <tr><td>Max portfolio risk</td><td>12%</td><td><code>portfolio_config.py</code></td><td>Portfolio risk budget. Do not increase.</td></tr>
+        <tr><td>Dynamic SL rules</td><td>All 3 rules</td><td><code>backtest_runner.py</code></td><td>Validated in backtest. MFE/MAE tracking depends on these.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Frozen Components</span>
+      <span class="badge badge-red">Do Not Modify Until Phase 5</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Component</th><th>File</th><th>When Modified</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>DQS formula</td><td><code>adaptive_scorer.py</code></td><td class="text-red">Phase 5 only</td></tr>
+        <tr><td>V2 filters</td><td><code>v2_filters.py</code></td><td class="text-red">Phase 5 only</td></tr>
+        <tr><td>Calibration curve</td><td><code>calibration.json</code></td><td class="text-red">Phase 6 only</td></tr>
+        <tr><td>Orchestrator scan loop</td><td><code>portfolio_orchestrator.py</code></td><td class="text-red">Phase 6 only</td></tr>
+        <tr><td>Backtest runner scoring</td><td><code>backtest_runner.py</code></td><td class="text-amber">Phase 5 (logging only before)</td></tr>
+        <tr><td>Portfolio config thresholds</td><td><code>portfolio_config.py</code></td><td class="text-red">Phase 6 only</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Allowed Changes ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Allowed Changes (Phases 1-4)</span>
+      <span class="badge badge-green">Safe</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Change</th><th>Scope</th><th>Condition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Create new files in <code>pipeline/engine/patterns/</code></td><td>New module</td><td>No imports from existing scoring code</td></tr>
+        <tr><td>Create new files in <code>pipeline/engine/features/</code></td><td>New module</td><td>No imports from existing scoring code</td></tr>
+        <tr><td>Add columns to backtest CSV output</td><td>Logging only</td><td>Columns prefixed <code>pat_</code> or <code>feat_</code></td></tr>
+        <tr><td>Add <code>scipy</code> to requirements if missing</td><td>Dependency</td><td>Already present in most environments</td></tr>
+        <tr><td>Add unit tests for pattern functions</td><td>Test files</td><td>Tests in <code>tests/patterns/</code> directory</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Final Summary ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Specification Summary</span>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-value text-blue">30</div>
+        <div class="stat-label">Patterns</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-cyan">25</div>
+        <div class="stat-label">Engineered Features</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-purple">125</div>
+        <div class="stat-label">New Output Fields</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-green">6</div>
+        <div class="stat-label">Implementation Phases</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-amber">6</div>
+        <div class="stat-label">Validation Gates</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-red">0</div>
+        <div class="stat-label">New Dependencies</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p>
+      This specification is the blueprint for adding pattern recognition and feature engineering
+      to VLTHR. It does not implement code. Implementation follows the 6-phase plan, with each
+      phase validated by backtest before advancing. The DQS formula remains untouched until
+      Phase 5, and only changes if all 6 validation gates pass.
+    </p>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">End of Specification</div>
+    <p>
+      SPEC v1.0. Pattern Recognition & Feature Engineering. VLTHR Trading System.
+      30 patterns, 25 features, 6 phases, 6 gates, 0 new dependencies.
+    </p>
+  </div>
+</div>
+
+</div>
+</main>
+</body>
+</html>

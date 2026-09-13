@@ -1,0 +1,122 @@
+# VLTHR Dashboard — Standalone (LINUX)
+# Usage (from the vlthr-signal-dashboard directory):
+#   export VLTHR_ROOT=/home/<user>/VLTHR
+#   export DASHBOARD_ROOT=$VLTHR_ROOT/paper_trade_unzipped/vlthr-signal-dashboard
+#   docker compose -f docker-compose.linux.ngrok.yml up -d --build
+
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: vlthr-postgres
+    environment:
+      - POSTGRES_PASSWORD=your_postgres_password
+      - POSTGRES_DB=postgres
+    volumes:
+      - vlthr_pgdata:/var/lib/postgresql/data
+    networks:
+      - vlthr-dashboard-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  data-ingestion:
+    build:
+      context: ${VLTHR_ROOT}
+      dockerfile: Dockerfile.scheduler
+    container_name: vlthr-data-ingestion
+    env_file:
+      - ${VLTHR_ROOT}/.env
+    environment:
+      - DATA_ROOT=/engine/data
+    volumes:
+      - ${VLTHR_ROOT}:/engine
+    working_dir: /engine
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vlthr-dashboard-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "data_scheduler.py"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: vlthr-dashboard-redis
+    networks:
+      - vlthr-dashboard-net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: vlthr-dashboard-backend
+    ports:
+      - "3002:3001"
+    env_file:
+      - .env
+    environment:
+      - PORT=3001
+      - PARQUET_DATA_ROOT=/data
+      - ENGINE_ROOT=/engine
+      - REDIS_URL=redis://redis:6379
+      - ENGINE_URL=http://host.docker.internal:8001
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${VLTHR_ROOT}/data:/data:ro
+      - ${VLTHR_ROOT}:/engine
+    depends_on:
+      - redis
+    networks:
+      - vlthr-dashboard-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: vlthr-dashboard-frontend
+    ports:
+      - "5174:80"
+    depends_on:
+      - backend
+    networks:
+      - vlthr-dashboard-net
+    restart: unless-stopped
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: vlthr-dashboard-ngrok
+    command:
+      - "http"
+      - "frontend:80"
+      - "--url"
+      - "${NGROK_DOMAIN}"
+    ports:
+      - "4040:4040"
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+      - NGROK_DOMAIN=${NGROK_DOMAIN}
+    depends_on:
+      - frontend
+    networks:
+      - vlthr-dashboard-net
+    restart: unless-stopped
+
+networks:
+  vlthr-dashboard-net:
+    driver: bridge
+    name: vlthr-dashboard-net
+
+volumes:
+  vlthr_pgdata:

@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>VLTHR Command</title>
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/bb5de19d87c09a95216dc6ccd96e37c6?family=Nimbus+Sans+TW01" />
+  <style>
+    :root {
+      --font-sans: 'Nimbus Sans TW01', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --gray-900: #111827;
+      --gray-800: #1f2937;
+      --gray-700: #374151;
+      --gray-600: #4b5563;
+      --gray-500: #6b7280;
+      --gray-400: #9ca3af;
+      --gray-300: #d1d5db;
+      --gray-200: #e5e7eb;
+      --gray-100: #f3f4f6;
+      --white: #ffffff;
+      --dash-bg: #1a1a1c;
+      --dash-titlebar: #242427;
+      --dash-sidebar: #1e1e21;
+      --traffic-red: #ff5f57;
+      --traffic-amber: #febc2e;
+      --traffic-green: #28c840;
+      --carenest: #e8553f;
+      --topbar-height: 56px;
+      --bottom-tabs-height: 64px;
+      --radius-pill: 9999px;
+      --easing: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: #0b0b0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;
+      max-height: 932px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 768px) {
+      .phone {
+        height: 90vh;
+        border-radius: 44px;
+        border: 12px solid #111;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+      }
+    }
+
+    .landscape {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #0b0b0f;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      font-size: 18px;
+    }
+    @media (orientation: landscape) and (max-height: 500px) {
+      .landscape { display: flex; }
+      .phone { display: none; }
+    }
+
+    .icon { flex-shrink: 0; color: currentColor; }
+    .icon, .icon use { color: currentColor; }
+
+    .topbar {
+      flex-shrink: 0;
+      height: var(--topbar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(20px) saturate(1.8);
+      border-bottom: 1px solid var(--gray-200);
+      z-index: 50;
+      animation: fade-down 0.7s var(--easing) both;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray-900);
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+    .logo { width: 22px; height: 22px; }
+    .hamburger {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .hamburger:hover { background: rgba(17,24,39,0.10); }
+    .hamburger[aria-expanded="true"] .icon-menu { display: none; }
+    .hamburger[aria-expanded="false"] .icon-close { display: none; }
+
+    .mobile-menu {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: var(--topbar-height);
+      z-index: 40;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(24px) saturate(1.8);
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      padding: 8px 0;
+      transform-origin: top center;
+      transform: scaleY(0);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s var(--easing), opacity 0.2s ease;
+    }
+    .mobile-menu.open { transform: scaleY(1); opacity: 1; pointer-events: auto; }
+    .mobile-menu a, .mobile-menu button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 20px;
+      color: var(--gray-700);
+      text-decoration: none;
+      font-size: 15px;
+      border: none;
+      background: transparent;
+      border-bottom: 1px solid var(--gray-200);
+      cursor: pointer;
+    }
+    .mobile-menu a:last-of-type, .mobile-menu button:last-child { border-bottom: none; }
+    .menu-cta {
+      margin: 10px 20px 0;
+      width: calc(100% - 40px);
+      justify-content: center;
+      border-radius: var(--radius-pill);
+      background: var(--gray-900);
+      color: #fff;
+      font-weight: 500;
+      padding: 10px;
+    }
+
+    .scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+      scroll-behavior: smooth;
+    }
+    .tab-panel { display: none; animation: tab-in 0.35s var(--easing); }
+    .tab-panel.active { display: block; }
+    .page-pad { padding: 20px; }
+
+    .hero {
+      position: relative;
+      min-height: calc(100dvh - var(--topbar-height) - var(--bottom-tabs-height));
+      background-image: url('https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260611_133301_d5f2a94a-b22e-4e4a-a6b6-eacdddf1f5b0.png&w=1280&q=85');
+      background-size: cover;
+      background-position: center;
+      background-color: #f5f5f7;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .hero-content { position: relative; z-index: 20; width: 100%; max-width: 390px; }
+    .headline {
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: var(--gray-900);
+      font-size: clamp(38px, 11vw, 52px);
+    }
+    .headline .line { opacity: 0; animation: fade-up 0.9s var(--easing) both; }
+    .headline .line.delay-1 { animation-delay: 100ms; }
+    .hero-description {
+      margin-top: 18px;
+      color: var(--gray-600);
+      font-size: 15px;
+      line-height: 1.55;
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0;
+      animation: fade-up 0.9s var(--easing) 0.22s both;
+    }
+    .cta-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fade-up 0.9s var(--easing) 0.34s both;
+    }
+    .btn-primary, .btn-secondary {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 11px 24px;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+    .btn-primary { background: var(--gray-900); color: #fff; }
+    .btn-primary:hover { background: var(--gray-800); box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+    .btn-primary.small { padding: 8px 16px; font-size: 13px; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+    }
+    .btn-secondary:hover { background: var(--gray-100); }
+    .grass {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .dashboard-wrap {
+      width: 92%;
+      margin: -40px auto 24px;
+      position: relative;
+      z-index: 15;
+      opacity: 0;
+      animation: hero-rise 1.1s var(--easing) 0.46s both;
+    }
+    @media (min-width: 768px) { .dashboard-wrap { margin-top: -56px; } }
+
+    .dash-chrome {
+      border-radius: 16px 16px 0 0;
+      overflow: hidden;
+      background: #1a1a1c;
+      box-shadow: 0 -20px 80px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #fff;
+    }
+    .dash-titlebar {
+      background: #242427;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .traffic-lights { display: flex; gap: 6px; }
+    .traffic-lights span { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-url {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: #1a1a1c;
+      border-radius: 6px;
+      padding: 4px 10px;
+      color: rgba(255,255,255,0.55);
+      font-size: 10px;
+    }
+    .dash-actions { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.4); }
+    .dash-body { display: flex; min-height: 200px; }
+    .dash-body.wide { display: block; padding: 16px; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .status-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+    }
+    .status-card .value { font-size: 22px; font-weight: 500; color: #fff; letter-spacing: -0.02em; }
+    .status-card .label { font-size: 9px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .status-ok { color: var(--traffic-green); }
+    .status-warn { color: var(--traffic-amber); }
+
+    .page-title { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; color: var(--gray-900); margin-bottom: 16px; }
+    .section-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 14px; line-height: 1.5; }
+
+    .accordion {
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+      margin-bottom: 10px;
+    }
+    .accordion summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--gray-900);
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary .chevron { transition: transform 0.25s var(--easing); color: var(--gray-400); }
+    .accordion[open] summary .chevron { transform: rotate(180deg); }
+    .accordion-body { padding: 0 16px 16px; color: var(--gray-600); font-size: 14px; line-height: 1.55; }
+    .accordion-body p, .accordion-body ul { margin-bottom: 10px; }
+    .accordion-body ul { padding-left: 18px; }
+    .accordion-body li { margin-bottom: 6px; }
+    .accordion-body .meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-size: 13px; color: var(--gray-500); }
+    .accordion-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--gray-100);
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: var(--gray-800);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .metric-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--gray-100);
+    }
+    .metric-card .value { font-size: 18px; font-weight: 500; color: var(--gray-900); }
+    .metric-card .label { font-size: 10px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
+
+    .param-list { display: flex; flex-direction: column; gap: 8px; }
+    .param-row { display: flex; justify-content: space-between; font-size: 13px; border-bottom: 1px solid var(--gray-100); padding-bottom: 6px; }
+    .param-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .param-label { color: var(--gray-500); }
+    .param-value { color: var(--gray-900); font-weight: 500; }
+
+    .bottom-tabs {
+      flex-shrink: 0;
+      height: var(--bottom-tabs-height);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px) saturate(1.8);
+      border-top: 1px solid var(--gray-200);
+      z-index: 50;
+    }
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: none;
+      background: transparent;
+      color: var(--gray-500);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 8px 0;
+      cursor: pointer;
+      position: relative;
+      font-family: inherit;
+    }
+    .tab-btn svg { width: 20px; height: 20px; transition: transform 0.2s var(--easing); }
+    .tab-btn.active { color: var(--gray-900); }
+    .tab-btn.active svg { transform: translateY(-2px); }
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gray-900);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .tab-btn.active::after { opacity: 1; }
+
+    .app-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; border: none; padding: 0; border-radius: 24px; background: transparent; max-width: 340px; width: 88%; }
+    .app-modal::backdrop { background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); }
+    .modal-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    }
+    .modal-title { font-size: 20px; font-weight: 500; color: var(--gray-900); margin-bottom: 8px; }
+    .modal-text { font-size: 14px; color: var(--gray-600); line-height: 1.5; margin-bottom: 16px; }
+    .modal-list { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--gray-700); }
+    .modal-list li { display: flex; gap: 8px; }
+    .modal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gray-900); margin-top: 7px; flex-shrink: 0; }
+    .modal-close {
+      margin-top: 16px;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--gray-500);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 10px;
+      font-family: inherit;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes fade-down {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(64px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes tab-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .prod-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    .prod-table th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-500); padding: 8px 6px; border-bottom: 1px solid var(--gray-200); }
+    .prod-table td { padding: 8px 6px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); }
+    .prod-table tr:last-child td { border-bottom: none; }
+    .pnl-pos { color: #16a34a; font-weight: 500; }
+    .pnl-neg { color: var(--carenest); font-weight: 500; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill); letter-spacing: 0.04em; }
+    .badge-tp { background: #dcfce7; color: #15803d; }
+    .badge-sl { background: #fee2e2; color: #b91c1c; }
+    .badge-time { background: #fef3c7; color: #b45309; }
+    .badge-open { background: #dbeafe; color: #1d4ed8; }
+    .badge-expired { background: var(--gray-100); color: var(--gray-500); }
+    .side-long { color: #15803d; font-weight: 500; }
+    .side-short { color: #b91c1c; font-weight: 500; }
+    .daily-pnl-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 14px; }
+    .daily-pnl-row:last-child { border-bottom: none; }
+    .daily-pnl-row .date { color: var(--gray-500); }
+    .daily-pnl-row .pnl { font-weight: 500; }
+    .open-pos-card { border: 1px solid var(--gray-200); border-radius: 12px; padding: 14px; margin-bottom: 10px; background: var(--gray-100); }
+    .open-pos-card .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .open-pos-card .sym { font-weight: 600; font-size: 15px; color: var(--gray-900); }
+    .open-pos-card .meta { font-size: 12px; color: var(--gray-500); display: flex; gap: 12px; flex-wrap: wrap; }
+    .open-pos-card .meta span { white-space: nowrap; }
+    .snapshot-note { font-size: 11px; color: var(--gray-400); text-align: center; margin-top: 8px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="landscape">
+    <p>Please rotate your device to portrait mode.</p>
+  </div>
+
+  <svg style="display:none;" aria-hidden="true">
+    <symbol id="icon-logo" viewBox="0 0 256 256">
+      <path d="M 144 256 L 27.598 256 L 144 139.598 Z M 256 207.5 L 200 256 L 200 56 L 0 56 L 48 0 L 256 0 Z M0 204.402 L0 112 L92.402 112 Z" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 6h16M4 12h16M4 18h16"/>
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </symbol>
+    <symbol id="icon-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9.937 15.5A2.5 2.5 0 0 0 8.5 17.5c0 .816.728 1.466 1.5 1.466.772 0 1.5-.65 1.5-1.466a2.5 2.5 0 0 0-1.563-2z"/>
+      <path d="M14 7l-2.5 2.5L14 12l-2.5-2.5L14 7z"/>
+      <path d="M4 4l2.5 2.5M17.5 17.5L20 20"/>
+    </symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>
+    </symbol>
+    <symbol id="icon-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/>
+    </symbol>
+    <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+    </symbol>
+    <symbol id="icon-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+    </symbol>
+    <symbol id="icon-rotate-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36l2.12 6.36"/>
+    </symbol>
+    <symbol id="icon-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </symbol>
+    <symbol id="icon-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </symbol>
+    <symbol id="icon-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+    </symbol>
+    <symbol id="icon-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+    </symbol>
+    <symbol id="icon-list-todo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </symbol>
+    <symbol id="icon-panel-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>
+    </symbol>
+    <symbol id="icon-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </symbol>
+    <symbol id="icon-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+    </symbol>
+  </svg>
+
+  <div class="phone" role="application" aria-label="VLTHR system overview">
+
+    <header class="topbar">
+      <a href="#" class="brand" aria-label="VLTHR home">
+        <svg class="icon logo" aria-hidden="true"><use href="#icon-logo"/></svg>
+        <span>VLTHR</span>
+      </a>
+      <button class="hamburger" id="menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg class="icon icon-menu" width="20" height="20" aria-hidden="true"><use href="#icon-menu"/></svg>
+        <svg class="icon icon-close" width="20" height="20" aria-hidden="true"><use href="#icon-x"/></svg>
+      </button>
+    </header>
+
+    <nav id="mobile-menu" class="mobile-menu" aria-hidden="true" aria-label="Mobile navigation">
+      <a href="#">System status</a>
+      <a href="#">Audit checklist</a>
+      <a href="#">Runbooks</a>
+      <button class="menu-cta" data-open-modal>Run audit</button>
+    </nav>
+
+    <main class="scroll">
+
+      <!-- Home -->
+      <section id="panel-home" class="tab-panel active" aria-label="Home">
+        <div class="hero">
+          <div class="hero-content">
+            <h1 class="headline">
+              <div class="line">VLTHR.</div>
+              <div class="line delay-1">Production system.</div>
+            </h1>
+            <p class="hero-description">
+              Scan crypto markets, score signals with DQS, run 12 portfolio gates, execute paper trades, and audit outcomes.
+            </p>
+            <div class="cta-row">
+              <button class="btn-primary" data-open-modal>Run audit</button>
+              <button class="btn-secondary">View pipeline</button>
+            </div>
+          </div>
+          <img class="grass" src="https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781191264/grass_eam204.png" alt="" />
+        </div>
+
+        <div class="dashboard-wrap" aria-label="Live system status">
+          <div class="dash-chrome">
+            <div class="dash-titlebar">
+              <div class="traffic-lights" aria-hidden="true">
+                <span style="background:var(--traffic-red)"></span>
+                <span style="background:var(--traffic-amber)"></span>
+                <span style="background:var(--traffic-green)"></span>
+              </div>
+              <div class="dash-url">
+                <svg class="icon" width="12" height="12" aria-hidden="true"><use href="#icon-monitor"/></svg>
+                vlthrlab.app
+              </div>
+              <div class="dash-actions">
+                <svg class="icon" width="14" height="14" aria-hidden="true"><use href="#icon-rotate-cw"/></svg>
+                <svg class="icon" width="14" height="14" aria-hidden="true"><use href="#icon-share"/></svg>
+              </div>
+            </div>
+            <div class="dash-body wide">
+              <div class="status-grid">
+                <div class="status-card">
+                  <div class="value status-ok">$10,046</div>
+                  <div class="label">Account balance</div>
+                </div>
+                <div class="status-card">
+                  <div class="value pnl-pos">+$47.92</div>
+                  <div class="label">Realized PnL</div>
+                </div>
+                <div class="status-card">
+                  <div class="value">48%</div>
+                  <div class="label">Live win rate</div>
+                </div>
+                <div class="status-card">
+                  <div class="value">1.26</div>
+                  <div class="label">Profit factor</div>
+                </div>
+                <div class="status-card">
+                  <div class="value">25</div>
+                  <div class="label">Closed trades</div>
+                </div>
+                <div class="status-card">
+                  <div class="value">2</div>
+                  <div class="label">Open positions</div>
+                </div>
+                <div class="status-card">
+                  <div class="value status-ok">12</div>
+                  <div class="label">TP hits</div>
+                </div>
+                <div class="status-card">
+                  <div class="value status-warn">11</div>
+                  <div class="label">SL hits</div>
+                </div>
+              </div>
+              <div class="snapshot-note">Snapshot: Jul 19, 2026 08:40 UTC</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ingestion -->
+      <section id="panel-ingest" class="tab-panel" aria-label="Data Ingestion">
+        <div class="page-pad">
+          <h2 class="page-title">Data Ingestion</h2>
+          <p class="section-sub">Bybit public REST feeds are pulled, enriched, and stored as Parquet. The pipeline consumes the enriched files.</p>
+
+          <details class="accordion">
+            <summary>
+              OHLCV klines
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Symbols: BTCUSDT, ETHUSDT, SOLUSDT, XRPUSDT, BNBUSDT (DOGEUSDT disabled).</li>
+                <li>Timeframes: 4h, 1h, 30m, 15m, 5m, 1m.</li>
+                <li>Output path: <code>data/bybit/{SYMBOL}/{TF}/{YYYY}/{MM}.parquet</code>.</li>
+                <li>Endpoint: <code>GET /v5/market/kline</code>, category <code>linear</code>.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Market data
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Funding rate: 8h interval.</li>
+                <li>Open interest: 1h interval.</li>
+                <li>Orderbook L2: 100 levels snapshot.</li>
+                <li>Outputs: <code>{SYMBOL}/funding_rate/</code>, <code>{SYMBOL}/open_interest/</code>, <code>{SYMBOL}/orderbook/</code>.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Enrichment
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Merges OHLCV with open interest and funding rate via <code>merge_asof</code> by nearest timestamp. No forward leakage.</p>
+              <p>Schema: timestamp, open, high, low, close, volume, turnover, open_interest, funding_rate.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Ingestion parameters
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="param-list">
+                <div class="param-row"><span class="param-label">Scheduler cadence</span><span class="param-value">60s</span></div>
+                <div class="param-row"><span class="param-label">Rate limit</span><span class="param-value">600 req / 5s</span></div>
+                <div class="param-row"><span class="param-label">Request delay</span><span class="param-value">1.0s</span></div>
+                <div class="param-row"><span class="param-label">Retries</span><span class="param-value">6 exp backoff</span></div>
+                <div class="param-row"><span class="param-label">Max records</span><span class="param-value">1000 / 200</span></div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Pipeline -->
+      <section id="panel-pipeline" class="tab-panel" aria-label="Pipeline">
+        <div class="page-pad">
+          <h2 class="page-title">Pipeline</h2>
+          <p class="section-sub">5-minute loop: pre-flight, scan, score, rank, gate, upsert, snapshot.</p>
+
+          <details class="accordion">
+            <summary>
+              Per-symbol parameters
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="param-list">
+                <div class="param-row"><span class="param-label">BTCUSDT</span><span class="param-value">trend, RSI 42, SL/TP 2.5/7.5</span></div>
+                <div class="param-row"><span class="param-label">ETHUSDT</span><span class="param-value">mean reversion, RSI 50.1, SL/TP 2.0/6.0</span></div>
+                <div class="param-row"><span class="param-label">SOLUSDT</span><span class="param-value">trend, RSI 49.3, SL/TP 2.5/7.5</span></div>
+                <div class="param-row"><span class="param-label">XRPUSDT</span><span class="param-value">mean reversion, RSI 49.1, SL/TP 2.5/6.0</span></div>
+                <div class="param-row"><span class="param-label">BNBUSDT</span><span class="param-value">mean reversion, RSI 43.1, SL/TP 2.0/5.0</span></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              DQS scoring
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="param-list">
+                <div class="param-row"><span class="param-label">Technical weight</span><span class="param-value">40%</span></div>
+                <div class="param-row"><span class="param-label">Structure weight</span><span class="param-value">30%</span></div>
+                <div class="param-row"><span class="param-label">Context weight</span><span class="param-value">30%</span></div>
+                <div class="param-row"><span class="param-label">Track threshold</span><span class="param-value">40</span></div>
+                <div class="param-row"><span class="param-label">Execute threshold</span><span class="param-value">50</span></div>
+                <div class="param-row"><span class="param-label">Excellent threshold</span><span class="param-value">75</span></div>
+                <div class="param-row"><span class="param-label">Veto threshold</span><span class="param-value">85 (Kelly 0)</span></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              12 portfolio gates
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ol>
+                <li>Pre-flight: data freshness, circuit breaker, balance, calibration age.</li>
+                <li>Scan + V2 filters: DQS, daily bias, volume, RSI momentum, regime, TP scale, BTC correlation.</li>
+                <li>Ranker: minimum adjusted score >= 50.</li>
+                <li>V7 Kelly veto: DQS >= 85 gets Kelly 0.</li>
+                <li>Disabled symbols: DOGEUSDT blocked.</li>
+                <li>Regime minimum DQS.</li>
+                <li>Data quality gate: freshness + completeness + outliers >= 60.</li>
+                <li>Correlation guard: max open positions, no duplicates.</li>
+                <li>Trade count guard: daily and hourly limits.</li>
+                <li>Directional balance: max same-side positions.</li>
+                <li>Risk budget: Kelly-weighted risk vs ledger capacity.</li>
+                <li>Calibration gate: Wilson lower bound >= per-symbol threshold.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Risk and sizing
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="param-list">
+                <div class="param-row"><span class="param-label">Max active trades</span><span class="param-value">8</span></div>
+                <div class="param-row"><span class="param-label">Max daily trades</span><span class="param-value">10</span></div>
+                <div class="param-row"><span class="param-label">Max portfolio risk</span><span class="param-value">12%</span></div>
+                <div class="param-row"><span class="param-label">Max same side</span><span class="param-value">5</span></div>
+                <div class="param-row"><span class="param-label">Symbol allocation cap</span><span class="param-value">25%</span></div>
+                <div class="param-row"><span class="param-label">MR Kelly boost</span><span class="param-value">3.0x</span></div>
+                <div class="param-row"><span class="param-label">Crowding reduction</span><span class="param-value">50%</span></div>
+                <div class="param-row"><span class="param-label">Min R:R floor</span><span class="param-value">1.0</span></div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Backtest -->
+      <section id="panel-backtest" class="tab-panel" aria-label="Backtest">
+        <div class="page-pad">
+          <h2 class="page-title">Backtest</h2>
+          <p class="section-sub">Phase 1 and Phase 2 complete. All 6 validation gates pass. Jan-Jun 2026, $10k seed, 4x leverage.</p>
+
+          <div class="metric-grid">
+            <div class="metric-card"><div class="value">1,441</div><div class="label">Closed trades</div></div>
+            <div class="metric-card"><div class="value">56.4%</div><div class="label">Win rate</div></div>
+            <div class="metric-card"><div class="value">1.56</div><div class="label">Profit factor</div></div>
+            <div class="metric-card"><div class="value">+$8.4k</div><div class="label">Total PnL</div></div>
+            <div class="metric-card"><div class="value">3.56%</div><div class="label">Max drawdown</div></div>
+            <div class="metric-card"><div class="value">45.0%</div><div class="label">TP hit rate</div></div>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              Phase 1 refactor
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Moved V7 Kelly veto from scanner to risk gate.</li>
+                <li>Fixed equity accounting: margin used added back for drawdown checks.</li>
+                <li>Removed V2 filters from reprice step.</li>
+                <li>Fixed closed-trade logging and SL/TP recomputation.</li>
+                <li>Result: identical 1,441 trades to control. Behavior unchanged, structure improved.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Phase 2 treatment
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Crowding detection: 252 trades flagged, Kelly reduced 50%.</li>
+                <li>Data quality gate: freshness 40%, completeness 40%, outliers 20%, threshold 60.</li>
+                <li>Intent vs outcome logging for every signal.</li>
+                <li>Total PnL delta: -$42.43 (0.5%). Cost of risk management, not overfitting.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Validation gates
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="param-list">
+                <div class="param-row"><span class="param-label">Win rate >= 30%</span><span class="param-value">PASS 56.4%</span></div>
+                <div class="param-row"><span class="param-label">Profit factor >= 1.5</span><span class="param-value">PASS 1.56</span></div>
+                <div class="param-row"><span class="param-label">Expectancy > $0</span><span class="param-value">PASS $5.85</span></div>
+                <div class="param-row"><span class="param-label">Max DD < 15%</span><span class="param-value">PASS 3.56%</span></div>
+                <div class="param-row"><span class="param-label">Expired < 30%</span><span class="param-value">PASS 1.4%</span></div>
+                <div class="param-row"><span class="param-label">TP hit >= 40%</span><span class="param-value">PASS 45.0%</span></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Stress test insights
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Latency is the most damaging stressor: PF 3.10 to 2.46, win rate -4.2pp.</li>
+                <li>Scan cadence lowered from 15min to 5min to reduce latency window by 67%.</li>
+                <li>DQS >= 85 veto validated: those signals win only 46.8%.</li>
+                <li>Treatment B stays within 0.5% of control. Safe to adopt live.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Execution -->
+      <section id="panel-execute" class="tab-panel" aria-label="Execution">
+        <div class="page-pad">
+          <h2 class="page-title">Execution</h2>
+          <p class="section-sub">Backend Express API, paper trade lifecycle, and auto-close monitoring.</p>
+
+          <details class="accordion">
+            <summary>
+              Backend API
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Container: <code>vlthr-dashboard-backend</code> on port 3002.</li>
+                <li>Trade monitor runs every 15 seconds against live parquet prices.</li>
+                <li>Routes: <code>/api/paper/trade</code>, <code>/api/paper/trade/:id/close</code>, VTC endpoints, AI engine proxy.</li>
+                <li>Google TOTP auth removed; dashboard opens directly.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Trade lifecycle
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>PENDING → OPEN → CLOSED. Pending trades expire after 90 minutes. Open trades close on SL_HIT, TP_HIT, TIME_EXIT, or LIQUIDATION.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Sizing and drift guards
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Per-symbol margin cap: $1,667.</li>
+                <li>Max 2 open positions per symbol.</li>
+                <li>Entry drift guard rejects if market moves more than 0.3% from planned entry.</li>
+                <li>Risk ledger records dollar risk per trade.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Auto-close logic
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Dynamic SL adjusts based on price trajectory.</li>
+                <li>Flash-wick guard uses bar-to-bar comparison, not entry price.</li>
+                <li>Time exit after max trade hours per symbol (12 to 48h).</li>
+                <li>Liquidation price computed with MMR = 0.5%.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Production -->
+      <section id="panel-production" class="tab-panel" aria-label="Production">
+        <div class="page-pad">
+          <h2 class="page-title">Production</h2>
+          <p class="section-sub">Live paper trading performance. Snapshot: Jul 19, 2026 08:40 UTC. Seed: $10,000, 4x leverage, Bybit linear futures.</p>
+
+          <div class="metric-grid" style="margin-bottom: 16px;">
+            <div class="metric-card"><div class="value">$10,046</div><div class="label">Balance</div></div>
+            <div class="metric-card"><div class="value">$9,045</div><div class="label">Equity</div></div>
+            <div class="metric-card"><div class="value pnl-pos">+$47.92</div><div class="label">Realized PnL</div></div>
+            <div class="metric-card"><div class="value">$1,001</div><div class="label">Margin used</div></div>
+          </div>
+
+          <details class="accordion" open>
+            <summary>
+              Per-symbol breakdown
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <table class="prod-table">
+                <thead>
+                  <tr><th>Symbol</th><th>Trades</th><th>Wins</th><th>Closed</th><th>PnL</th><th>Avg</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>SOLUSDT</td><td>6</td><td>4</td><td>5</td><td class="pnl-pos">+$78.83</td><td class="pnl-pos">+$15.77</td></tr>
+                  <tr><td>ETHUSDT</td><td>5</td><td>2</td><td>4</td><td class="pnl-pos">+$15.55</td><td class="pnl-pos">+$3.89</td></tr>
+                  <tr><td>BNBUSDT</td><td>5</td><td>2</td><td>4</td><td class="pnl-pos">+$10.88</td><td class="pnl-pos">+$2.72</td></tr>
+                  <tr><td>BTCUSDT</td><td>22</td><td>3</td><td>7</td><td class="pnl-neg">-$19.10</td><td class="pnl-neg">-$2.73</td></tr>
+                  <tr><td>XRPUSDT</td><td>5</td><td>1</td><td>5</td><td class="pnl-neg">-$38.24</td><td class="pnl-neg">-$7.65</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Exit reason distribution
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <table class="prod-table">
+                <thead>
+                  <tr><th>Reason</th><th>Count</th><th>PnL</th><th>Avg PnL</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="badge badge-tp">TP_HIT</span></td><td>12</td><td class="pnl-pos">+$235.75</td><td class="pnl-pos">+$19.65</td></tr>
+                  <tr><td><span class="badge badge-sl">SL_HIT</span></td><td>11</td><td class="pnl-neg">-$174.22</td><td class="pnl-neg">-$15.84</td></tr>
+                  <tr><td><span class="badge badge-time">TIME_EXIT</span></td><td>2</td><td class="pnl-neg">-$13.61</td><td class="pnl-neg">-$6.81</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Daily PnL
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="daily-pnl-row"><span class="date">Jul 19</span><span>4 trades, 1 win, 2 closed</span><span class="pnl pnl-neg">-$2.03</span></div>
+              <div class="daily-pnl-row"><span class="date">Jul 18</span><span>10 trades, 4 wins, 9 closed</span><span class="pnl pnl-neg">-$3.20</span></div>
+              <div class="daily-pnl-row"><span class="date">Jul 17</span><span>24 trades, 5 wins, 10 closed</span><span class="pnl pnl-pos">+$31.88</span></div>
+              <div class="daily-pnl-row"><span class="date">Jul 16</span><span>4 trades, 2 wins, 3 closed</span><span class="pnl pnl-pos">+$27.30</span></div>
+              <div class="daily-pnl-row"><span class="date">Jul 15</span><span>1 trade, 0 wins, 1 closed</span><span class="pnl pnl-neg">-$6.03</span></div>
+            </div>
+          </details>
+
+          <details class="accordion" open>
+            <summary>
+              Open positions
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="open-pos-card">
+                <div class="header">
+                  <span class="sym">SOLUSDT <span class="side-long">LONG</span></span>
+                  <span class="badge badge-open">OPEN</span>
+                </div>
+                <div class="meta">
+                  <span>Entry: $75.97</span>
+                  <span>SL: $75.74</span>
+                  <span>TP: $76.47</span>
+                  <span>Qty: 26.3</span>
+                  <span>4x lev</span>
+                  <span>Opened: Jul 19</span>
+                </div>
+              </div>
+              <div class="open-pos-card">
+                <div class="header">
+                  <span class="sym">ETHUSDT <span class="side-short">SHORT</span></span>
+                  <span class="badge badge-open">OPEN</span>
+                </div>
+                <div class="meta">
+                  <span>Entry: $1,860.64</span>
+                  <span>SL: $1,881.29</span>
+                  <span>TP: $1,839.99</span>
+                  <span>Qty: 1.074</span>
+                  <span>4x lev</span>
+                  <span>Opened: Jul 18</span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Recent trades
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <table class="prod-table">
+                <thead>
+                  <tr><th>ID</th><th>Symbol</th><th>Side</th><th>Status</th><th>PnL</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>43</td><td>BNBUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-tp">TP</span></td><td class="pnl-pos">+$6.60</td><td>Jul 19</td></tr>
+                  <tr><td>42</td><td>BNBUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-expired">EXP</span></td><td>-</td><td>Jul 19</td></tr>
+                  <tr><td>41</td><td>BNBUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$8.63</td><td>Jul 19</td></tr>
+                  <tr><td>40</td><td>SOLUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-open">OPEN</span></td><td>-</td><td>Jul 19</td></tr>
+                  <tr><td>39</td><td>XRPUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-tp">TP</span></td><td class="pnl-pos">+$10.08</td><td>Jul 18</td></tr>
+                  <tr><td>38</td><td>SOLUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-tp">TP</span></td><td class="pnl-pos">+$27.28</td><td>Jul 18</td></tr>
+                  <tr><td>37</td><td>ETHUSDT</td><td class="side-short">SHORT</td><td><span class="badge badge-open">OPEN</span></td><td>-</td><td>Jul 18</td></tr>
+                  <tr><td>36</td><td>BTCUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-tp">TP</span></td><td class="pnl-pos">+$9.03</td><td>Jul 18</td></tr>
+                  <tr><td>35</td><td>BTCUSDT</td><td class="side-short">SHORT</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$11.30</td><td>Jul 18</td></tr>
+                  <tr><td>34</td><td>XRPUSDT</td><td class="side-short">SHORT</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$12.57</td><td>Jul 18</td></tr>
+                  <tr><td>33</td><td>BNBUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$8.92</td><td>Jul 18</td></tr>
+                  <tr><td>32</td><td>SOLUSDT</td><td class="side-short">SHORT</td><td><span class="badge badge-tp">TP</span></td><td class="pnl-pos">+$7.59</td><td>Jul 18</td></tr>
+                  <tr><td>31</td><td>ETHUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$11.24</td><td>Jul 18</td></tr>
+                  <tr><td>30</td><td>SOLUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$13.15</td><td>Jul 18</td></tr>
+                  <tr><td>29</td><td>ETHUSDT</td><td class="side-short">SHORT</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$36.43</td><td>Jul 17</td></tr>
+                  <tr><td>28</td><td>BTCUSDT</td><td class="side-short">SHORT</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$17.69</td><td>Jul 17</td></tr>
+                  <tr><td>27</td><td>BTCUSDT</td><td class="side-long">LONG</td><td><span class="badge badge-sl">SL</span></td><td class="pnl-neg">-$13.16</td><td>Jul 17</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Signal stats (7d)
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <div class="param-list">
+                <div class="param-row"><span class="param-label">Total signals</span><span class="param-value">27</span></div>
+                <div class="param-row"><span class="param-label">Executable (DQS >= 50)</span><span class="param-value">27</span></div>
+                <div class="param-row"><span class="param-label">Good (DQS >= 65)</span><span class="param-value">18</span></div>
+                <div class="param-row"><span class="param-label">Excellent (DQS >= 75)</span><span class="param-value">11</span></div>
+                <div class="param-row"><span class="param-label">Avg confidence</span><span class="param-value">68.9</span></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Live vs backtest comparison
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <table class="prod-table">
+                <thead>
+                  <tr><th>Metric</th><th>Backtest</th><th>Live</th><th>Delta</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Win rate</td><td>56.4%</td><td>48.0%</td><td class="pnl-neg">-8.4pp</td></tr>
+                  <tr><td>Profit factor</td><td>1.56</td><td>1.26</td><td class="pnl-neg">-0.30</td></tr>
+                  <tr><td>Closed trades</td><td>1,441</td><td>25</td><td>-</td></tr>
+                  <tr><td>Avg PnL</td><td>$5.85</td><td>$1.92</td><td class="pnl-neg">-$3.93</td></tr>
+                  <tr><td>TP hit rate</td><td>45.0%</td><td>48.0%</td><td class="pnl-pos">+3.0pp</td></tr>
+                </tbody>
+              </table>
+              <p style="margin-top: 10px; font-size: 12px; color: var(--gray-500);">Sample size is 25 closed trades. Statistical significance requires at least 100. Do not tune parameters yet.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Feedback -->
+      <section id="panel-feedback" class="tab-panel" aria-label="Feedback">
+        <div class="page-pad">
+          <h2 class="page-title">Workflow Feedback</h2>
+          <p class="section-sub">Status of global protocols and open issues. The WinSoftware folder was not found in the workspace.</p>
+
+          <details class="accordion">
+            <summary>
+              PIVP — validation protocol
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Strong gate discipline, but Python services lack a runnable unit/integration test suite. Phase 2 demands full test runs, which are currently manual. Add pytest coverage for gate logic, DQS scoring, and V2 filters.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              GBEGP — build governance
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Dev/prod separation is missing. There are no <code>/development</code> or <code>/production</code> directories and no <code>.env.development</code> or <code>.env.production</code> files. Environment detection should be automated at session start.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              CCP — content and communication
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>UI copy rules should be audited across the existing dashboard. Existing strings may still contain banned marketing language or em dashes. Apply the style cheat sheet before any public-facing text goes live.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              RODP — repository organization
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>File-length thresholds are exceeded: <code>backend/src/server.cjs</code> over 2,000 lines, <code>pipeline/engine/portfolio_orchestrator.py</code> over 1,700 lines, <code>frontend/src/index.css</code> over 2,500 lines. Docs and handoffs live in the repo root instead of <code>/docs/memory</code>. Make a migration plan rather than restructuring silently.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Pipeline gate audit
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>Twelve gates are well documented. The recent zero-signal bug showed V2 filters, freshness thresholds, and pre-flight bar age were too tight. Add a diagnostics endpoint that returns the first gate each symbol fails per scan.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Zero signal diagnosis
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <p>The workflow correctly orders checks from ingestion freshness to gate chain. Add automated regression tests for each root cause and a live dashboard widget that shows scan rejection reasons per symbol.</p>
+            </div>
+          </details>
+
+          <details class="accordion">
+            <summary>
+              Open issues and next steps
+              <svg class="icon chevron" width="16" height="16" aria-hidden="true"><use href="#icon-chevron-down"/></svg>
+            </summary>
+            <div class="accordion-body">
+              <ul>
+                <li>Live paper trading is on a losing streak. Do not change parameters until the sample size and regime shift are audited.</li>
+                <li>Backtest assumes no slippage, no funding costs, and static crowding clusters. These are the most likely live divergence sources.</li>
+                <li><code>MR_BOOST = 3.0</code> may inflate mean-reversion position sizes during a drawdown.</li>
+                <li>Runtime tuning functions can overfit on a small live sample. Consider pausing them until 100 closed trades exist.</li>
+                <li>WinSoftware folder was not found. Provide its path so its workflows can be reviewed.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="bottom-tabs" aria-label="Primary navigation">
+      <button class="tab-btn active" data-tab="panel-home" aria-label="Home" aria-selected="true" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-home"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-ingest" aria-label="Ingest" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-grid"/></svg>
+        <span>Ingest</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-pipeline" aria-label="Pipeline" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-compass"/></svg>
+        <span>Pipeline</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-backtest" aria-label="Backtest" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-monitor"/></svg>
+        <span>Backtest</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-execute" aria-label="Execute" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-briefcase"/></svg>
+        <span>Execute</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-production" aria-label="Production" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-trending-up"/></svg>
+        <span>Prod</span>
+      </button>
+      <button class="tab-btn" data-tab="panel-feedback" aria-label="Feedback" aria-selected="false" role="tab">
+        <svg class="icon" width="20" height="20" aria-hidden="true"><use href="#icon-list-todo"/></svg>
+        <span>Feedback</span>
+      </button>
+    </nav>
+
+    <dialog class="app-modal" id="modal" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <h3 class="modal-title" id="modal-title">Audit reminder</h3>
+        <p class="modal-text">Before changing any live parameter, confirm the losing streak is not a small-sample or regime issue.</p>
+        <ul class="modal-list">
+          <li>Run a 30-day backtest with current parameters.</li>
+          <li>Compare live closed trades to backtest for the same period.</li>
+          <li>Check slippage, funding, and data freshness.</li>
+          <li>Review <code>MR_BOOST</code> and runtime tuning activation.</li>
+          <li>Locate and review the WinSoftware folder workflows.</li>
+        </ul>
+        <button class="modal-close" id="modal-close" type="button">Close</button>
+      </div>
+    </dialog>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.tab-panel');
+      const modal = document.getElementById('modal');
+      const modalClose = document.getElementById('modal-close');
+      const openModalBtns = document.querySelectorAll('[data-open-modal]');
+
+      function setMenu(open) {
+        menuBtn.setAttribute('aria-expanded', String(open));
+        mobileMenu.classList.toggle('open', open);
+        mobileMenu.setAttribute('aria-hidden', String(!open));
+      }
+
+      menuBtn.addEventListener('click', () => setMenu(!mobileMenu.classList.contains('open')));
+      mobileMenu.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('click', () => setMenu(false));
+      });
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-tab');
+          tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          panels.forEach(p => p.classList.remove('active'));
+          const targetPanel = document.getElementById(target);
+          if (targetPanel) targetPanel.classList.add('active');
+          setMenu(false);
+          document.querySelector('.scroll').scrollTop = 0;
+        });
+      });
+
+      openModalBtns.forEach(btn => {
+        btn.addEventListener('click', () => { if (modal.showModal) modal.showModal(); });
+      });
+
+      modalClose.addEventListener('click', () => { if (modal.close) modal.close(); });
+      modal.addEventListener('click', (e) => { if (e.target === modal && modal.close) modal.close(); });
+    });
+  </script>
+</body>
+</html>

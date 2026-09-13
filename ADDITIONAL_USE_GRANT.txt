@@ -1,0 +1,64 @@
+# Additional Use Grant — VLTHR Trading System
+
+## Free Use (No Commercial License Required)
+
+The following uses of the VLTHR Trading System are free and do not require a commercial license:
+
+1. **Research and Academic Use** — Using the code for research papers, academic projects, thesis work, and educational courses.
+
+2. **Personal Projects** — Running the system for personal learning, experimentation, and non-commercial personal trading with your own funds (not managing others' funds, not charging fees).
+
+3. **Development and Contribution** — Modifying the code to contribute improvements, bug fixes, or new features back to this repository via pull requests.
+
+4. **Code Review and Audit** — Reading, reviewing, and analyzing the code for quality, security, or educational purposes.
+
+5. **Reference Implementation** — Using the code as a reference to learn about algorithmic trading pipeline architecture, signal gating, risk management, or backtest methodology.
+
+6. **Forking for Research** — Forking the repository to experiment with new strategies, indicators, or risk models, provided the fork remains non-commercial and attribution is preserved.
+
+## Commercial Use (Requires License)
+
+The following uses require a commercial license from the Licensor:
+
+1. **Production Trading** — Running the system in live trading with real funds in a commercial or institutional context (fund management, prop trading desk, trading firm).
+
+2. **SaaS or Hosted Service** — Offering the system or any derivative as a hosted service, SaaS product, or paid API.
+
+3. **Commercial Product Integration** — Integrating the system into a commercial product that is sold or licensed to third parties.
+
+4. **Fund Management** — Using the system to manage funds on behalf of clients, regardless of whether a fee is charged.
+
+5. **Paid Signals or Alerts** — Using the system's signal generation to provide paid trading signals, alerts, or recommendations to third parties.
+
+## Attribution Requirement
+
+For all uses (free and commercial), you must:
+
+1. **Retain all copyright and license notices** in the source code and documentation.
+
+2. **Include attribution** to the VLTHR Trading System and its contributors in any derivative work, fork, or publication that uses or references this code. The attribution must include:
+   - The name "VLTHR Trading System"
+   - A link to https://github.com/298althr/vlthr-trading-system
+   - The copyright notice from the LICENSE file
+
+3. **Give credit in research publications** — If you use this system in academic research that leads to a publication, you must cite the repository:
+   ```
+   VLTHR Trading System (2026), https://github.com/298althr/vlthr-trading-system
+   ```
+
+4. **Notify the Licensor** — If you deploy the system in any public-facing context (blog post, demo, conference talk, social media), you must mention the VLTHR Trading System and link to the repository.
+
+## Commercial License Inquiry
+
+To obtain a commercial license, contact: vlthr@298althr.github
+
+Commercial licenses are negotiated on a case-by-case basis and may include:
+- Production trading rights
+- Custom strategy development
+- Priority support
+- White-label deployment
+- Integration consulting
+
+## Change Date
+
+On 2030-09-13 (the Change Date), this license automatically converts to the Apache License 2.0, at which point all uses (including commercial) become free subject to Apache 2.0 terms.

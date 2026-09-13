@@ -1,0 +1,44 @@
+{
+  "name": "vlthr-signal-dashboard",
+  "private": true,
+  "version": "0.3.5",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "server": "node backend/server.cjs",
+    "start": "concurrently \"npm run server\" \"npm run dev\"",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "hyparquet": "^1.26.0",
+    "hyparquet-compressors": "^1.1.1",
+    "lucide-react": "^1.17.0",
+    "parquetjs-lite": "^0.8.7",
+    "pg": "^8.21.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "speakeasy": "^2.0.0",
+    "ws": "^8.18.0",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.12.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.1.2",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.0.12"
+  }
+}

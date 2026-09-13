@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session + Regime-Aware Parameterization Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f7f7f8;
+    --bg-tertiary: #ececf1;
+    --border: #e5e5e5;
+    --border-strong: #d0d0d0;
+    --text: #1a1a1a;
+    --text-secondary: #6e6e80;
+    --text-muted: #9a9aaf;
+    --accent: #10a37f;
+    --accent-light: #d4f4e9;
+    --accent-dark: #0d8a6a;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --info: #3b82f6;
+    --info-light: #dbeafe;
+    --purple: #8b5cf6;
+    --purple-light: #ede9fe;
+    --code-bg: #f7f7f8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.7;
+    font-size: 15px;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 48px 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 28px 0 12px;
+  }
+  h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 20px 0 8px;
+    color: var(--text-secondary);
+  }
+  p { margin-bottom: 14px; color: var(--text); }
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+  .date {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-accent {
+    border-left: 3px solid var(--accent);
+  }
+  .card-warning {
+    border-left: 3px solid var(--warning);
+    background: var(--warning-light);
+    border-color: var(--warning);
+  }
+  .card-danger {
+    border-left: 3px solid var(--danger);
+    background: var(--danger-light);
+    border-color: var(--danger);
+  }
+  .card-info {
+    border-left: 3px solid var(--info);
+    background: var(--info-light);
+    border-color: var(--info);
+  }
+  .card-purple {
+    border-left: 3px solid var(--purple);
+    background: var(--purple-light);
+    border-color: var(--purple);
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .badge-validated { background: var(--accent-light); color: var(--accent-dark); }
+  .badge-partial { background: var(--warning-light); color: #92400e; }
+  .badge-failed { background: var(--danger-light); color: #991b1b; }
+  .badge-info { background: var(--info-light); color: #1e40af; }
+  .badge-phase { background: var(--bg-tertiary); color: var(--text-secondary); }
+  .badge-gate { background: var(--accent); color: white; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 12px 0;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 2px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:hover td { background: var(--bg-secondary); }
+  .code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent-dark);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin: 12px 0;
+  }
+  pre code { color: var(--text); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .metric {
+    text-align: center;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+  }
+  .metric .value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .metric .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .toc {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+  .toc-title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .toc ol { list-style: none; counter-reset: toc; }
+  .toc li {
+    counter-increment: toc;
+    padding: 4px 0;
+    font-size: 0.9rem;
+  }
+  .toc li::before {
+    content: counter(toc) ".";
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .toc a:hover { color: var(--accent); }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 40px 0 16px;
+  }
+  .phase-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .phase-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .gate-box {
+    background: var(--accent-light);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+  }
+  .gate-box strong { color: var(--accent-dark); }
+  .warning-box {
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+  }
+  .danger-box {
+    background: var(--danger-light);
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+  }
+  .info-box {
+    background: var(--info-light);
+    border: 1px solid var(--info);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+  }
+  .finding {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+  }
+  .finding-pass { background: var(--accent-light); border-left: 3px solid var(--accent); }
+  .finding-warn { background: var(--warning-light); border-left: 3px solid var(--warning); }
+  .finding-fail { background: var(--danger-light); border-left: 3px solid var(--danger); }
+  .finding-info { background: var(--info-light); border-left: 3px solid var(--info); }
+  ul, ol { margin: 8px 0 16px 24px; }
+  li { margin-bottom: 6px; }
+  .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tag-file { background: var(--bg-tertiary); color: var(--text-secondary); }
+  .tag-line { background: var(--accent-light); color: var(--accent-dark); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .source-list { font-size: 0.82rem; color: var(--text-secondary); }
+  .source-list li { margin-bottom: 4px; }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .status-pill::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .status-validated { background: var(--accent-light); color: var(--accent-dark); }
+  .status-validated::before { background: var(--accent); }
+  .status-pending { background: var(--warning-light); color: #92400e; }
+  .status-pending::before { background: var(--warning); }
+  .status-blocked { background: var(--danger-light); color: #991b1b; }
+  .status-blocked::before { background: var(--danger); }
+</style>
+</head>
+<body>
+
+<h1>Session + Regime-Aware Parameterization</h1>
+<p class="subtitle">Research validation, overfitting controls, and Phase 1-4 implementation plan for VLTHR pipeline</p>
+<p class="date">July 22, 2026</p>
+
+<div class="toc">
+  <div class="toc-title">Contents</div>
+  <ol>
+    <li><a href="#validation">Codebase Validation of Research Claims</a></li>
+    <li><a href="#overfitting">Overfitting Risk Analysis</a></li>
+    <li><a href="#data-bar">Data Quality Bar</a></li>
+    <li><a href="#phase-0">Phase 0: Statistical Gate Infrastructure</a></li>
+    <li><a href="#phase-1">Phase 1: Session-Aware Parameters</a></li>
+    <li><a href="#phase-2">Phase 2: Regime-Specific Strategy Selection</a></li>
+    <li><a href="#phase-3">Phase 3: Backtest Calibration and Overfitting Audit</a></li>
+    <li><a href="#phase-4">Phase 4: Shadow Deployment and Live Rollout</a></li>
+    <li><a href="#methods">Optimization Process and Methods</a></li>
+    <li><a href="#testing">Testing Pyramid</a></li>
+    <li><a href="#sources">Key Sources</a></li>
+  </ol>
+</div>
+
+<!-- ====== VALIDATION ====== -->
+<h2 id="validation">1. Codebase Validation of Research Claims</h2>
+
+<p>Three claims from the research document were checked against the actual VLTHR codebase. All three are confirmed.</p>
+
+<h3>Claim 1: Session is tracked but does not influence trade parameters</h3>
+<div class="finding finding-pass">
+  <strong>VALIDATED.</strong> Session is recorded in <span class="code">entry_session</span> on every paper trade and used in DQS context scoring (<span class="tag tag-file">adaptive_scorer.py</span> <span class="tag tag-line">:320-331</span>) and calibration lookup (<span class="tag tag-file">calibration_lookup.py</span> <span class="tag tag-line">:35-61</span>). But <span class="code">get_symbol_params(symbol)</span> at <span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:66-68</span> only accepts <span class="code">symbol</span>. No session or regime parameter is passed. SL/TP multipliers, RSI thresholds, ADX minimums, and strategy type are identical regardless of session.
+</div>
+
+<h3>Claim 2: Regime scales SL/TP but does not switch strategy</h3>
+<div class="finding finding-pass">
+  <strong>VALIDATED.</strong> <span class="code">REGIME_SL_TP_MULTIPLIERS</span> at <span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:121-126</span> scales SL/TP distances by regime. <span class="tag tag-file">regime_router.py</span> <span class="tag tag-line">:152-207</span> does strategy veto: blocks <span class="code">mean_reversion</span> in TRENDING, blocks <span class="code">trend_following</span> in RANGING. But it never switches the strategy. A mean_reversion symbol in a TRENDING regime simply does not trade. It does not adapt to trend_following entries.
+</div>
+
+<h3>Claim 3: Session boundaries are inconsistent across modules</h3>
+<div class="finding finding-warn">
+  <strong>PARTIALLY VALIDATED.</strong> The backtest runner defines sessions as: london (07-12), overlap (12-14), ny_open (14-21), ny_late (20-24), asian (00-07) at <span class="tag tag-file">backtest_runner.py</span> <span class="tag tag-line">:252-263</span>. The replay runner has a different definition with overlapping time windows at <span class="tag tag-file">replay_runner.py</span> <span class="tag tag-line">:47-59</span> where ny_open (14-21) and overlap (12-20) conflict. <span class="code">ACTIVE_SESSIONS</span> at <span class="tag tag-file">portfolio_config.py</span> <span class="tag tag-line">:53</span> only includes <span class="code">{"london", "ny_open", "ny_late"}</span>, excluding overlap and asian entirely. This means signals during Asian and overlap hours are already gated out before parameter resolution even matters.
+</div>
+
+<h3>Existing Pattern Worth Reusing</h3>
+<div class="finding finding-info">
+  <strong>Calibration lookup already implements hierarchical fallback.</strong> <span class="tag tag-file">calibration_lookup.py</span> <span class="tag tag-line">:35-63</span> has a 6-level fallback: full (symbol+side+strategy+session) to no_session to no_strategy to symbol_only to global to prior. This is exactly the pattern proposed for parameter resolution. The infrastructure for session-aware lookup exists in the calibration layer but not in the parameter layer.
+</div>
+
+<h3>Current State Summary</h3>
+<table>
+  <tr><th>Dimension</th><th>Config Source</th><th>Used For</th><th>Gap</th></tr>
+  <tr>
+    <td>Symbol</td>
+    <td><span class="code">PER_SYMBOL_PARAMS</span></td>
+    <td>Strategy type, SL/TP, RSI, ADX, risk_pct, max_trade_hours</td>
+    <td><span class="badge badge-validated">WIRED</span></td>
+  </tr>
+  <tr>
+    <td>Regime</td>
+    <td><span class="code">REGIME_SL_TP_MULTIPLIERS</span></td>
+    <td>SL/TP scaling only. Strategy veto via regime_router.</td>
+    <td><span class="badge badge-partial">PARTIAL</span> Does not switch strategy or entry thresholds.</td>
+  </tr>
+  <tr>
+    <td>Session</td>
+    <td><span class="code">ACTIVE_SESSIONS</span> set</td>
+    <td>DQS context score, gate eligibility, calibration lookup, trade count limits</td>
+    <td><span class="badge badge-failed">NOT WIRED</span> Zero influence on SL/TP, strategy, RSI, or ADX.</td>
+  </tr>
+</table>
+
+<!-- ====== OVERFITTING ====== -->
+<h2 id="overfitting">2. Overfitting Risk Analysis</h2>
+
+<div class="grid3">
+  <div class="metric"><div class="value">80</div><div class="label">Full Grid Cells</div></div>
+  <div class="metric"><div class="value">~12</div><div class="label">Trades Per Cell</div></div>
+  <div class="metric"><div class="value">7.5x</div><div class="label">Under Sample Floor</div></div>
+</div>
+
+<h3>The Sample-Size Rule</h3>
+<p>The standard practitioner rule (Bailey et al., 2014) requires a minimum of <strong>30 trades per free optimized parameter, per validation cell</strong>. With 3 free parameters (SL multiplier, TP multiplier, ADX threshold), that is a minimum of <strong>90 in-sample trades per cell</strong>. At 12 trades per cell, the current data is roughly 7.5x under the floor. Parameter estimates below this density are statistically closer to curve-fit noise than to a stable edge.</p>
+
+<h3>The Multiple-Testing Tax</h3>
+<p>Every additional cell fitted is a separate statistical trial. The <strong>Deflated Sharpe Ratio (DSR)</strong> framework (Bailey and Lopez de Prado, 2014) discounts headline Sharpe by the number of trials, variance across trials, and skew/kurtosis of returns. Practical thresholds:</p>
+<ul>
+  <li><strong>DSR > 0.95</strong>: strong evidence of genuine edge after correction</li>
+  <li><strong>DSR 0.80-0.95</strong>: probable but borderline, validate further</li>
+  <li><strong>DSR < 0.80</strong>: likely noise dressed up as edge</li>
+</ul>
+<p>An 80-cell grid search without correction will produce cells that look great from the multiple-testing effect alone. This is the exact mechanism behind "backtest looked amazing, live account bled."</p>
+
+<h3>Three Levers That Solve the Break Point</h3>
+
+<div class="card card-accent">
+  <h4>1. Shrink the cell count</h4>
+  <p>Start at session-only: 5 symbols x 4 sessions = 20 cells, ~50 trades/cell. Add regime only where the session-only backtest shows a statistically distinguishable difference in behavior.</p>
+</div>
+
+<div class="card card-accent">
+  <h4>2. Hierarchical shrinkage instead of hard per-cell fitting</h4>
+  <p>Fit each cell as a blend between its own data and the parent bucket's data. The sparser the cell, the more it is pulled toward the symbol-level default. This is standard practice in domains with imbalanced bucket sizes (empirical Bayes / partial pooling). It neutralizes the "12 trades is not enough" problem without discarding the session/regime signal.</p>
+</div>
+
+<div class="card card-accent">
+  <h4>3. Gate promotion on DSR + CPCV, not on backtest PF alone</h4>
+  <p>A cell only gets its own parameter set live if it beats the symbol-level default with statistical significance after the multiple-testing correction, not just a higher raw profit factor.</p>
+</div>
+
+<h3>Statistical Test for Session/Regime Differentiation</h3>
+<p>Before writing 80 parameter sets, run a simpler question: for each symbol, is the distribution of trade outcomes (R-multiple, MFE/MAE) in session A statistically different from session B? A two-sample <strong>Mann-Whitney U test</strong> (non-parametric, since trade P&L is rarely normal) across sessions tells which splits are worth calibrating separately. Collapsing cells that do not show a real difference is itself an overfitting control.</p>
+
+<!-- ====== DATA BAR ====== -->
+<h2 id="data-bar">3. Data Quality Bar for Backtest Validation</h2>
+
+<table>
+  <tr><th>Requirement</th><th>Minimum</th><th>Target</th><th>Source</th></tr>
+  <tr><td>Trades per cell (in-sample)</td><td>30 x (# free params)</td><td>100+</td><td>Bailey et al. 2014</td></tr>
+  <tr><td>Free parameters per cell</td><td>-</td><td>3 or fewer</td><td>Keeps 30-trade floor achievable</td></tr>
+  <tr><td>WFO cycles</td><td>5</td><td>8-15</td><td>Below 5, results may reflect chance</td></tr>
+  <tr><td>IS:OOS ratio</td><td>2:1</td><td>3:1 to 4:1</td><td>Below 2:1, OOS window too short</td></tr>
+  <tr><td>Walk-Forward Efficiency (WFE)</td><td>0.5</td><td>0.7+</td><td>OOS return / IS return, annualized</td></tr>
+  <tr><td>Historical span</td><td>12 months</td><td>24+ months</td><td>Each regime state needs independent occurrences</td></tr>
+  <tr><td>Final validation</td><td>CPCV pass</td><td>CPCV + DSR > 0.80</td><td>CPCV has lower PBO than plain WFO</td></tr>
+  <tr><td>Promotion gate</td><td>Cell beats symbol default on OOS PF and WR</td><td>With DSR-adjusted significance</td><td>Prevents multiple-testing false positives</td></tr>
+</table>
+
+<div class="warning-box">
+  <strong>Current data assessment:</strong> With ~1000 trades over 6 months, there is not enough independent history to validate an 80-cell grid at any reasonable confidence. There is enough for a 15-20 cell session-only grid at the low end of acceptable. Regime-layer promotion should be gated on either accumulating more trade history or backtesting further back than the current live/paper window.
+</div>
+
+<!-- ====== PHASE 0 ====== -->
+<div class="phase-header" id="phase-0">
+  <div class="phase-number">0</div>
+  <div class="phase-title">Statistical Gate Infrastructure</div>
+</div>
+
+<p>Build the overfitting controls as automated gates before any parameter fitting begins. This prevents accidentally promoting an undersampled cell to production.</p>
+
+<h3>Deliverables</h3>
+<ul>
+  <li><strong>Mann-Whitney U test module</strong>: <span class="code">scipy.stats.mannwhitneyu</span> wrapper that takes two arrays of trade R-multiples and returns (U statistic, p-value, effect size). Gate: p < 0.05 required to justify a session split.</li>
+  <li><strong>Sample size validator</strong>: Function that takes (cell trade count, number of free parameters) and returns PASS/FAIL against the 30 x N rule.</li>
+  <li><strong>DSR calculator</strong>: Function implementing the Deflated Sharpe Ratio formula from Bailey and Lopez de Prado (2014). Inputs: Sharpe ratio, number of trials, variance across trial returns, skew, kurtosis. Output: DSR value and PASS/FAIL against 0.80 threshold.</li>
+  <li><strong>WFE calculator</strong>: Function computing Walk-Forward Efficiency = OOS annualized return / IS annualized return. Gate: WFE >= 0.5 required.</li>
+</ul>
+
+<h3>Files</h3>
+<ul>
+  <li><span class="code">backtest/stat_gates.py</span> (new): Mann-Whitney, sample-size, DSR, WFE functions</li>
+  <li><span class="code">backtest/test_stat_gates.py</span> (new): Unit tests with synthetic data</li>
+</ul>
+
+<div class="gate-box">
+  <strong>Gate:</strong> All 4 statistical functions pass unit tests with known synthetic data. DSR function validated against published example values.
+</div>
+
+<!-- ====== PHASE 1 ====== -->
+<div class="phase-header" id="phase-1">
+  <div class="phase-number">1</div>
+  <div class="phase-title">Session-Aware Parameters</div>
+</div>
+
+<h3>Step 1.1: Standardize Session Definitions</h3>
+<p>Current session boundaries are inconsistent. Standardize to 4 sessions across all modules:</p>
+<table>
+  <tr><th>Session</th><th>UTC Hours</th><th>Characteristics</th><th>Currently Active?</th></tr>
+  <tr><td>asian</td><td>00:00 - 08:00</td><td>Lower volume, tighter ranges, mean reversion dominant</td><td>No</td></tr>
+  <tr><td>london</td><td>08:00 - 12:00</td><td>Highest volatility, trend establishment</td><td>Yes</td></tr>
+  <tr><td>ny_open</td><td>12:00 - 17:00</td><td>High volume, continuation or reversal of London</td><td>Yes (14-21)</td></tr>
+  <tr><td>ny_late</td><td>17:00 - 00:00</td><td>Winding down, moderate liquidity</td><td>Yes (20-24)</td></tr>
+</table>
+<p>Update <span class="code">_classify_session()</span> in both <span class="tag tag-file">backtest_runner.py</span> and <span class="tag tag-file">replay_runner.py</span> to use the same definition. Remove the "overlap" session and fold it into ny_open.</p>
+
+<h3>Step 1.2: Session Split Statistical Test</h3>
+<p>Before writing any parameters, run the Mann-Whitney U test per symbol across the 4 sessions using existing backtest trade results. This determines which sessions are statistically distinguishable for each symbol.</p>
+<ul>
+  <li>If asian vs london shows p < 0.05 for BTC: keep separate cells</li>
+  <li>If ny_open vs ny_late shows p > 0.05 for SOL: merge into one cell for SOL</li>
+  <li>Output: a per-symbol session map showing which splits are justified</li>
+</ul>
+
+<h3>Step 1.3: Config Structure</h3>
+<pre><code>SESSION_PARAMS = {
+    "BTCUSDT": {
+        "asian":  {"strategy": "mean_reversion", "sl_mult": 1.5, "tp_mult": 2.5, "adx_min": 15.0, ...},
+        "london": {"strategy": "trend_following", "sl_mult": 2.5, "tp_mult": 4.0, "adx_min": 20.0, ...},
+        "ny_open": {"strategy": "trend_following", "sl_mult": 2.5, "tp_mult": 4.0, "adx_min": 20.0, ...},
+        "ny_late": {"strategy": "trend_following", "sl_mult": 2.0, "tp_mult": 3.5, "adx_min": 18.0, ...},
+    },
+    # ... other symbols
+}</code></pre>
+
+<p>Fallback chain (mirrors existing calibration_lookup pattern):</p>
+<pre><code>def get_symbol_params(symbol: str, session: str = None) -> dict:
+    if session and symbol in SESSION_PARAMS:
+        sess_params = SESSION_PARAMS[symbol].get(session)
+        if sess_params:
+            return {**PER_SYMBOL_PARAMS.get(symbol, PARAMS), **sess_params}
+    return PER_SYMBOL_PARAMS.get(symbol, PARAMS)</code></pre>
+
+<h3>Step 1.4: Calibrate via Rolling WFO</h3>
+<ul>
+  <li>3:1 IS:OOS ratio, rolling window (not anchored)</li>
+  <li>Rolling preferred for intraday/session-sensitive systems: avoids stale regimes dominating the fit</li>
+  <li>Grid search acceptable at this stage (small parameter space)</li>
+  <li>Fitness function: Calmar ratio on OOS window (not raw PF)</li>
+  <li>Free parameters per cell: 3 max (sl_mult, tp_mult, adx_min)</li>
+</ul>
+
+<h3>Step 1.5: Wire into Pipeline</h3>
+<ul>
+  <li>Update <span class="code">get_symbol_params()</span> signature to accept <span class="code">session</span></li>
+  <li>Update all call sites: <span class="tag tag-file">portfolio_orchestrator.py</span>, <span class="tag tag-file">adaptive_scorer.py</span>, <span class="tag tag-file">backtest_runner.py</span></li>
+  <li>Store <span class="code">resolved_session</span> on every paper trade for audit</li>
+</ul>
+
+<div class="gate-box">
+  <strong>Phase 1 Gate:</strong> WFE >= 0.5 AND OOS PF/WR beats current global-default baseline on the same OOS window AND Mann-Whitney p < 0.05 for at least 50% of session splits per symbol.
+</div>
+
+<h3>Files</h3>
+<ul>
+  <li><span class="code">pipeline/engine/portfolio_config.py</span> (mod): Add SESSION_PARAMS, update get_symbol_params</li>
+  <li><span class="code">pipeline/engine/portfolio_orchestrator.py</span> (mod): Pass session to get_symbol_params at all call sites</li>
+  <li><span class="code">pipeline/engine/adaptive_scorer.py</span> (mod): Pass session to get_symbol_params</li>
+  <li><span class="code">backtest/backtest_runner.py</span> (mod): Standardize session boundaries, use session-aware params</li>
+  <li><span class="code">backtest/session_calibration.py</span> (new): WFO calibration script for session params</li>
+  <li><span class="code">pipeline/engine/test_session_params.py</span> (new): Unit tests for fallback chain</li>
+</ul>
+
+<!-- ====== PHASE 2 ====== -->
+<div class="phase-header" id="phase-2">
+  <div class="phase-number">2</div>
+  <div class="phase-title">Regime-Specific Strategy Selection</div>
+</div>
+
+<h3>Step 2.1: HMM Regime Detection</h3>
+<p>Replace the current rule-based regime classification (ADX + efficiency ratio + ATR rank) with a 2-3 state Gaussian HMM over log returns and rolling realized volatility. The current rule-based approach in <span class="tag tag-file">regime_router.py</span> was explicitly chosen for hardware constraints (4-thread, 7.7GB). The HMM is trained offline and serialized, so the live pipeline only loads a pickle file, same as <span class="code">calibration.json</span>.</p>
+<ul>
+  <li>Library: <span class="code">hmmlearn</span> (GaussianHMM, 2-3 states)</li>
+  <li>Training features: log returns (15m), rolling realized vol (20-bar window)</li>
+  <li>States: trending / ranging (2-state baseline), optional high-vol (3-state)</li>
+  <li>Train per-symbol on 12+ months of historical data</li>
+  <li>Serialize as <span class="code">regime_models/{symbol}_hmm.pkl</span></li>
+  <li>Live pipeline loads model, calls <span class="code">model.predict()</span> on latest feature window</li>
+</ul>
+
+<h3>Step 2.2: Strategy Resolution Function</h3>
+<pre><code>def get_strategy(symbol: str, session: str, regime: str) -> str:
+    """Resolve strategy type from session + regime.
+    Falls back to session-level strategy, then symbol-level."""
+    sess_params = SESSION_PARAMS.get(symbol, {}).get(session, {})
+    base_strategy = sess_params.get("strategy",
+                    PER_SYMBOL_PARAMS.get(symbol, {}).get("strategy", "trend_following"))
+
+    # Regime override: switch strategy if regime demands it
+    if regime == "TRENDING" and base_strategy == "mean_reversion":
+        return "trend_following"
+    if regime == "RANGING" and base_strategy == "trend_following":
+        return "mean_reversion"
+
+    return base_strategy</code></pre>
+
+<h3>Step 2.3: Hierarchical Shrinkage</h3>
+<p>Do not hard-fit all session x regime cells independently. Each cell's parameters should be a confidence-weighted blend with the session-only parent cell from Phase 1.</p>
+<pre><code>def resolve_params(symbol, session, regime, cell_trades, parent_trades):
+    cell_params = SESSION_REGIME_PARAMS[symbol][session][regime]
+    parent_params = SESSION_PARAMS[symbol][session]
+
+    # Shrinkage weight: more parent data = more pull toward parent
+    alpha = cell_trades / (cell_trades + parent_trades)
+
+    return {
+        "sl_mult": alpha * cell_params["sl_mult"] + (1 - alpha) * parent_params["sl_mult"],
+        "tp_mult": alpha * cell_params["tp_mult"] + (1 - alpha) * parent_params["tp_mult"],
+        # ... other params
+    }</code></pre>
+
+<h3>Step 2.4: Update Entry Filters</h3>
+<p>Currently <span class="tag tag-file">v2_filters.py</span> and <span class="tag tag-file">adaptive_scorer.py</span> use the hardcoded per-symbol strategy. Update them to use the resolved strategy from <span class="code">get_strategy(symbol, session, regime)</span>. This means a mean_reversion symbol like XRP can take trend_following entries during a TRENDING regime in the London session.</p>
+
+<div class="gate-box">
+  <strong>Phase 2 Gate:</strong> Session x regime cell clears both the 30-trades-per-parameter floor AND shows a statistically distinguishable outcome distribution (Mann-Whitney p < 0.05) vs its parent session bucket. Cells that fail either test defer to the session-only params from Phase 1.
+</div>
+
+<h3>Files</h3>
+<ul>
+  <li><span class="code">pipeline/engine/regime_hmm.py</span> (new): HMM training, serialization, prediction</li>
+  <li><span class="code">pipeline/engine/portfolio_config.py</span> (mod): Add SESSION_REGIME_PARAMS, get_strategy, resolve_params</li>
+  <li><span class="code">pipeline/engine/regime_router.py</span> (mod): Use HMM prediction instead of rule-based classification</li>
+  <li><span class="code">pipeline/engine/v2_filters.py</span> (mod): Use resolved strategy instead of hardcoded per-symbol</li>
+  <li><span class="code">pipeline/engine/adaptive_scorer.py</span> (mod): Use resolved strategy for direction detection</li>
+  <li><span class="code">backtest/regime_calibration.py</span> (new): WFO calibration with hierarchical shrinkage</li>
+  <li><span class="code">requirements.txt</span> (mod): Add <span class="code">hmmlearn>=0.3</span></li>
+</ul>
+
+<!-- ====== PHASE 3 ====== -->
+<div class="phase-header" id="phase-3">
+  <div class="phase-number">3</div>
+  <div class="phase-title">Backtest Calibration and Overfitting Audit</div>
+</div>
+
+<h3>Three-Configuration Comparison</h3>
+<p>Run all three on identical OOS data:</p>
+<table>
+  <tr><th>Config</th><th>Description</th><th>Cells</th></tr>
+  <tr><td>Baseline</td><td>Current fixed global params (per-symbol only)</td><td>5</td></tr>
+  <tr><td>Session-aware</td><td>Phase 1 output: session-specific params per symbol</td><td>~15-20</td></tr>
+  <tr><td>Session + regime-aware</td><td>Phase 2 output: session x regime params with shrinkage</td><td>~20-40 (after collapsing non-distinguishable cells)</td></tr>
+</table>
+
+<h3>Validation Pipeline</h3>
+<ol>
+  <li><strong>Rolling WFO</strong>: 3:1 IS:OOS, minimum 5 cycles (target 8-15). Compute WFE for each config.</li>
+  <li><strong>CPCV</strong>: Run Combinatorial Purged Cross-Validation as the final arbiter. CPCV's purged/embargoed resampling gives a more honest PBO estimate than a single WFO pass.</li>
+  <li><strong>DSR computation</strong>: Compute Deflated Sharpe Ratio for the winning configuration, correcting for the total number of cells/trials searched across Phase 1 and 2.</li>
+  <li><strong>Promotion decision</strong>: Require DSR >= 0.80 before Phase 4. Treat 0.80-0.95 as "proceed to shadow, do not scale size yet."</li>
+</ol>
+
+<h3>Fitness Function</h3>
+<p>Use Calmar ratio (annualized return / max drawdown) on the OOS window, not raw profit factor. This prevents the optimizer from being rewarded for a few large winners that inflate PF without controlling drawdown.</p>
+
+<h3>Anti-Overfitting Rules</h3>
+<div class="danger-box">
+  <strong>Do not tune the WFO window sizes, fitness function, or cell boundaries themselves until results look good.</strong> That is optimizing the validation harness, which defeats its purpose. Fix these choices in Phase 1 before looking at Phase 2/3 results.
+</div>
+
+<div class="gate-box">
+  <strong>Phase 3 Gate:</strong> Session-aware (or session+regime-aware) beats baseline on OOS PF and WR with DSR-adjusted statistical significance (DSR >= 0.80). CPCV PBO < 0.50 (less than 50% probability of overfitting).
+</div>
+
+<h3>Files</h3>
+<ul>
+  <li><span class="code">backtest/overfitting_audit.py</span> (new): CPCV runner, DSR computation, three-config comparison</li>
+  <li><span class="code">backtest/wfo_runner.py</span> (new): Rolling WFO with configurable IS:OOS ratio</li>
+</ul>
+
+<!-- ====== PHASE 4 ====== -->
+<div class="phase-header" id="phase-4">
+  <div class="phase-number">4</div>
+  <div class="phase-title">Shadow Deployment and Live Rollout</div>
+</div>
+
+<h3>Step 4.1: Orchestrator Integration</h3>
+<ul>
+  <li>Resolve params via session + regime at signal time in the orchestrator</li>
+  <li>Store <span class="code">resolved_session</span>, <span class="code">resolved_regime</span>, <span class="code">resolved_strategy</span> on every paper trade for audit</li>
+  <li>These columns extend the existing <span class="code">entry_session</span>, <span class="code">entry_strategy</span>, <span class="code">entry_regime</span> columns. The "resolved" prefix distinguishes the parameter-resolution result from the raw signal classification.</li>
+</ul>
+
+<h3>Step 4.2: Shadow Period</h3>
+<ul>
+  <li>Run shadow (paper) for a minimum of <strong>2-4 weeks per newly promoted cell</strong>, not 2 weeks system-wide</li>
+  <li>Thin cells need their own live-conditions confirmation window since their backtest confidence was lower</li>
+  <li>Monitor per-cell live performance against the backtested OOS expectation (WFE-style comparison, live vs backtest)</li>
+  <li>A large live/backtest divergence on a specific cell is the early warning that its parameters were overfit despite passing the gates</li>
+</ul>
+
+<h3>Step 4.3: DB Migration</h3>
+<pre><code>ALTER TABLE paper_trades ADD COLUMN IF NOT EXISTS resolved_session VARCHAR(20);
+ALTER TABLE paper_trades ADD COLUMN IF NOT EXISTS resolved_regime VARCHAR(20);
+ALTER TABLE paper_trades ADD COLUMN IF NOT EXISTS resolved_strategy VARCHAR(30);</code></pre>
+
+<div class="gate-box">
+  <strong>Phase 4 Gate:</strong> Each cell's live WR and PF are within 20% of its OOS backtest expectation after 2-4 weeks. Cells that diverge by more than 20% are demoted back to parent-level params.
+</div>
+
+<h3>Files</h3>
+<ul>
+  <li><span class="code">pipeline/engine/portfolio_orchestrator.py</span> (mod): Resolve params at signal time, store resolved_* columns</li>
+  <li><span class="code">postgres/db_migration.py</span> (mod): Add resolved_session, resolved_regime, resolved_strategy columns</li>
+  <li><span class="code">backtest/live_vs_backtest_monitor.py</span> (new): Per-cell live vs OOS comparison dashboard</li>
+</ul>
+
+<!-- ====== METHODS ====== -->
+<h2 id="methods">5. Optimization Process and Methods</h2>
+
+<table>
+  <tr><th>Decision</th><th>Choice</th><th>Rationale</th></tr>
+  <tr>
+    <td>Search method (Phase 1)</td>
+    <td>Grid search</td>
+    <td>Small parameter space (3 params). Simple and transparent.</td>
+  </tr>
+  <tr>
+    <td>Search method (Phase 2)</td>
+    <td>Bayesian optimization (Optuna)</td>
+    <td>Finds comparable optima with far fewer backtest runs. Every additional run is another trial that inflates DSR correction.</td>
+  </tr>
+  <tr>
+    <td>WFO window type</td>
+    <td>Rolling, not anchored</td>
+    <td>Rolling prevents parameters from being dragged by market structure that has changed. Anchored suits longer-horizon strategies with stable regimes.</td>
+  </tr>
+  <tr>
+    <td>Fitness function</td>
+    <td>Calmar ratio (OOS window)</td>
+    <td>Risk-adjusted. Prevents optimizer from rewarding a few large winners that inflate PF without controlling drawdown.</td>
+  </tr>
+  <tr>
+    <td>Regularization</td>
+    <td>Hierarchical shrinkage (mandatory)</td>
+    <td>Primary regularizer against the 80-cell sparsity problem. Not optional once past session-only.</td>
+  </tr>
+  <tr>
+    <td>Regime detection</td>
+    <td>Gaussian HMM (hmmlearn)</td>
+    <td>Standard approach in regime-detection literature. Trained offline, loaded as pickle. Avoids brittleness of a single fixed ADX cutoff.</td>
+  </tr>
+  <tr>
+    <td>Backtesting</td>
+    <td>Extend existing backtest_runner.py</td>
+    <td>One source of truth. A parallel backtest engine can drift from production logic.</td>
+  </tr>
+</table>
+
+<!-- ====== TESTING ====== -->
+<h2 id="testing">6. Testing Pyramid</h2>
+
+<div class="card card-accent">
+  <h4>Layer 1: Unit Tests</h4>
+  <p>Fallback chain (<span class="code">SESSION_PARAMS[symbol][session]</span> to <span class="code">PER_SYMBOL_PARAMS[symbol]</span> to <span class="code">PARAMS</span>) and <span class="code">get_strategy(symbol, session, regime)</span> resolution. Pure functions. Test every fallback path explicitly, including partially-configured sessions.</p>
+</div>
+
+<div class="card card-accent">
+  <h4>Layer 2: Statistical Validation Tests</h4>
+  <p>Automate the Mann-Whitney split test, the 30-trades-per-parameter check, and the DSR calculation as pipeline gates that must pass before a cell's config is allowed to be written to <span class="code">SESSION_PARAMS</span>. This turns overfitting controls into code, not a manual checklist that erodes over time.</p>
+</div>
+
+<div class="card card-accent">
+  <h4>Layer 3: Integration / Walk-Forward Tests</h4>
+  <p>Run the full pipeline through rolling WFO on historical data, comparing fixed vs session-aware vs session+regime-aware. Validates that the parameter resolution integrates correctly with all 12 pipeline gates.</p>
+</div>
+
+<div class="card card-accent">
+  <h4>Layer 4: Shadow / Paper Trading</h4>
+  <p>Phase 4 with <span class="code">resolved_session</span> / <span class="code">resolved_regime</span> / <span class="code">resolved_strategy</span> audit logging. Any live/backtest divergence is traceable to a specific cell, not just "the system" in aggregate.</p>
+</div>
+
+<h3>Sequencing</h3>
+<div class="info-box">
+  Build the statistical gates (Layer 2) <strong>before</strong> Phase 2, not after. The original plan builds config structure first and validates in Phase 3. Inverting this so the DSR/sample-size/split-test checks exist as automated gates from Phase 1 onward means you cannot accidentally promote an undersampled cell to production.
+</div>
+
+<!-- ====== DO NOT TOUCH ====== -->
+<h2>Do Not Touch</h2>
+<div class="card card-danger">
+  <p>These existing parameters are validated and must not change during this work:</p>
+  <ul>
+    <li>Kelly V7 bands</li>
+    <li>MR boost 3x</li>
+    <li>Calibration gate 0.40</li>
+    <li>Crowding reduction 50%</li>
+    <li>DQ gate 60</li>
+    <li>Max active trades 8</li>
+    <li>Scan interval 300s</li>
+    <li>Max leverage 4x</li>
+    <li>Max portfolio risk 12%</li>
+  </ul>
+</div>
+
+<!-- ====== SOURCES ====== -->
+<h2 id="sources">Key Sources</h2>
+<ol class="source-list">
+  <li>Bailey, Borwein, Lopez de Prado, Zhu. <em>The Probability of Backtest Overfitting</em> (CSCV / PBO framework)</li>
+  <li>Bailey and Lopez de Prado (2014). <em>The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting and Non-Normality</em></li>
+  <li>Lopez de Prado. <em>Combinatorial Purged Cross-Validation (CPCV)</em>, Advances in Financial Machine Learning</li>
+  <li>ScienceDirect (2024). <em>Backtest overfitting in the machine learning era</em>: CPCV vs. walk-forward comparison</li>
+  <li>Concretum Group / Swiss Finance Institute (2025). <em>Seasonality in Bitcoin Intraday Trend Trading</em> (Monday Asia Open Effect)</li>
+  <li>ScienceDirect. <em>Time-of-day periodicities of trading volume and volatility in Bitcoin exchange</em></li>
+  <li>QuantInsti, QuantStart, LuxAlgo. HMM-based regime detection methodology</li>
+  <li>Backtrex, TradeStation, MQL5. Walk-forward optimization sample-size and cycle-count conventions</li>
+</ol>
+
+<hr>
+<p style="color:var(--text-muted); font-size:0.82rem; text-align:center;">
+  VLTHR Pipeline Architecture &middot; Session + Regime-Aware Parameterization Plan &middot; July 22, 2026
+</p>
+
+</body>
+</html>

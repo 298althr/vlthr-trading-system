@@ -1,0 +1,7 @@
+scan_time_utc,symbol,last_bar_utc,current_price,rsi_15m_now,adx_4h_now,atr_15m_now,session_now,4h_direction,4h_ema_trend,regime,signal_type,quality,gates_passed,gate_session_ok,gate_adx_ok,gate_direction_ok,gate_rsi_ok,gate_bull_4h_ok,sl_level,tp_level,notes
+2026-06-13 04:14:21,BTCUSDT,2026-06-13 04:00,63480.5,44.39,28.43,115.1071,asian,BEAR,UP,TRENDING,NO_SIGNAL,SKIP,1/4,False,True,False,False,True,63296.3286,63699.2036,Not ready — 3 gate(s) failing
+2026-06-13 04:14:24,ETHUSDT,2026-06-13 04:00,1664.78,46.12,17.04,3.3243,asian,BEAR,UP,RANGING,NO_SIGNAL,SKIP,1/4,False,False,False,True,True,1658.4971,1671.894,Not ready — 3 gate(s) failing
+2026-06-13 04:14:27,SOLUSDT,2026-06-13 04:00,66.87,49.62,34.01,0.1893,asian,BEAR,UP,TRENDING,NO_SIGNAL,SKIP,1/4,False,True,False,False,True,66.4763,67.1596,Not ready — 3 gate(s) failing
+2026-06-13 04:14:30,XRPUSDT,2026-06-13 04:00,1.1337,52.84,25.36,0.0027,asian,BEAR,UP,TRENDING,NO_SIGNAL,SKIP,1/4,False,True,False,False,True,1.1298,1.1384,Not ready — 3 gate(s) failing
+2026-06-13 04:14:35,BNBUSDT,2026-06-13 04:00,600.4,29.03,28.19,1.2429,asian,BULL,UP,TRENDING,OFF_SESSION,MONITOR,3/4,False,True,True,True,True,597.5166,602.314,Signal exists but outside session window — next window: London 07:00 UTC
+2026-06-13 04:14:44,DOGEUSDT,2026-06-13 04:00,0.0862,59.24,31.36,0.0003,asian,BEAR,UP,TRENDING,NO_SIGNAL,SKIP,1/4,False,True,False,False,True,0.0858,0.0866,Not ready — 3 gate(s) failing
